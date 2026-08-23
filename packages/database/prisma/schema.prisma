@@ -1,0 +1,340 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// --- Roles y Estados ---
+
+enum UserRole {
+  ESTUDIANTE
+  DOCENTE
+  ALMACEN_ADMIN
+  DIFUSION_EVENTOS
+  SUPERADMIN
+}
+
+enum UserStatus {
+  PENDIENTE_ACTIVACION
+  ACTIVO
+  SANCIONADO
+  SUSPENDIDO
+}
+
+enum SpaceType {
+  AULA
+  LABORATORIO
+  CINETECA
+  AUDITORIO
+  SALA_JUNTAS
+  CANCHA
+}
+
+enum ItemCategory {
+  COMPUTO
+  PROYECCION
+  AUDIO
+  CABLEADO_ADAPTADORES
+  MOBILIARIO
+  HERRAMIENTAS
+}
+
+enum ItemStatus {
+  DISPONIBLE
+  PRESTADO
+  EN_MANTENIMIENTO
+  DANADO
+  BAJA
+}
+
+enum EventType {
+  CINETECA
+  ACADEMICO
+  CULTURAL
+  DEPORTIVO
+  TALLER
+  CONFERENCIA
+}
+
+enum EventVisibility {
+  PUBLICO
+  PRIVADO_PERFIL
+  PRIVADO_CODIGO
+}
+
+enum RequestStatus {
+  PRE_RESERVADO
+  PENDIENTE_APROBACION
+  APROBADO
+  REBOTADO_CON_MOTIVO
+  EN_CURSO
+  FINALIZADO
+  CANCELADO
+}
+
+enum AttendeeStatus {
+  REGISTRADO
+  EN_LISTA_ESPERA
+  ASISTIO
+  NO_SHOW
+  CANCELADO
+}
+
+enum IncidentSeverity {
+  LEVE
+  MODERADA
+  GRAVE
+}
+
+enum IncidentStatus {
+  ABIERTO
+  EN_REPARACION_SUPERVISADA
+  RESUELTO
+  SANCION_DEFINITIVA
+}
+
+// --- Modelos Principales ---
+
+model User {
+  id              String         @id @default(uuid())
+  email           String         @unique
+  passwordHash    String?
+  fullName        String
+  studentCode     String         @unique
+  career          String?
+  semester        Int?
+  role            UserRole       @default(ESTUDIANTE)
+  status          UserStatus     @default(PENDIENTE_ACTIVACION)
+  reputationScore Int            @default(100)
+  signatureUrl    String?        // Firma digital en base64 / URL
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  // Relaciones
+  activationTokens ActivationToken[]
+  refreshTokens    RefreshToken[]
+  createdEvents    Event[]               @relation("EventCreator")
+  eventAttendances EventAttendee[]
+  loanRequests     LoanRequest[]         @relation("MainRequester")
+  coResponsibles   EventCoResponsible[]
+  incidents        Incident[]            @relation("UserIncidents")
+  reviews          Review[]
+  notifications    Notification[]
+
+  @@map("users")
+}
+
+model ActivationToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("activation_tokens")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isRevoked Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("refresh_tokens")
+}
+
+model Space {
+  id           String        @id @default(uuid())
+  name         String
+  code         String        @unique // Ej: CINETECA-01, AULA-A101
+  type         SpaceType
+  building     String
+  capacity     Int
+  hasProjector Boolean       @default(false)
+  hasAudio     Boolean       @default(false)
+  rulesText    String?       @db.Text
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  events       Event[]
+  loanRequests LoanRequest[]
+
+  @@map("spaces")
+}
+
+model InventoryItem {
+  id                     String       @id @default(uuid())
+  serialNumber           String       @unique
+  assetTag               String       @unique // Etiqueta UdeG / CUTonalá
+  name                   String
+  category               ItemCategory
+  brand                  String?
+  model                  String?
+  status                 ItemStatus   @default(DISPONIBLE)
+  currentHoursUsed       Int          @default(0)
+  estimatedLifespanHours Int          @default(3000)
+  rulesText              String?      @db.Text
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+
+  loans                  LoanItem[]
+  incidents              Incident[]
+
+  @@map("inventory_items")
+}
+
+model Event {
+  id               String          @id @default(uuid())
+  title            String
+  description      String          @db.Text
+  type             EventType
+  visibility       EventVisibility @default(PUBLICO)
+  targetCareer     String?
+  targetSemesters  Int[]
+  accessCode       String?
+  posterUrl        String?
+  trailerUrl       String?
+  spaceId          String?
+  space            Space?          @relation(fields: [spaceId], references: [id])
+  startTime        DateTime
+  endTime          DateTime
+  maxCapacity      Int
+  status           RequestStatus   @default(PENDIENTE_APROBACION)
+  rejectionReason  String?         @db.Text
+  creatorId        String
+  creator          User            @relation("EventCreator", fields: [creatorId], references: [id])
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  attendees        EventAttendee[]
+  coResponsibles   EventCoResponsible[]
+  loanRequest      LoanRequest?
+  reviews          Review[]
+
+  @@map("events")
+}
+
+model EventAttendee {
+  id          String         @id @default(uuid())
+  eventId     String
+  event       Event          @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      AttendeeStatus @default(REGISTRADO)
+  qrToken     String         @unique
+  scannedAt   DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@unique([eventId, userId])
+  @@map("event_attendees")
+}
+
+model EventCoResponsible {
+  id        String    @id @default(uuid())
+  eventId   String?
+  event     Event?    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hasSigned Boolean   @default(false)
+  signedAt  DateTime?
+  createdAt DateTime  @default(now())
+
+  @@map("event_co_responsibles")
+}
+
+model LoanRequest {
+  id                           String        @id @default(uuid())
+  folioNumber                  String        @unique // Ej: RESP-2026-0001
+  userId                       String
+  user                         User          @relation("MainRequester", fields: [userId], references: [id])
+  eventId                      String?       @unique
+  event                        Event?        @relation(fields: [eventId], references: [id])
+  spaceId                      String?
+  space                        Space?        @relation(fields: [spaceId], references: [id])
+  purpose                      String        @db.Text
+  startTime                    DateTime
+  endTime                      DateTime
+  status                       RequestStatus @default(PENDIENTE_APROBACION)
+  rejectionReason              String?       @db.Text
+  requesterSignatureUrl        String?
+  approverSignatureUrl         String?
+  ipAddress                    String?
+  responsivaPdfPath            String?
+  isChecklistDeliveryCompleted Boolean       @default(false)
+  isChecklistReturnCompleted   Boolean       @default(false)
+  deliveryNotes                String?       @db.Text
+  returnNotes                  String?       @db.Text
+  createdAt                    DateTime      @default(now())
+  updatedAt                    DateTime      @updatedAt
+
+  items                        LoanItem[]
+  incidents                    Incident[]
+
+  @@map("loan_requests")
+}
+
+model LoanItem {
+  id            String        @id @default(uuid())
+  loanRequestId String
+  loanRequest   LoanRequest   @relation(fields: [loanRequestId], references: [id], onDelete: Cascade)
+  itemId        String
+  item          InventoryItem @relation(fields: [itemId], references: [id])
+
+  @@map("loan_items")
+}
+
+model Incident {
+  id                 String           @id @default(uuid())
+  loanRequestId      String?
+  loanRequest        LoanRequest?     @relation(fields: [loanRequestId], references: [id])
+  userId             String
+  user               User             @relation("UserIncidents", fields: [userId], references: [id])
+  itemId             String?
+  item               InventoryItem?   @relation(fields: [itemId], references: [id])
+  severity           IncidentSeverity @default(MODERADA)
+  status             IncidentStatus   @default(ABIERTO)
+  description        String           @db.Text
+  supervisionNotes   String?          @db.Text
+  reparationCostMxn  Float?
+  resolvedAt         DateTime?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@map("incidents")
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating    Int      // 1 a 5
+  comment   String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@unique([eventId, userId])
+  @@map("reviews")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String   @db.Text
+  link      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("notifications")
+}
