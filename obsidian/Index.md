@@ -17,4 +17,5 @@ Bienvenido al Vault de Obsidian del proyecto **Inversión**. Este vault sirve co
 ---
 
 ## 📅 Últimas Bitácoras
+- [[Bitacora/2026-09-03]] - *Fase Documental: Redacción y generación de la Propuesta de Proyecto de Inversión (.docx) para SIGRE.*
 - [[Bitacora/2026-08-23]] - *Fase 0: Inicialización de la estructura de carpetas, directivas de agentes, configuración base y vault.*

@@ -3,6 +3,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import { env } from './config/env.js';
+import { authRouter } from './routes/auth.routes.js';
+import { eventsRouter } from './routes/events.routes.js';
+import { loansRouter } from './routes/loans.routes.js';
 
 const app = express();
 
@@ -26,7 +29,11 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Mensaje de bienvenida a la API
+// Rutas API v1
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/events', eventsRouter);
+app.use('/api/v1/loans', loansRouter);
+
 app.get('/api/v1', (req, res) => {
   res.json({
     name: 'SIGRE API',
