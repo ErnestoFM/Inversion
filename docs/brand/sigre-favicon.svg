@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="bg-grad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#002B49"/>
+      <stop offset="100%" stop-color="#1A6B5A"/>
+    </linearGradient>
+    <linearGradient id="s-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#D4E8DC"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fondo con esquinas redondeadas -->
+  <rect width="64" height="64" rx="14" fill="url(#bg-grad)"/>
+
+  <!-- Letra S centrada -->
+  <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-family="'Outfit', 'Poppins', sans-serif" font-size="42" font-weight="700" fill="url(#s-grad)">S</text>
+</svg>
