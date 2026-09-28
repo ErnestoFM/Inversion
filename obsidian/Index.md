@@ -17,6 +17,7 @@ Bienvenido al Vault de Obsidian del proyecto **Inversión**. Este vault sirve co
 ---
 
 ## 📅 Últimas Bitácoras
+- [[Bitacora/2026-09-28]] - *Protocolo de Investigación: Redacción y generación del protocolo formal (.docx y Markdown) para Metodología y Práctica de la Investigación (Secciones 1 a 4).*
 - [[Bitacora/2026-09-05]] - *Presentación Académica: Elaboración de diapositivas PPTX y guía de orador de 10 min para la problemática y solución de SIGRE.*
 - [[Bitacora/2026-09-04]] - *Fase de Perfeccionamiento: Atención al dictamen técnico senior, tipografía de tablas a 11 pt, prosa argumentativa y evaluación financiera (VPN/TIR).*
 - [[Bitacora/2026-09-03]] - *Fase Documental: Redacción y generación de la Propuesta de Proyecto de Inversión (.docx) para SIGRE.*
