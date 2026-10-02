@@ -6,6 +6,11 @@ import { env } from './config/env.js';
 import { authRouter } from './routes/auth.routes.js';
 import { eventsRouter } from './routes/events.routes.js';
 import { loansRouter } from './routes/loans.routes.js';
+import { spacesRouter } from './routes/spaces.routes.js';
+import { resourcesRouter } from './routes/resources.routes.js';
+import { incidentsRouter } from './routes/incidents.routes.js';
+import { notificationsRouter } from './routes/notifications.routes.js';
+import { dashboardRouter } from './routes/dashboard.routes.js';
 
 const app = express();
 
@@ -33,6 +38,11 @@ app.get('/health', (req, res) => {
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/events', eventsRouter);
 app.use('/api/v1/loans', loansRouter);
+app.use('/api/v1/spaces', spacesRouter);
+app.use('/api/v1/resources', resourcesRouter);
+app.use('/api/v1/incidents', incidentsRouter);
+app.use('/api/v1/notifications', notificationsRouter);
+app.use('/api/v1/dashboard', dashboardRouter);
 
 app.get('/api/v1', (req, res) => {
   res.json({
@@ -44,7 +54,9 @@ app.get('/api/v1', (req, res) => {
       events: '/api/v1/events',
       loans: '/api/v1/loans',
       spaces: '/api/v1/spaces',
-      inventory: '/api/v1/inventory',
+      resources: '/api/v1/resources',
+      incidents: '/api/v1/incidents',
+      notifications: '/api/v1/notifications',
       dashboard: '/api/v1/dashboard'
     }
   });

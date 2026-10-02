@@ -1,22 +1,25 @@
-# Vault de Obsidian - Proyecto Inversión (Memoria del Agente)
+# Vault de Obsidian — SIGRE CUTonalá (Memoria del Agente)
 
-Bienvenido al Vault de Obsidian del proyecto **Inversión**. Este vault sirve como memoria persistente y sistema de documentación contextual para los **Agentes de IA** que trabajan en este repositorio.
+Bienvenido al Vault de Obsidian del proyecto **SIGRE (Sistema Integrado de Gestión de Recursos y Espacios)** del **Centro Universitario de Tonalá (Universidad de Guadalajara)**. Este vault sirve como memoria persistente y sistema de documentación contextual para los **Agentes de IA** y desarrolladores que trabajan en este repositorio.
+
+---
 
 ## 🗺️ Mapa del Vault
 
 - **[[Bitacora/Index|Bitácora de Cambios Diarios]]**: Registro detallado de cada sesión de trabajo, archivos creados/modificados y tareas ejecutadas.
-- **[[Arquitectura/Index|Arquitectura del Sistema]]**: Diagramas de componentes, estructura modular, flujos de datos y servicios.
-- **[[Modulos/Index|Módulos del Sistema]]**: Descripción detallada de servicios, autenticación, base de datos e interfaces.
-- **[[Contexto/Index|Contexto del Negocio]]**: Reglas de negocio y objetivos del proyecto de inversión.
+- **[[Arquitectura/Index|Arquitectura del Sistema]]**: Diagramas de componentes, flujos de autenticación institucional, anti-empalme con Redis y despliegue en GCP Cloud Run.
+- **[[Modulos/Index|Módulos del Sistema]]**: Catálogo de módulos funcionales (Google OAuth, Espacios, Recursos, Reservas, Concurrencia, Checklists y PDF).
+- **[[Contexto/Index|Contexto del Dominio]]**: Problemática histórica y objetivos estratégicos en CUTonalá.
 
 ---
 
 ## 🏷️ Etiquetas Rápidas (Tags)
-- `#agente` `#bitacora` `#arquitectura` `#inversion` `#jwt` `#api` `#database`
+- `#agente` `#bitacora` `#arquitectura` `#sigre` `#cutonala` `#udg` `#redis` `#jwt` `#api` `#database`
 
 ---
 
 ## 📅 Últimas Bitácoras
+- [[Bitacora/2026-10-02]] - *Arquitectura y Especificación Técnica: Creación de la arquitectura oficial de SIGRE, diagramas Mermaid, especificación de APIs REST, limpieza de módulos residuales en Obsidian e integración con la identidad de marca UdeG.*
 - [[Bitacora/2026-09-28]] - *Protocolo de Investigación: Redacción y generación del protocolo formal (.docx y Markdown) para Metodología y Práctica de la Investigación (Secciones 1 a 4).*
 - [[Bitacora/2026-09-05]] - *Presentación Académica: Elaboración de diapositivas PPTX y guía de orador de 10 min para la problemática y solución de SIGRE.*
 - [[Bitacora/2026-09-04]] - *Fase de Perfeccionamiento: Atención al dictamen técnico senior, tipografía de tablas a 11 pt, prosa argumentativa y evaluación financiera (VPN/TIR).*
