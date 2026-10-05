@@ -2,6 +2,7 @@
 
 Registro cronológico de las sesiones de trabajo en el proyecto:
 
+- [[Bitacora/2026-10-05|2026-10-05]]: Resolución de conflictos de merge, diagnóstico de avance del monorepo y suite completa de pruebas E2E con Playwright (8/8 pasadas) para validar la Etapa 2 del Frontend.
 - [[Bitacora/2026-10-04|2026-10-04]]: Corrección de identidad de marca/logo SIGRE, des-IAtización de textos, auditoría bibliográfica estricta y atención a observaciones directivas (MML, DRP Offline-First, organigrama y flujos pro forma).
 - [[Bitacora/2026-10-03|2026-10-03]]: Elaboración de la Segunda Presentación (PPTX y Markdown) sobre Inversión Inicial, Selección de Proveedores, Estado de Resultados, TIR (22.84%), VPN y Payback (Mes 28).
 - [[Bitacora/2026-10-02|2026-10-02]]: Definición oficial de la Arquitectura de Software de SIGRE v1.0, especificación de contratos REST API, flujos con diagramas Mermaid (OAuth institucional exclusivo UdG, anti-empalme con Redis, despliegue GCP Cloud Run) y limpieza integral de módulos residuales en Obsidian.

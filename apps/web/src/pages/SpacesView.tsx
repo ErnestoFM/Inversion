@@ -63,7 +63,7 @@ export const SpacesView: React.FC = () => {
     try {
       setLoading(true);
       const res = await api.spaces.list({ tipo: selectedTipo || undefined });
-      setEspacios(res.espacios);
+      setEspacios(res?.espacios || []);
     } catch (err: any) {
       setError(err.message || 'Error al obtener espacios');
     } finally {

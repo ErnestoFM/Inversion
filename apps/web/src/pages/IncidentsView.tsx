@@ -43,7 +43,7 @@ export const IncidentsView: React.FC = () => {
     try {
       setLoading(true);
       const res = await api.incidents.list();
-      setIncidentes(res.incidentes);
+      setIncidentes(res?.incidentes || []);
     } catch (err: any) {
       setError(err.message || 'Error al cargar incidencias');
     } finally {
@@ -54,7 +54,7 @@ export const IncidentsView: React.FC = () => {
   const fetchRecursos = async () => {
     try {
       const res = await api.resources.list();
-      setRecursos(res.recursos);
+      setRecursos(res?.recursos || []);
     } catch (err: any) {
       console.error(err);
     }

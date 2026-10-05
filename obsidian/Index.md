@@ -19,6 +19,7 @@ Bienvenido al Vault de Obsidian del proyecto **SIGRE (Sistema Integrado de Gesti
 ---
 
 ## 📅 Últimas Bitácoras
+- [[Bitacora/2026-10-05]] - *Validación E2E con Playwright: Verificación de etapas de producto, resolución de merge y ejecución de 8 pruebas automatizadas de la Etapa 2 (Frontend React + Vite).*
 - [[Bitacora/2026-10-04]] - *Refinamiento y Blindaje Documental: Corrección de logo SIGRE, eliminación de lenguaje sintético, auditoría bibliográfica y absorción de observaciones de evaluación senior.*
 - [[Bitacora/2026-10-03]] - *Segunda Presentación: Proyecto hasta la estimación de la inversión, selección de proveedores, Estado de Resultados, TIR (22.84%), VPN y Payback.*
 - [[Bitacora/2026-10-02]] - *Arquitectura y Especificación Técnica: Creación de la arquitectura oficial de SIGRE, diagramas Mermaid, especificación de APIs REST, limpieza de módulos residuales en Obsidian e integración con la identidad de marca UdeG.*

@@ -84,3 +84,8 @@ obsidian/.obsidian/indexedDB*
 
 # Grafo y Salidas Automatizadas
 graphify-out/
+
+# Reportes y resultados de pruebas E2E
+test-results/
+playwright-report/
+docs/pruebas/playwright-report/

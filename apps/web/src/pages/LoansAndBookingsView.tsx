@@ -39,13 +39,13 @@ export const LoansAndBookingsView: React.FC = () => {
     try {
       if (activeSubTab === 'prestamos') {
         const res = await api.loans.myLoans();
-        setLoans(res.prestamos);
+        setLoans(res?.prestamos || []);
       } else if (activeSubTab === 'reservas') {
         const res = await api.spaces.myBookings();
-        setBookings(res.reservas);
+        setBookings(res?.reservas || []);
       } else {
         const res = await api.events.myTickets();
-        setTickets(res.boletos);
+        setTickets(res?.boletos || []);
       }
     } catch (err: any) {
       console.error(err);

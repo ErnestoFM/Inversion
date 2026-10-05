@@ -51,7 +51,7 @@ export const InventoryView: React.FC = () => {
         categoria: selectedCategoria || undefined,
         search: searchQuery || undefined,
       });
-      setRecursos(res.recursos);
+      setRecursos(res?.recursos || []);
     } catch (err: any) {
       setError(err.message || 'Error al obtener inventario');
     } finally {

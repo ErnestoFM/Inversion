@@ -27,7 +27,7 @@ export const CarteleraView: React.FC = () => {
     try {
       setLoading(true);
       const res = await api.events.listScreenings();
-      setFunciones(res.funciones);
+      setFunciones(res?.funciones || []);
     } catch (err: any) {
       setError(err.message || 'Error al cargar cartelera');
     } finally {
