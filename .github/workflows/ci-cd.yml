@@ -1,0 +1,151 @@
+name: SIGRE CI/CD Pipeline
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
+jobs:
+  # ============================================================================
+  # 1. INTEGRACIÓN CONTINUA (CI) — Compilación, Tipos y Pruebas E2E
+  # ============================================================================
+  ci:
+    name: Lint, Build & Playwright E2E Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del Repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9.1.0
+
+      - name: Configurar Node.js (v20)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Instalar Dependencias del Monorepo
+        run: pnpm install --frozen-lockfile
+
+      - name: Generar Prisma Client
+        run: pnpm --filter @inversion/database run generate
+
+      - name: Compilar Monorepo (Turbo Build)
+        run: pnpm run build
+
+      - name: Instalar Navegadores de Playwright
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Ejecutar Suite E2E de Playwright
+        run: pnpm exec playwright test
+
+      - name: Subir Reporte de Playwright en caso de fallo
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
+
+  # ============================================================================
+  # 2. DESPLIEGUE CONTINUO (CD) — Google Cloud Run & Artifact Registry
+  # ============================================================================
+  deploy-cloud-run:
+    name: Build & Deploy to GCP Cloud Run
+    needs: [ ci ]
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    env:
+      GCP_REGION: ${{ secrets.GCP_REGION || 'us-central1' }}
+      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      GCP_ARTIFACT_REPO: ${{ secrets.GCP_ARTIFACT_REPO || 'sigre' }}
+
+    steps:
+      - name: Checkout del Repositorio
+        uses: actions/checkout@v4
+
+      # Autenticación con Google Cloud (soporta tanto Service Account Key como Workload Identity)
+      - name: Autenticar con Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Configurar Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Configurar Autenticación de Docker en Artifact Registry
+        run: |
+          gcloud auth configure-docker ${{ env.GCP_REGION }}-docker.pkg.dev --quiet
+
+      # --- Construcción y Publicación de Imágenes Docker ---
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Construir y Publicar Imagen de Backend (API)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/api/Dockerfile
+          push: true
+          tags: |
+            ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_ARTIFACT_REPO }}/api:${{ github.sha }}
+            ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_ARTIFACT_REPO }}/api:latest
+
+      - name: Construir y Publicar Imagen de Frontend (Web SPA)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/web/Dockerfile
+          push: true
+          build-args: |
+            VITE_API_BASE=${{ secrets.VITE_API_BASE || '/api' }}
+          tags: |
+            ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_ARTIFACT_REPO }}/web:${{ github.sha }}
+            ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_ARTIFACT_REPO }}/web:latest
+
+      # --- Despliegue de Servicios en Google Cloud Run ---
+      - name: Desplegar API en Google Cloud Run
+        run: |
+          gcloud run deploy sigre-api \
+            --image ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_ARTIFACT_REPO }}/api:${{ github.sha }} \
+            --region ${{ env.GCP_REGION }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --port 8080 \
+            --min-instances 0 \
+            --max-instances 5 \
+            --memory 512Mi \
+            --cpu 1 \
+            --set-env-vars "NODE_ENV=production,WEB_URL=${{ secrets.WEB_URL }}" \
+            --set-secrets "DATABASE_URL=SIGRE_DATABASE_URL:latest,REDIS_URL=SIGRE_REDIS_URL:latest,JWT_ACCESS_SECRET=SIGRE_JWT_ACCESS_SECRET:latest,JWT_REFRESH_SECRET=SIGRE_JWT_REFRESH_SECRET:latest" \
+            --quiet
+
+      - name: Desplegar Web Frontend en Google Cloud Run
+        run: |
+          gcloud run deploy sigre-web \
+            --image ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_ARTIFACT_REPO }}/web:${{ github.sha }} \
+            --region ${{ env.GCP_REGION }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --port 8080 \
+            --min-instances 0 \
+            --max-instances 5 \
+            --memory 256Mi \
+            --cpu 1 \
+            --quiet

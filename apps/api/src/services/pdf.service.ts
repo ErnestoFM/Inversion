@@ -72,7 +72,7 @@ export class PdfService {
       doc.moveDown(1);
 
       // --- Lista de Materiales e Insumos ---
-      doc.fontSize(11).fillColor('#1e3a8a').text('1. MATERIALES Y EQUIPOS ASIGNADOS:', { bold: true });
+      doc.fontSize(11).fillColor('#1e3a8a').text('1. MATERIALES Y EQUIPOS ASIGNADOS:');
       doc.fontSize(10).fillColor('#000000');
 
       if (data.items.length === 0) {

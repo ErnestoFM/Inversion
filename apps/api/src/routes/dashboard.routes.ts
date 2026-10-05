@@ -53,7 +53,7 @@ dashboardRouter.get(
         select: { category: true, currentHoursUsed: true, estimatedLifespanHours: true, status: true }
       });
 
-      const categoryMap = new Map<ItemCategory, { totalWear: number; count: number; needingMaint: number }>();
+      const categoryMap = new Map<string, { totalWear: number; count: number; needingMaint: number }>();
 
       for (const item of inventoryItems) {
         const wear = Math.min(100, (item.currentHoursUsed / item.estimatedLifespanHours) * 100);

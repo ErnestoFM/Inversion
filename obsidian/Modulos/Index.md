@@ -11,3 +11,4 @@ Catálogo oficial de especificaciones de módulos funcionales y servicios del **
 - **[[Modulos/Checklists_e_Incidencias|Checklists de Inspección, Incidencias y Trust Score]]**: Verificación digital en entrega y devolución (doble checklist), reporte fotográfico de averías y cálculo del score de confiabilidad del usuario.
 - **[[Modulos/Notificaciones_y_PDF|Notificaciones y Generación de Actas PDF]]**: Servicio dual de correo transaccional (Nodemailer), campana web en tiempo real y generación oficial de actas con firmas criptográficas (PDFKit).
 - **[[Modulos/Marco_Legal_y_Privacidad|Marco Legal, Privacidad y Cookies]]**: Cumplimiento de la LGPDPPSO (INAI/ITEI), política de cookies técnicas seguras y esquema de URLs prefirmadas en GCS.
+- **[[Modulos/Despliegue_y_DevOps|Despliegue en la Nube y DevOps (GCP & CI/CD)]]**: Arquitectura serverless en Google Cloud Run, contenedores Docker multi-stage optimizados y pipeline automatizado con GitHub Actions.
