@@ -218,6 +218,38 @@ export interface ReviewDTO {
 
 // --- Métricas del Dashboard de Inversión ---
 
+export interface EvaluacionInversionDTO {
+  capexTotal: number;
+  capexDesglose: {
+    concepto: string;
+    monto: number;
+    descripcion: string;
+  }[];
+  tmarPorcentaje: number;
+  vpnMxn: number;
+  tirPorcentaje: number;
+  paybackMesesSimple: number;
+  paybackMesesDescontado: number;
+  puntoEquilibrioMeses: number;
+  relacionBeneficioCosto: number;
+  flujoTrienal: {
+    periodo: string;
+    fase: string;
+    planteles: string;
+    ingresos: number;
+    egresos: number;
+    flujoNeto: number;
+    flujoAcumulado: number;
+  }[];
+  impactoPatrimonial: {
+    reduccionMermasPorcentaje: number;
+    eliminacionEmpalmesPorcentaje: number;
+    tiempoDespachoSegundos: number;
+    tiempoDespachoAnteriorMinutos: number;
+    ahorroEstimadoMermasMxn: number;
+  };
+}
+
 export interface InvestmentDashboardDTO {
   spaceUtilizationRate: number;        // Porcentaje global de ocupación
   inventoryReturnRate: number;         // Tasa de retornos sin daños (ej. 99.2%)
@@ -236,4 +268,5 @@ export interface InvestmentDashboardDTO {
     averageWearPercentage: number;
     itemsNeedingMaintenance: number;
   }[];
+  evaluacionInversion?: EvaluacionInversionDTO;
 }

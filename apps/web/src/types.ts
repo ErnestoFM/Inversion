@@ -123,6 +123,38 @@ export interface NotificationItem {
   created_at: string;
 }
 
+export interface EvaluacionInversion {
+  capexTotal: number;
+  capexDesglose: Array<{
+    concepto: string;
+    monto: number;
+    descripcion: string;
+  }>;
+  tmarPorcentaje: number;
+  vpnMxn: number;
+  tirPorcentaje: number;
+  paybackMesesSimple: number;
+  paybackMesesDescontado: number;
+  puntoEquilibrioMeses: number;
+  relacionBeneficioCosto: number;
+  flujoTrienal: Array<{
+    periodo: string;
+    fase: string;
+    planteles: string;
+    ingresos: number;
+    egresos: number;
+    flujoNeto: number;
+    flujoAcumulado: number;
+  }>;
+  impactoPatrimonial: {
+    reduccionMermasPorcentaje: number;
+    eliminacionEmpalmesPorcentaje: number;
+    tiempoDespachoSegundos: number;
+    tiempoDespachoAnteriorMinutos: number;
+    ahorroEstimadoMermasMxn: number;
+  };
+}
+
 export interface DashboardStats {
   resumen: {
     totalEspacios: number;
@@ -150,4 +182,5 @@ export interface DashboardStats {
     reservasHoy: number;
     ocupadoActualmente: boolean;
   }>;
+  evaluacionInversion?: EvaluacionInversion;
 }

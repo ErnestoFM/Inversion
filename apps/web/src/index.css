@@ -1375,3 +1375,119 @@ body {
   from { opacity: 0; transform: scale(0.96); }
   to { opacity: 1; transform: scale(1); }
 }
+
+/* ══════════════ EVALUACIÓN FINANCIERA & ROI DASHBOARD ══════════════ */
+.financial-banner {
+  background: linear-gradient(135deg, rgba(0, 43, 73, 0.96) 0%, rgba(26, 107, 90, 0.94) 100%);
+  border: 1px solid rgba(46, 125, 87, 0.4);
+  border-radius: var(--radius-xl);
+  padding: 24px 28px;
+  color: #FFFFFF;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-glass);
+}
+
+[data-theme="dark"] .financial-banner {
+  background: linear-gradient(135deg, rgba(11, 19, 32, 0.96) 0%, rgba(20, 32, 51, 0.96) 100%);
+  border-color: rgba(56, 161, 105, 0.4);
+}
+
+.financial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.financial-kpi-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  transition: transform var(--transition-fast), background var(--transition-fast);
+}
+
+.financial-kpi-card:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.financial-kpi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.financial-kpi-title {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.82);
+  font-weight: 700;
+}
+
+.financial-kpi-value {
+  font-size: 1.55rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  color: #FFFFFF;
+  line-height: 1.1;
+}
+
+.financial-kpi-sub {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: 6px;
+}
+
+.badge-financial-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(74, 222, 128, 0.2);
+  color: #86EFAC;
+  border: 1px solid rgba(74, 222, 128, 0.4);
+}
+
+.financial-subtabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-default);
+  margin-bottom: 16px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.financial-subtab-btn {
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.financial-subtab-btn:hover {
+  background: var(--bg-muted);
+  color: var(--text-primary);
+}
+
+.financial-subtab-btn.active {
+  background: var(--bg-accent-soft);
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+}
+

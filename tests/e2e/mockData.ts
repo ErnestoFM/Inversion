@@ -324,4 +324,35 @@ export const mockDashboardStats: DashboardStats = {
       ocupadoActualmente: false,
     },
   ],
+  evaluacionInversion: {
+    capexTotal: 140000,
+    capexDesglose: [
+      { concepto: 'Desarrollo MVP & Pruebas', monto: 60000, descripcion: 'Ingeniería de software, autenticación y contratos inteligentes de actas' },
+      { concepto: 'Infraestructura Cloud GCP (Año 1)', monto: 16000, descripcion: 'Cloud SQL PostgreSQL, Redis Memorystore, GCS y Cloud Run' },
+      { concepto: 'Lectores Ópticos Industriales (3 Almacenes)', monto: 20000, descripcion: 'Hardware QR / código de barras Dell de uso rudo para ventanillas' },
+      { concepto: 'Marco Legal, Privacidad & INDAUTOR', monto: 12000, descripcion: 'Aviso de Privacidad Ley General y depósito de derechos de autor' },
+      { concepto: 'Señalética & Viáticos CUTonalá', monto: 12000, descripcion: 'Rotulación institucional, señalética QR y logística en campus' },
+      { concepto: 'Fondo de Contingencia Operativa', monto: 20000, descripcion: 'Reserva para imprevistos técnicos o reabastecimiento de repuestos' }
+    ],
+    tmarPorcentaje: 15.0,
+    vpnMxn: 23790.58,
+    tirPorcentaje: 21.34,
+    paybackMesesSimple: 29.6,
+    paybackMesesDescontado: 34.0,
+    puntoEquilibrioMeses: 15,
+    relacionBeneficioCosto: 1.15,
+    flujoTrienal: [
+      { periodo: 'Año 0', fase: 'Inversión Inicial Semilla', planteles: 'Planeación & Setup', ingresos: 0, egresos: 140000, flujoNeto: -140000, flujoAcumulado: -140000 },
+      { periodo: 'Año 1', fase: 'Piloto Controlado', planteles: 'CUTonalá (3 almacenes)', ingresos: 48000, egresos: 70000, flujoNeto: -22000, flujoAcumulado: -162000 },
+      { periodo: 'Año 2', fase: 'Expansión Temática', planteles: 'CUTonalá + CUCEI', ingresos: 160000, egresos: 92000, flujoNeto: 68000, flujoAcumulado: -94000 },
+      { periodo: 'Año 3', fase: 'Consolidación Red', planteles: '3 Centros + 1 Preparatoria', ingresos: 340000, egresos: 140000, flujoNeto: 200000, flujoAcumulado: 106000 }
+    ],
+    impactoPatrimonial: {
+      reduccionMermasPorcentaje: 80,
+      eliminacionEmpalmesPorcentaje: 100,
+      tiempoDespachoSegundos: 28,
+      tiempoDespachoAnteriorMinutos: 15,
+      ahorroEstimadoMermasMxn: 148500
+    }
+  }
 };
