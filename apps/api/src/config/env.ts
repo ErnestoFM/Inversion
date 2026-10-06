@@ -20,7 +20,11 @@ const envSchema = z.object({
   SMTP_USER: z.string().optional(),
   SMTP_PASS: z.string().optional(),
   SMTP_FROM: z.string().default('"SIGRE CUTonalá" <notificaciones@cutonala.udg.mx>'),
-  GOOGLE_CLIENT_ID: z.string().optional()
+  GOOGLE_CLIENT_ID: z.string().optional(),
+  GCP_PROJECT_ID: z.string().default('leadforge-499919'),
+  GCS_BUCKET: z.string().default('sigre-storage-leadforge-499919'),
+  RECAPTCHA_KEY_ID: z.string().default('6Le4keItAAAAAP9kezXQe4kjl7kopvvoQ9gTPQuU'),
+  RECAPTCHA_SCORE_THRESHOLD: z.coerce.number().default(0.5)
 });
 
 export const env = envSchema.parse(process.env);

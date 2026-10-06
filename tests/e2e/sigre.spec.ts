@@ -288,6 +288,7 @@ test.describe('Suite E2E Playwright: SIGRE CUTonalá (Etapa 2)', () => {
   test('3. Cartelera Cineteca & Reserva de Asiento con Código QR', async ({ page }) => {
     // Login inicial
     await page.locator('button:has-text("Ernesto Fierro (Alumno)")').click();
+    await expect(page.locator('.user-name')).toHaveText('Ernesto');
 
     // Pestaña Cartelera Cineteca
     await page.locator('nav button:has-text("Cartelera Cineteca")').click();
@@ -336,7 +337,7 @@ test.describe('Suite E2E Playwright: SIGRE CUTonalá (Etapa 2)', () => {
     await page.screenshot({ path: 'docs/pruebas/screenshots/04_soft_lock_redis.png' });
 
     // Completar justificación y enviar
-    await page.locator('textarea').fill('Seminario Académico de Inteligencia Artificial y Finanzas');
+    await page.locator('textarea.input-text').fill('Seminario Académico de Inteligencia Artificial y Finanzas');
     await page.locator('button:has-text("Confirmar Solicitud")').click();
 
     // Verificar mensaje de confirmación y folio

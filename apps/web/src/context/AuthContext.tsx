@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { User } from '../types';
 import { api } from '../api/client';
+import { getRecaptchaToken } from '../utils/recaptcha';
 
 interface AuthContextType {
   user: User | null;
@@ -54,7 +55,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password = 'Cutonala2026!') => {
     setLoading(true);
     try {
-      const res = await api.auth.login(email, password);
+      const recaptchaToken = await getRecaptchaToken('LOGIN');
+      const res = await api.auth.login(email, password, recaptchaToken);
       localStorage.setItem('sigre_token', res.token);
       setToken(res.token);
       setUser(res.user);

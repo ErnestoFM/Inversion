@@ -9,6 +9,8 @@
     "start": "node dist/server.js"
   },
   "dependencies": {
+    "@google-cloud/recaptcha-enterprise": "^7.2.1",
+    "@google-cloud/storage": "^8.2.0",
     "@inversion/database": "workspace:*",
     "@inversion/shared-types": "workspace:*",
     "argon2": "^0.40.1",

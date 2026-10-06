@@ -4,6 +4,7 @@ import path from 'path';
 import { prisma } from '@inversion/database';
 import { authenticateJwt, requireRoles } from '../middlewares/auth.middleware.js';
 import { PdfService } from '../services/pdf.service.js';
+import { storageService } from '../services/storage.service.js';
 import { mailService } from '../services/mail.service.js';
 import { CutonalaBusinessRules } from '../utils/cutonala-rules.js';
 import { UserRole, RequestStatus, ItemStatus } from '@inversion/shared-types';
@@ -222,7 +223,7 @@ loansRouter.patch('/:id/checklist-salida', authenticateJwt, requireRoles([UserRo
 
     // Generar archivo PDF oficial con firmas digitales
     const outputDir = path.resolve(process.cwd(), 'uploads/actas');
-    const pdfPath = await PdfService.generateResponsivaPdf(
+    const localPdfPath = await PdfService.generateResponsivaPdf(
       {
         folioNumber: loan.folioNumber,
         createdAt: loan.createdAt.toISOString(),
@@ -245,12 +246,16 @@ loansRouter.patch('/:id/checklist-salida', authenticateJwt, requireRoles([UserRo
       outputDir
     );
 
+    // Persistir acta PDF en Google Cloud Storage (GCS)
+    const fileName = path.basename(localPdfPath);
+    const storageResult = await storageService.uploadFile(localPdfPath, `actas/${fileName}`, 'application/pdf');
+
     const updated = await prisma.loanRequest.update({
       where: { id: loanId },
       data: {
         status: RequestStatus.EN_CURSO,
         approverSignatureUrl: approverSignatureBase64,
-        responsivaPdfPath: pdfPath,
+        responsivaPdfPath: storageResult.gcsUri,
         isChecklistDeliveryCompleted: true,
         deliveryNotes
       }
@@ -389,7 +394,19 @@ loansRouter.get('/:id/pdf', authenticateJwt, async (req: Request, res: Response)
     if (!loan || !loan.responsivaPdfPath) {
       return res.status(404).json({ success: false, error: 'Acta responsiva en PDF no disponible o aún no generada.' });
     }
-    return res.download(loan.responsivaPdfPath);
+
+    // Si está almacenada en Google Cloud Storage, generar Signed URL o redirigir
+    if (loan.responsivaPdfPath.startsWith('gs://')) {
+      const signedUrl = await storageService.getSignedUrl(loan.responsivaPdfPath, 30);
+      return res.redirect(signedUrl);
+    }
+
+    // Soporte para archivos locales o rutas relativas
+    const localPath = loan.responsivaPdfPath.startsWith('local://')
+      ? path.resolve(process.cwd(), 'uploads', loan.responsivaPdfPath.replace('local://', ''))
+      : loan.responsivaPdfPath;
+
+    return res.download(localPath);
   } catch (error: any) {
     return res.status(500).json({ success: false, error: error.message });
   }

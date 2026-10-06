@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { prisma } from '@inversion/database';
 import { env } from '../config/env.js';
 import { mailService } from '../services/mail.service.js';
+import { recaptchaService } from '../services/recaptcha.service.js';
 import { authenticateJwt, AuthPayload } from '../middlewares/auth.middleware.js';
 import { UserRole, UserStatus } from '@inversion/shared-types';
 
@@ -18,18 +19,25 @@ const registerSchema = z.object({
   studentCode: z.string().min(6),
   career: z.string().optional(),
   semester: z.number().int().min(1).max(12).optional(),
-  role: z.nativeEnum(UserRole).default(UserRole.ESTUDIANTE)
+  role: z.nativeEnum(UserRole).default(UserRole.ESTUDIANTE),
+  recaptchaToken: z.string().optional()
 });
 
 const loginSchema = z.object({
   email: z.string().email(),
-  password: z.string()
+  password: z.string(),
+  recaptchaToken: z.string().optional()
 });
 
 // 1. Registro tradicional con correo institucional
 authRouter.post('/register', async (req: Request, res: Response) => {
   try {
     const data = registerSchema.parse(req.body);
+
+    const recaptcha = await recaptchaService.verifyToken(data.recaptchaToken, 'REGISTER');
+    if (!recaptcha.valid) {
+      return res.status(400).json({ error: `Validación de seguridad reCAPTCHA Enterprise fallida: ${recaptcha.invalidReason || 'Score de riesgo bajo'}` });
+    }
 
     const existing = await prisma.user.findFirst({
       where: {
@@ -109,7 +117,12 @@ authRouter.get('/activate', async (req: Request, res: Response) => {
 // 3. Inicio de sesión tradicional
 authRouter.post('/login', async (req: Request, res: Response) => {
   try {
-    const { email, password } = loginSchema.parse(req.body);
+    const { email, password, recaptchaToken } = loginSchema.parse(req.body);
+
+    const recaptcha = await recaptchaService.verifyToken(recaptchaToken, 'LOGIN');
+    if (!recaptcha.valid) {
+      return res.status(400).json({ error: `Validación de seguridad reCAPTCHA Enterprise fallida: ${recaptcha.invalidReason || 'Score de riesgo bajo'}` });
+    }
 
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user || !user.passwordHash) {

@@ -39,10 +39,10 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 export const api = {
   // Auth
   auth: {
-    login: (email: string, password?: string) =>
+    login: (email: string, password?: string, recaptchaToken?: string) =>
       request<{ token: string; user: User }>('/auth/login', {
         method: 'POST',
-        body: JSON.stringify({ email, password: password || 'Cutonala2026!' }),
+        body: JSON.stringify({ email, password: password || 'Cutonala2026!', recaptchaToken }),
       }),
     me: () => request<{ user: User }>('/auth/me'),
   },
