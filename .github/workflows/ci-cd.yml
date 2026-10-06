@@ -132,7 +132,9 @@ jobs:
             --max-instances 5 \
             --memory 512Mi \
             --cpu 1 \
-            --set-env-vars "NODE_ENV=production,WEB_URL=${{ secrets.WEB_URL }}" \
+            --add-cloudsql-instances ${{ env.GCP_PROJECT_ID }}:${{ env.GCP_REGION }}:sigre-postgres \
+            --vpc-connector sigre-vpc-connector \
+            --set-env-vars "NODE_ENV=production,WEB_URL=${{ secrets.WEB_URL }},GCS_BUCKET=sigre-storage-${{ env.GCP_PROJECT_ID }},RECAPTCHA_KEY_ID=6Le4keItAAAAAP9kezXQe4kjl7kopvvoQ9gTPQuU" \
             --set-secrets "DATABASE_URL=SIGRE_DATABASE_URL:latest,REDIS_URL=SIGRE_REDIS_URL:latest,JWT_ACCESS_SECRET=SIGRE_JWT_ACCESS_SECRET:latest,JWT_REFRESH_SECRET=SIGRE_JWT_REFRESH_SECRET:latest" \
             --quiet
 

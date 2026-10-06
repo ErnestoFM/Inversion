@@ -51,10 +51,29 @@ graph LR
 
 ---
 
-## 4. Estrategia FinOps Universitaria
+## 4. Topología Nativa 100% Google Cloud (leadforge-499919)
+
+Toda la infraestructura vive de forma soberana dentro del proyecto institucional de GCP:
+
+| Componente | Servicio GCP | Identificador / Recurso | Propósito |
+| :--- | :--- | :--- | :--- |
+| **API Backend** | Cloud Run | `sigre-api` | Microservicio Express/Node.js con escalado a cero |
+| **Frontend Web** | Cloud Run | `sigre-web` | Servidor Nginx Alpine sirviendo SPA React 18 |
+| **Imágenes Docker** | Artifact Registry | `sigre` (us-central1) | Repositorio privado de imágenes inmutables |
+| **Base de Datos** | Cloud SQL | `sigre-postgres` (PostgreSQL 16) | Persistencia ACID, modelos Prisma y auditoría |
+| **Anti-Empalme** | Memorystore | `sigre-redis` (Redis 7) | Bloqueo distribuido atómico (TTL 15 min) |
+| **Red Privada** | VPC Access | `sigre-vpc-connector` (10.8.0.0/28) | Canal privado entre Cloud Run, SQL y Memorystore |
+| **Archivos & Actas**| Cloud Storage | `gs://sigre-storage-leadforge-499919` | Almacenamiento seguro de PDFs de actas y fotos |
+| **Anti-Bots / Spam**| reCAPTCHA Enterprise | `6Le4keItAAAAAP9kezXQe4kjl7kopvvoQ9gTPQuU` | Validación de score transparente sin fricción |
+| **Baúl Criptográfico** | Secret Manager | `SIGRE_JWT_*` y `SIGRE_DATABASE_URL` | Cero credenciales planas en código o entorno |
+
+---
+
+## 5. Estrategia FinOps Universitaria
 
 * **Escala a Cero (`--min-instances 0`):** Cuando no hay tráfico lectivo (madrugadas o vacaciones), la infraestructura no genera costo por cómputo ocioso.
 * **Topes de Concurrencia:** Máximo 5 instancias por servicio para proteger el presupuesto de GCP.
+* **Caché en Nginx y GCS:** Los assets estáticos se descargan directamente con cabeceras de caché inmutable para no consumir ciclos de CPU en el backend.
 
 ---
 

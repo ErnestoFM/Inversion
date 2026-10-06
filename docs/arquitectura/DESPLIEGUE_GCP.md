@@ -8,8 +8,13 @@ Este documento detalla la arquitectura de infraestructura, el aprovisionamiento 
 
 ```mermaid
 flowchart TD
-    subgraph Internet ["🌐 Clientes Externos (Red UdeG & Alumnos)"]
-        User["📱💻 Usuario (Navegador / Móvil)"]
+    subgraph Internet ["🌐 Clientes Institucionales (Red UdeG & Alumnos)"]
+        User["📱💻 Usuario (cutonala.udg.mx)"]
+    end
+
+    subgraph SecurityTier ["🛡️ Seguridad Perimetral GCP"]
+        Recaptcha["Google reCAPTCHA Enterprise\n(Key: 6Le4keItAAAAAP9kezXQe4kjl7kopvvoQ9gTPQuU)"]
+        OAuth["Google Identity / OAuth 2.0\n(@udg.mx / @alumnos.udg.mx)"]
     end
 
     subgraph GitHub ["🐙 GitHub CI/CD Pipeline"]
@@ -19,21 +24,24 @@ flowchart TD
         GHA --> GHA_Test --> GHA_Build
     end
 
-    subgraph GCP ["☁️ Google Cloud Platform (us-central1)"]
-        AR["📦 Artifact Registry\n(sigre/api & sigre/web)"]
-        SM["🔐 Secret Manager\n(DB_URL, REDIS_URL, JWT Keys)"]
+    subgraph GCP ["☁️ Google Cloud Platform (leadforge-499919 / us-central1)"]
+        AR["📦 Artifact Registry: sigre\n(sigre/api & sigre/web)"]
+        SM["🔐 Secret Manager\n(SIGRE_DATABASE_URL, SIGRE_REDIS_URL, JWT Keys)"]
+        GCS["🪣 Cloud Storage\n(gs://sigre-storage-leadforge-499919)"]
 
         subgraph Serverless ["⚡ Google Cloud Run (Scale to Zero)"]
             WebRun["🌐 sigre-web\n(Nginx 1.27 + Vite SPA)\nPort: 8080 | Min: 0 | Max: 5"]
             ApiRun["⚙️ sigre-api\n(Node.js 20 Express)\nPort: 8080 | Min: 0 | Max: 5"]
         end
 
-        subgraph DataTier ["💾 Capa de Datos Persistentes"]
-            CloudSQL[("🐘 Cloud SQL\nPostgreSQL 16\n(Multi-AZ)")]
-            Redis[("⚡ Cloud Memorystore / Upstash\nRedis 7\n(Anti-Empalme Lock)")]
+        subgraph PrivateVPC ["🔒 Red VPC Privada (sigre-vpc-connector / 10.8.0.0/28)"]
+            CloudSQL[("🐘 Cloud SQL: sigre-postgres\nPostgreSQL 16 Enterprise (SSD)")]
+            Redis[("⚡ Cloud Memorystore: sigre-redis\nRedis 7 (Anti-Empalme Lock 15 min)")]
         end
     end
 
+    User --> Recaptcha
+    User --> OAuth
     User -->|HTTPS| WebRun
     User -->|HTTPS API Requests| ApiRun
     GHA_Build -->|Push Images| AR
@@ -42,8 +50,9 @@ flowchart TD
     AR -.->|Pull Image| WebRun
     AR -.->|Pull Image| ApiRun
     SM -.->|Inject Secrets| ApiRun
-    ApiRun -->|Prisma Pool| CloudSQL
-    ApiRun -->|Soft Lock & Cache| Redis
+    ApiRun --> GCS
+    ApiRun -->|VPC Connector / Unix Socket| CloudSQL
+    ApiRun -->|VPC Connector| Redis
 ```
 
 ---
