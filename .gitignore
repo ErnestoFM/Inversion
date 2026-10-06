@@ -53,6 +53,8 @@ htmlcov/
 *.pem
 *.key
 *.cert
+sa-key.json
+*-key.json
 
 # Archivos del Sistema Operativo
 .DS_Store
