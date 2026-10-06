@@ -119,6 +119,13 @@ export const api = {
         method: 'POST',
       }),
     myTickets: () => request<{ boletos: any[] }>('/events/my-tickets'),
+    postReview: (eventId: string, data: { rating: number; comment: string }) =>
+      request<{ success: boolean; data: any; message: string }>(`/events/${eventId}/reviews`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    getReviews: (eventId: string) =>
+      request<{ success: boolean; data: any[] }>(`/events/${eventId}/reviews`),
   },
 
   // Préstamos, Responsivas & Checklist
@@ -135,6 +142,16 @@ export const api = {
         body: JSON.stringify({ tipo, checklist }),
       }),
     downloadResponsivaPdf: (loanId: string) => `${API_BASE}/loans/${loanId}/responsiva-pdf`,
+    sendCoResponsibleInvite: (loanId: string, email?: string) =>
+      request<{ success: boolean; message: string }>(`/loans/${loanId}/send-co-responsible-invite`, {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+      }),
+    signCoResponsible: (loanId: string, signatureBase64: string, token?: string) =>
+      request<{ success: boolean; message: string }>(`/loans/${loanId}/sign-co-responsible`, {
+        method: 'POST',
+        body: JSON.stringify({ signatureBase64, token }),
+      }),
   },
 
   // Incidentes & Sanciones
@@ -155,6 +172,20 @@ export const api = {
           body: JSON.stringify(data),
         }
       ),
+    registerCommitment: (
+      id: string,
+      data: {
+        tipo: string;
+        montoEstimadoMxn?: number;
+        horasServicio?: number;
+        fechaLimite?: string;
+        notasSupervision: string;
+      }
+    ) =>
+      request<{ success: boolean; data: Incident; message: string }>(`/incidents/${id}/commitment`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      }),
     resolve: (id: string, solucion: string, restaurarPuntos?: boolean) =>
       request<{ incidente: Incident; scoreRestaurado?: boolean }>(`/incidents/${id}/resolve`, {
         method: 'POST',

@@ -164,6 +164,63 @@ incidentsRouter.post('/', authenticateJwt, requireRoles([UserRole.SUPERADMIN, Us
   }
 });
 
+// 3.1. Formalizar Compromiso de Reparación / Restitución Supervisada (RF-01.3)
+incidentsRouter.patch('/:id/commitment', authenticateJwt, requireRoles([UserRole.SUPERADMIN, UserRole.ALMACEN_ADMIN]), async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { commitmentType, agreedAmountMxn, agreedHours, deadlineDate, supervisionNotes } = z.object({
+      commitmentType: z.enum(['REPOSICION_ECONOMICA', 'REPARACION_TECNICA', 'SERVICIO_LABORATORIO']),
+      agreedAmountMxn: z.number().positive().optional(),
+      agreedHours: z.number().positive().optional(),
+      deadlineDate: z.string().optional(),
+      supervisionNotes: z.string().min(5)
+    }).parse(req.body);
+
+    const incident = await prisma.incident.findUnique({
+      where: { id },
+      include: { user: true, item: true }
+    });
+
+    if (!incident) {
+      return res.status(404).json({ success: false, error: 'Incidencia no encontrada' });
+    }
+
+    const commitmentDetail = `[COMPROMISO ACORDADO - ${commitmentType}] ${supervisionNotes}. ` +
+      (agreedAmountMxn ? `Monto pactado: $${agreedAmountMxn} MXN. ` : '') +
+      (agreedHours ? `Horas de servicio: ${agreedHours} hrs. ` : '') +
+      (deadlineDate ? `Fecha límite: ${deadlineDate}.` : '');
+
+    const updatedIncident = await prisma.incident.update({
+      where: { id },
+      data: {
+        status: IncidentStatus.EN_REPARACION_SUPERVISADA,
+        supervisionNotes: commitmentDetail,
+        reparationCostMxn: agreedAmountMxn || incident.reparationCostMxn
+      }
+    });
+
+    // Notificar al estudiante para su seguimiento
+    await prisma.notification.create({
+      data: {
+        userId: incident.userId,
+        title: '🛠️ Expediente de Reparación Supervisada Abierto',
+        message: `Se ha registrado tu compromiso de restitución para el folio ${incident.id.slice(0, 8)}. Al cumplirlo satisfactoriamente, tus puntos de reputación serán restaurados.`
+      }
+    });
+
+    return res.json({
+      success: true,
+      data: updatedIncident,
+      message: 'Compromiso de reparación formalizado exitosamente. Estado cambiado a En Reparación Supervisada.'
+    });
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ success: false, error: error.errors });
+    }
+    return res.status(500).json({ success: false, error: error.message || 'Error al formalizar compromiso' });
+  }
+});
+
 // 4. Resolver Incidencia / Reparación Supervisada
 incidentsRouter.patch('/:id/resolve', authenticateJwt, requireRoles([UserRole.SUPERADMIN, UserRole.ALMACEN_ADMIN]), async (req: Request, res: Response) => {
   try {

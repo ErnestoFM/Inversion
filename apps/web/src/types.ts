@@ -73,6 +73,25 @@ export interface Booking {
   created_at: string;
 }
 
+export interface CoResponsibleInfo {
+  id: string;
+  nombre: string;
+  codigo: string;
+  email: string;
+  haFirmado: boolean;
+  firmadoEn?: string | null;
+}
+
+export interface EventReview {
+  id: string;
+  rating: number;
+  comment: string;
+  usuarioNombre: string;
+  carrera?: string;
+  created_at: string;
+  asistenciaVerificada: boolean;
+}
+
 export interface Loan {
   id: string;
   folio: string;
@@ -85,6 +104,7 @@ export interface Loan {
   solicitante: User;
   responsivaHash?: string;
   firmaDigitalBase64?: string;
+  coResponsables?: CoResponsibleInfo[];
   checklistSalida?: {
     condicion: string;
     accesoriosEntregados: string[];
@@ -111,6 +131,14 @@ export interface Incident {
     codigoInventario: string;
   } | null;
   usuarioInfractor: User;
+  compromisoReparacion?: {
+    tipo: 'REPOSICION_ECONOMICA' | 'REPARACION_TECNICA' | 'SERVICIO_LABORATORIO';
+    montoEstimadoMxn?: number;
+    horasServicio?: number;
+    fechaLimite?: string;
+    notasSupervision?: string;
+    estadoCompromiso: 'PENDIENTE' | 'EN_CURSO' | 'CUMPLIDO';
+  };
   created_at: string;
 }
 

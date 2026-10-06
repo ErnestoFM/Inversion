@@ -144,6 +144,14 @@ async function setupApiMocks(page: Page) {
       });
     }
 
+    if (path.includes('/events') && path.includes('/reviews')) {
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, data: mockReviews, reviews: mockReviews, message: 'Reseña verificada procesada con éxito.' }),
+      });
+    }
+
     // 5. Préstamos de Material & Responsivas
     if (path.includes('/loans/request') && method === 'POST') {
       return route.fulfill({
@@ -153,6 +161,22 @@ async function setupApiMocks(page: Page) {
           prestamo: mockLoans[1],
           mensaje: 'Préstamo solicitado con responsiva firmada.',
         }),
+      });
+    }
+
+    if (path.includes('/loans') && path.includes('/send-co-responsible-invite')) {
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, message: 'Enlace de firma enviado por correo al co-responsable.' }),
+      });
+    }
+
+    if (path.includes('/loans') && path.includes('/sign-co-responsible')) {
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, message: 'Firma de co-responsable asentada exitosamente.' }),
       });
     }
 
@@ -173,6 +197,14 @@ async function setupApiMocks(page: Page) {
     }
 
     // 6. Incidentes & Sanciones
+    if (path.includes('/incidents') && path.includes('/commitment')) {
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, message: 'Compromiso de reparación formalizado con éxito.' }),
+      });
+    }
+
     if (path.includes('/incidents') && method === 'POST') {
       return route.fulfill({
         status: 200,

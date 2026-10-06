@@ -196,6 +196,95 @@ loansRouter.post('/', authenticateJwt, async (req: Request, res: Response) => {
   }
 });
 
+// 3.1. Enviar / Reenviar Invitación a Co-Responsables vía Correo (Nodemailer)
+loansRouter.post('/:id/send-co-responsible-invite', authenticateJwt, async (req: Request, res: Response) => {
+  try {
+    const loanId = req.params.id;
+    const { email } = req.body;
+
+    const loan = await prisma.loanRequest.findUnique({
+      where: { id: loanId },
+      include: {
+        user: true,
+        event: { include: { coResponsibles: { include: { user: true } } } }
+      }
+    });
+
+    if (!loan) return res.status(404).json({ success: false, error: 'Solicitud de préstamo no encontrada.' });
+
+    const targetEmail = email || loan.event?.coResponsibles?.[0]?.user?.email;
+
+    if (!targetEmail) {
+      return res.status(400).json({ success: false, error: 'No se especificó un correo destinatario para el co-responsable.' });
+    }
+
+    const signLink = `${process.env.WEB_URL || 'http://localhost:3000'}/responsivas/${loan.id}/firmar?token=${loanId}`;
+
+    await mailService.sendCoResponsibleInvitation(
+      targetEmail,
+      loan.user.fullName,
+      loan.purpose,
+      signLink
+    );
+
+    return res.json({
+      success: true,
+      message: `Enlace de firma remota enviado exitosamente a ${targetEmail}.`
+    });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, error: error.message || 'Error al enviar invitación.' });
+  }
+});
+
+// 3.2. Firma Remota de Co-Responsable (Móvil / Web)
+loansRouter.post('/:id/sign-co-responsible', authenticateJwt, async (req: Request, res: Response) => {
+  try {
+    const loanId = req.params.id;
+    const { signatureBase64 } = signCoResponsibleSchema.parse(req.body);
+    const userId = req.user!.userId;
+
+    const loan = await prisma.loanRequest.findUnique({
+      where: { id: loanId },
+      include: {
+        user: true,
+        event: { include: { coResponsibles: true } }
+      }
+    });
+
+    if (!loan) return res.status(404).json({ success: false, error: 'Solicitud no encontrada.' });
+
+    // Si tiene evento y co-responsables asociados, actualizar
+    if (loan.event?.id) {
+      const coResp = await prisma.eventCoResponsible.findFirst({
+        where: { eventId: loan.event.id, userId }
+      });
+      if (coResp) {
+        await prisma.eventCoResponsible.update({
+          where: { id: coResp.id },
+          data: { hasSigned: true, signedAt: new Date() }
+        });
+      }
+    }
+
+    // Notificar al solicitante principal
+    await prisma.notification.create({
+      data: {
+        userId: loan.userId,
+        title: '✍️ Firma de Co-Responsable Registrada',
+        message: `Un co-responsable ha firmado digitalmente el acta responsiva del folio ${loan.folioNumber}.`
+      }
+    });
+
+    return res.json({
+      success: true,
+      message: 'Firma remota del co-responsable asentada y notificada exitosamente.'
+    });
+  } catch (error: any) {
+    if (error instanceof z.ZodError) return res.status(400).json({ success: false, error: error.errors });
+    return res.status(500).json({ success: false, error: error.message || 'Error al procesar la firma.' });
+  }
+});
+
 // 4. Checklist de Salida (Entrega Física) y Generación de PDF Oficial
 loansRouter.patch('/:id/checklist-salida', authenticateJwt, requireRoles([UserRole.ALMACEN_ADMIN, UserRole.SUPERADMIN]), async (req: Request, res: Response) => {
   try {

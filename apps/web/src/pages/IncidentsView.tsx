@@ -8,6 +8,8 @@ import {
   PlusCircle,
   X,
   RotateCcw,
+  Scale,
+  FileCheck2,
 } from 'lucide-react';
 import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
@@ -28,11 +30,22 @@ export const IncidentsView: React.FC = () => {
   const [descripcion, setDescripcion] = useState<string>('');
   const [reportLoading, setReportLoading] = useState(false);
 
-  // Modal para resolución o reparación supervisada
+  // Modal para resolución o conclusión de reparación supervisada
   const [selectedIncidentForResolve, setSelectedIncidentForResolve] = useState<Incident | null>(null);
   const [solucion, setSolucion] = useState<string>('');
   const [restaurarPuntos, setRestaurarPuntos] = useState<boolean>(true);
   const [resolveLoading, setResolveLoading] = useState(false);
+
+  // Modal para formalizar compromiso de restitución supervisada (RF-01.3)
+  const [selectedIncidentForCommitment, setSelectedIncidentForCommitment] = useState<Incident | null>(null);
+  const [commitmentType, setCommitmentType] = useState<string>('REPARACION_TECNICA');
+  const [agreedAmountMxn, setAgreedAmountMxn] = useState<number | undefined>(350);
+  const [agreedHours, setAgreedHours] = useState<number | undefined>(4);
+  const [deadlineDate, setDeadlineDate] = useState<string>('2026-10-20');
+  const [commitmentNotes, setCommitmentNotes] = useState<string>(
+    'Sustitución de refacción original y calibración técnica supervisada en taller de electrónica.'
+  );
+  const [commitmentLoading, setCommitmentLoading] = useState<boolean>(false);
 
   useEffect(() => {
     fetchIncidentes();
@@ -87,6 +100,32 @@ export const IncidentsView: React.FC = () => {
     }
   };
 
+  // Formalizar compromiso de restitución (RF-01.3)
+  const handleRegisterCommitment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedIncidentForCommitment) return;
+
+    try {
+      setCommitmentLoading(true);
+      await api.incidents.registerCommitment(selectedIncidentForCommitment.id, {
+        tipo: commitmentType,
+        montoEstimadoMxn: commitmentType === 'REPOSICION_ECONOMICA' ? agreedAmountMxn : undefined,
+        horasServicio: commitmentType !== 'REPOSICION_ECONOMICA' ? agreedHours : undefined,
+        fechaLimite: deadlineDate,
+        notasSupervision: commitmentNotes,
+      });
+
+      alert('¡Compromiso de restitución supervisada formalizado con éxito! El estado ha cambiado a REPARACIÓN SUPERVISADA.');
+      setSelectedIncidentForCommitment(null);
+      fetchIncidentes();
+      refreshUser();
+    } catch (err: any) {
+      alert(`Error al formalizar compromiso: ${err.message}`);
+    } finally {
+      setCommitmentLoading(false);
+    }
+  };
+
   const handleResolveIncident = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedIncidentForResolve) return;
@@ -128,6 +167,7 @@ export const IncidentsView: React.FC = () => {
   };
 
   const isStaff = user?.rol === 'ADMIN' || user?.rol === 'COORDINADOR' || user?.rol === 'TECNICO_LAB';
+  const isScoreLow = (user?.reputationScore || 100) < 70;
 
   return (
     <div className="view-container">
@@ -149,6 +189,22 @@ export const IncidentsView: React.FC = () => {
           Reportar Daño o Incidencia
         </button>
       </div>
+
+      {/* Alerta de cuenta con Trust Score bajo (< 70 pts) */}
+      {isScoreLow && (
+        <div className="mb-4 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg flex items-start gap-3">
+          <AlertTriangle size={24} className="text-amber-500 flex-shrink-0 mt-0.5" />
+          <div className="text-xs">
+            <strong className="text-amber-500 text-sm block">
+              Atención: Restricción Activa por Trust Score Bajo ({user?.reputationScore}/100 pts)
+            </strong>
+            <p className="text-secondary mt-0.5">
+              Por reglamento de CUTonalá, las cuentas con menos de 70 puntos tienen deshabilitada la solicitud de nuevos préstamos.
+              Para rehabilitar tu cuenta, formaliza un <strong>Expediente de Reparación Supervisada</strong> o restitución de material en Almacén.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Explicación de Trust Score */}
       <div className="trust-score-banner">
@@ -189,11 +245,11 @@ export const IncidentsView: React.FC = () => {
               <tr>
                 <th>Folio</th>
                 <th>Tipo & Gravedad</th>
-                <th>Descripción</th>
+                <th>Descripción & Compromiso</th>
                 <th>Equipo / Recurso</th>
                 <th>Usuario</th>
                 <th>Estado</th>
-                {isStaff && <th>Acción Laboratorio</th>}
+                {isStaff && <th>Acción Laboratorio (RF-01.3)</th>}
               </tr>
             </thead>
             <tbody>
@@ -204,7 +260,17 @@ export const IncidentsView: React.FC = () => {
                     <div className="font-semibold text-xs mb-1">{inc.tipo}</div>
                     {getGravedadBadge(inc.gravedad)}
                   </td>
-                  <td className="text-xs max-w-sm">{inc.descripcion}</td>
+                  <td className="text-xs max-w-sm">
+                    <div>{inc.descripcion}</div>
+                    {inc.compromisoReparacion && (
+                      <div className="mt-1.5 p-1.5 bg-amber-500/10 border border-amber-500/20 rounded text-[11px] text-amber-700 dark:text-amber-300">
+                        <strong>Compromiso:</strong> {inc.compromisoReparacion.tipo}
+                        {inc.compromisoReparacion.montoEstimadoMxn && ` ($${inc.compromisoReparacion.montoEstimadoMxn} MXN)`}
+                        {inc.compromisoReparacion.horasServicio && ` (${inc.compromisoReparacion.horasServicio} hrs)`}
+                        <div className="text-[10px] text-muted">{inc.compromisoReparacion.notasSupervision}</div>
+                      </div>
+                    )}
+                  </td>
                   <td className="text-xs">
                     {inc.recurso ? (
                       <div>
@@ -236,21 +302,35 @@ export const IncidentsView: React.FC = () => {
                   </td>
                   {isStaff && (
                     <td>
-                      {inc.estado !== 'RESUELTA' && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSelectedIncidentForResolve(inc);
-                            setSolucion(
-                              'Equipo reparado y calibrado por el usuario bajo supervisión de laboratorio.'
-                            );
-                          }}
-                          className="btn btn-secondary btn-xs flex items-center gap-1"
-                        >
-                          <Wrench size={13} />
-                          Reparación
-                        </button>
-                      )}
+                      <div className="flex flex-col gap-1">
+                        {inc.estado !== 'RESUELTA' && inc.estado !== 'REPARACION_SUPERVISADA' && (
+                          <button
+                            type="button"
+                            onClick={() => setSelectedIncidentForCommitment(inc)}
+                            className="btn btn-secondary btn-xs flex items-center gap-1 text-[11px]"
+                            title="Formalizar acuerdo de restitución técnica o económica"
+                          >
+                            <Scale size={12} />
+                            Acuerdo Restitución
+                          </button>
+                        )}
+                        {inc.estado !== 'RESUELTA' && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedIncidentForResolve(inc);
+                              setSolucion(
+                                'Equipo reparado y calibrado por el usuario bajo supervisión de laboratorio.'
+                              );
+                            }}
+                            className="btn btn-accent btn-xs flex items-center gap-1 text-[11px]"
+                            title="Concluir reparación y restaurar trust score"
+                          >
+                            <Wrench size={12} />
+                            Concluir y Restaurar
+                          </button>
+                        )}
+                      </div>
                     </td>
                   )}
                 </tr>
@@ -361,14 +441,128 @@ export const IncidentsView: React.FC = () => {
         </div>
       )}
 
-      {/* Modal para Resolver / Reparación Supervisada */}
+      {/* Modal para Formalizar Compromiso de Reparación Supervisada (RF-01.3) */}
+      {selectedIncidentForCommitment && (
+        <div className="modal-backdrop">
+          <div className="modal-container max-w-md">
+            <div className="modal-header">
+              <div className="flex items-center gap-2">
+                <Scale size={20} className="text-warning" />
+                <h3 className="modal-title text-base">Expediente de Restitución Supervisada</h3>
+              </div>
+              <button
+                onClick={() => setSelectedIncidentForCommitment(null)}
+                className="modal-close-btn"
+                aria-label="Cerrar modal"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleRegisterCommitment}>
+              <div className="modal-body space-y-4 text-xs">
+                <div className="p-3 bg-muted rounded-md space-y-1">
+                  <div><strong>Folio:</strong> {selectedIncidentForCommitment.folio}</div>
+                  <div><strong>Usuario Responsable:</strong> {selectedIncidentForCommitment.usuarioInfractor?.nombre}</div>
+                  <div><strong>Motivo:</strong> {selectedIncidentForCommitment.descripcion}</div>
+                </div>
+
+                <div>
+                  <label className="input-label">Modalidad de Restitución</label>
+                  <select
+                    value={commitmentType}
+                    onChange={(e) => setCommitmentType(e.target.value)}
+                    className="input-select w-full"
+                  >
+                    <option value="REPARACION_TECNICA">Reparación Técnica Supervisada</option>
+                    <option value="REPOSICION_ECONOMICA">Reposición Económica de Refacción / Bien</option>
+                    <option value="SERVICIO_LABORATORIO">Servicio Técnico en Laboratorios de CUTonalá</option>
+                  </select>
+                </div>
+
+                {commitmentType === 'REPOSICION_ECONOMICA' ? (
+                  <div>
+                    <label className="input-label">Monto Pactado ($ MXN)</label>
+                    <input
+                      type="number"
+                      min={1}
+                      value={agreedAmountMxn || ''}
+                      onChange={(e) => setAgreedAmountMxn(Number(e.target.value))}
+                      className="input-text w-full font-mono"
+                      placeholder="Ej. 450"
+                      required
+                    />
+                  </div>
+                ) : (
+                  <div>
+                    <label className="input-label">Horas de Servicio Técnico Supervisado</label>
+                    <input
+                      type="number"
+                      min={1}
+                      max={40}
+                      value={agreedHours || ''}
+                      onChange={(e) => setAgreedHours(Number(e.target.value))}
+                      className="input-text w-full font-mono"
+                      placeholder="Ej. 6"
+                      required
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <label className="input-label">Fecha Límite de Cumplimiento</label>
+                  <input
+                    type="date"
+                    value={deadlineDate}
+                    onChange={(e) => setDeadlineDate(e.target.value)}
+                    className="input-text w-full font-mono"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="input-label">Términos y Dictamen del Técnico</label>
+                  <textarea
+                    rows={3}
+                    required
+                    value={commitmentNotes}
+                    onChange={(e) => setCommitmentNotes(e.target.value)}
+                    className="input-text w-full"
+                    placeholder="Especifique el procedimiento técnico, la refacción a entregar o el horario de servicio acordado..."
+                  />
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  onClick={() => setSelectedIncidentForCommitment(null)}
+                  className="btn btn-secondary text-xs"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={commitmentLoading}
+                  className="btn btn-warning text-xs flex items-center gap-1"
+                >
+                  <FileCheck2 size={14} />
+                  {commitmentLoading ? 'Registrando...' : 'Formalizar Expediente'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal para Resolver / Concluir Reparación Supervisada */}
       {selectedIncidentForResolve && (
         <div className="modal-backdrop">
           <div className="modal-container max-w-md">
             <div className="modal-header">
               <div className="flex items-center gap-2">
                 <Wrench size={20} className="text-accent" />
-                <h3 className="modal-title">Acta de Reparación Supervisada</h3>
+                <h3 className="modal-title">Acta de Conclusión de Reparación</h3>
               </div>
               <button
                 onClick={() => setSelectedIncidentForResolve(null)}
@@ -407,7 +601,7 @@ export const IncidentsView: React.FC = () => {
                     />
                     <span className="text-xs font-semibold text-primary">
                       Restaurar puntos de confianza ({selectedIncidentForResolve.puntosSancion} pts)
-                      al alumno por cumplimiento satisfactorio.
+                      al alumno por cumplimiento satisfactorio del expediente.
                     </span>
                   </label>
                 </div>

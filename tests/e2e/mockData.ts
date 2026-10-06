@@ -207,11 +207,42 @@ export const mockLoans: Loan[] = [
     recurso: mockResources[3],
     solicitante: mockUserStudent,
     responsivaHash: 'SHA256:4a5b6c7d8e9f0123456789abcdef0123456789abcdef0123456789abcdef0123',
+    coResponsables: [
+      {
+        id: 'usr-student-002',
+        nombre: 'Sofía Álvarez Morales',
+        codigo: '218392101',
+        email: 'sofia.alvarez@alumnos.udg.mx',
+        haFirmado: false,
+        firmadoEn: null,
+      },
+    ],
     checklistSalida: {
       condicion: 'EXCELENTE',
       accesoriosEntregados: ['Maletín', 'Cables Jumper', 'Sensores IoT'],
       observaciones: 'Verificado por técnico de laboratorio Roberto Velázquez.',
     },
+  },
+];
+
+export const mockReviews = [
+  {
+    id: 'rev-1',
+    rating: 5,
+    comment: 'Increíble proyección en la Cineteca CUTonalá. El sonido Dolby 7.1 y la remasterización 4K son espectaculares.',
+    usuarioNombre: 'Carlos Daniel Mendoza',
+    carrera: 'Licenciatura en Diseño y Artes Digitales',
+    created_at: '2026-10-05T20:15:00.000Z',
+    asistenciaVerificada: true,
+  },
+  {
+    id: 'rev-2',
+    rating: 5,
+    comment: 'Excelente iniciativa cultural. Muy ágil el acceso con el código QR dinámico en puerta.',
+    usuarioNombre: 'Andrea Gómez Peña',
+    carrera: 'Ingeniería en Ciencias Computacionales',
+    created_at: '2026-10-04T19:40:00.000Z',
+    asistenciaVerificada: true,
   },
 ];
 
@@ -246,6 +277,30 @@ export const mockIncidents: Incident[] = [
     },
     usuarioInfractor: mockUserStudent,
     created_at: '2026-09-28T14:30:00.000Z',
+  },
+  {
+    id: 'inc-2',
+    folio: 'INC-2026-0004',
+    tipo: 'DAÑO_EQUIPO',
+    gravedad: 'MODERADO',
+    puntosSancion: 15,
+    descripcion: 'Fisura en carcasa de multímetro digital durante práctica de electrónica.',
+    estado: 'REPARACION_SUPERVISADA',
+    recurso: {
+      id: 'res-arduino-kit',
+      nombre: 'Kit Robótica Avanzada Arduino Mega',
+      codigoInventario: 'UDG-CUT-ROB-0115',
+    },
+    usuarioInfractor: mockUserStudent,
+    compromisoReparacion: {
+      tipo: 'REPARACION_TECNICA',
+      montoEstimadoMxn: 350,
+      horasServicio: 4,
+      fechaLimite: '2026-10-15',
+      notasSupervision: 'Sustitución de carcasa plástica y calibración supervisada en taller de electrónica.',
+      estadoCompromiso: 'EN_CURSO',
+    },
+    created_at: '2026-10-02T11:00:00.000Z',
   },
 ];
 

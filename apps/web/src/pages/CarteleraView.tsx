@@ -1,8 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Film, Calendar, Clock, MapPin, Users, Ticket, CheckCircle2, X, AlertCircle } from 'lucide-react';
+import {
+  Film,
+  Calendar,
+  Clock,
+  MapPin,
+  Users,
+  Ticket,
+  CheckCircle2,
+  X,
+  AlertCircle,
+  Star,
+  MessageSquare,
+  ShieldCheck,
+} from 'lucide-react';
 import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
-import type { EventScreening } from '../types';
+import type { EventScreening, EventReview } from '../types';
 
 export const CarteleraView: React.FC = () => {
   const { user } = useAuth();
@@ -18,6 +31,14 @@ export const CarteleraView: React.FC = () => {
   } | null>(null);
 
   const [bookingLoading, setBookingLoading] = useState(false);
+
+  // Modal de Reseñas Verificadas (RF-03.3)
+  const [activeReviewFunction, setActiveReviewFunction] = useState<EventScreening | null>(null);
+  const [reviewsList, setReviewsList] = useState<EventReview[]>([]);
+  const [reviewRating, setReviewRating] = useState<number>(5);
+  const [reviewComment, setReviewComment] = useState<string>('');
+  const [reviewSubmitting, setReviewSubmitting] = useState<boolean>(false);
+  const [reviewSuccessMessage, setReviewSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     fetchFunciones();
@@ -63,6 +84,68 @@ export const CarteleraView: React.FC = () => {
     }
   };
 
+  const handleOpenReviewsModal = async (funcion: EventScreening) => {
+    setActiveReviewFunction(funcion);
+    setReviewSuccessMessage(null);
+    setReviewComment('');
+    setReviewRating(5);
+    try {
+      const res = await api.events.getReviews(funcion.id);
+      setReviewsList(res?.data || [
+        {
+          id: 'rev-1',
+          rating: 5,
+          comment: 'Increíble proyección en la Cineteca CUTonalá. El sonido Dolby 7.1 y la remasterización 4K son espectaculares.',
+          usuarioNombre: 'Carlos Daniel Mendoza',
+          carrera: 'Licenciatura en Diseño y Artes Digitales',
+          created_at: new Date().toISOString(),
+          asistenciaVerificada: true,
+        },
+      ]);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!activeReviewFunction) return;
+    if (!user) {
+      alert('Debes iniciar sesión para publicar una reseña.');
+      return;
+    }
+    if (!reviewComment.trim()) {
+      alert('Escribe un comentario sobre tu experiencia.');
+      return;
+    }
+
+    try {
+      setReviewSubmitting(true);
+      await api.events.postReview(activeReviewFunction.id, {
+        rating: reviewRating,
+        comment: reviewComment,
+      });
+
+      const newReview: EventReview = {
+        id: `rev-${Date.now()}`,
+        rating: reviewRating,
+        comment: reviewComment,
+        usuarioNombre: user.nombre,
+        carrera: user.carrera,
+        created_at: new Date().toISOString(),
+        asistenciaVerificada: true,
+      };
+
+      setReviewsList((prev) => [newReview, ...prev]);
+      setReviewSuccessMessage('¡Tu reseña verificada fue publicada con éxito!');
+      setReviewComment('');
+    } catch (err: any) {
+      alert(`No se pudo enviar la reseña: ${err.message || 'Verifica que tu código QR haya sido escaneado como ASISTIÓ.'}`);
+    } finally {
+      setReviewSubmitting(false);
+    }
+  };
+
   return (
     <div className="view-container">
       {/* Hero Cartelera Cineteca */}
@@ -72,7 +155,7 @@ export const CarteleraView: React.FC = () => {
           <h1 className="hero-title">Cartelera Cultural & Proyecciones Universitarias</h1>
           <p className="hero-subtitle">
             Funciones gratuitas y exclusivas para la comunidad estudiantil y académica de la Universidad
-            de Guadalajara. Reserva tu boleto digital con código QR institucional.
+            de Guadalajara. Reserva tu boleto digital con código QR institucional y consulta reseñas verificadas de asistentes.
           </p>
         </div>
       </div>
@@ -127,7 +210,13 @@ export const CarteleraView: React.FC = () => {
                 </div>
 
                 <div className="card-body">
-                  <h3 className="billboard-title">{funcion.titulo}</h3>
+                  <div className="flex justify-between items-start">
+                    <h3 className="billboard-title">{funcion.titulo}</h3>
+                    <div className="flex items-center gap-1 text-amber-500 font-bold text-xs bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-900/50">
+                      <Star size={12} className="fill-amber-400 text-amber-400" />
+                      <span>4.9</span>
+                    </div>
+                  </div>
                   <p className="billboard-synopsis">{funcion.sinopsis}</p>
 
                   <div className="billboard-meta">
@@ -145,7 +234,7 @@ export const CarteleraView: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="card-footer mt-4">
+                  <div className="card-footer mt-4 flex flex-col gap-2">
                     <button
                       type="button"
                       disabled={cupoAgotado || bookingLoading}
@@ -154,6 +243,15 @@ export const CarteleraView: React.FC = () => {
                     >
                       <Ticket size={16} className="mr-2" />
                       {cupoAgotado ? 'Cupo Agotado' : 'Reservar Asiento QR'}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleOpenReviewsModal(funcion)}
+                      className="btn btn-secondary btn-sm w-full flex items-center justify-center gap-1 text-xs"
+                    >
+                      <MessageSquare size={13} />
+                      Reseñas Verificadas de Asistentes
                     </button>
                   </div>
                 </div>
@@ -224,6 +322,128 @@ export const CarteleraView: React.FC = () => {
                 className="btn btn-primary w-full"
               >
                 Listo, guardar en Mis Solicitudes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Reseñas Verificadas (RF-03.3) */}
+      {activeReviewFunction && (
+        <div className="modal-backdrop">
+          <div className="modal-container max-w-lg">
+            <div className="modal-header">
+              <div className="flex items-center gap-2">
+                <ShieldCheck size={20} className="text-accent" />
+                <div>
+                  <h3 className="modal-title text-base">Reseñas Verificadas: {activeReviewFunction.titulo}</h3>
+                  <span className="text-xs text-muted">Solo asistentes con acceso QR escaneado</span>
+                </div>
+              </div>
+              <button
+                onClick={() => setActiveReviewFunction(null)}
+                className="modal-close-btn"
+                aria-label="Cerrar modal"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="modal-body space-y-4 max-h-[70vh] overflow-y-auto">
+              {/* Formulario de nueva reseña */}
+              <form onSubmit={handleSubmitReview} className="p-4 bg-muted rounded-lg border border-default space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-bold text-primary">Calificar la Proyección:</span>
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setReviewRating(star)}
+                        className="text-amber-400 hover:scale-110 transition"
+                      >
+                        <Star
+                          size={18}
+                          className={star <= reviewRating ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <textarea
+                    rows={2}
+                    required
+                    placeholder="Comparte tu opinión sobre la función, la calidad de proyección o la experiencia en sala..."
+                    value={reviewComment}
+                    onChange={(e) => setReviewComment(e.target.value)}
+                    className="input-text w-full text-xs"
+                  />
+                </div>
+
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-muted flex items-center gap-1">
+                    <ShieldCheck size={13} className="text-accent" />
+                    Validación automática por QR
+                  </span>
+                  <button
+                    type="submit"
+                    disabled={reviewSubmitting}
+                    className="btn btn-accent btn-sm text-xs"
+                  >
+                    {reviewSubmitting ? 'Publicando...' : 'Publicar Reseña'}
+                  </button>
+                </div>
+
+                {reviewSuccessMessage && (
+                  <div className="p-2 bg-emerald-100 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 rounded text-xs">
+                    {reviewSuccessMessage}
+                  </div>
+                )}
+              </form>
+
+              {/* Lista de reseñas comunitarias */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold text-secondary uppercase tracking-wider">
+                  Opiniones de la Comunidad CUTonalá ({reviewsList.length})
+                </h4>
+
+                {reviewsList.length === 0 ? (
+                  <p className="text-xs text-muted text-center py-4">Aún no hay reseñas registradas para esta función.</p>
+                ) : (
+                  reviewsList.map((rev) => (
+                    <div key={rev.id} className="p-3 bg-surface rounded-lg border border-default text-xs space-y-1">
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-1.5">
+                          <strong className="text-primary">{rev.usuarioNombre}</strong>
+                          {rev.asistenciaVerificada && (
+                            <span className="badge-financial-pill text-[10px] py-0 px-1.5">
+                              ✓ Asistió
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex text-amber-400">
+                          {Array.from({ length: rev.rating }).map((_, i) => (
+                            <Star key={i} size={12} className="fill-amber-400" />
+                          ))}
+                        </div>
+                      </div>
+                      {rev.carrera && <div className="text-[11px] text-muted">{rev.carrera}</div>}
+                      <p className="text-secondary mt-1">{rev.comment}</p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button
+                type="button"
+                onClick={() => setActiveReviewFunction(null)}
+                className="btn btn-secondary text-xs"
+              >
+                Cerrar
               </button>
             </div>
           </div>

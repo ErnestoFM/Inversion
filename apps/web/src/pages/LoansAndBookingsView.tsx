@@ -8,11 +8,19 @@ import {
   CheckCircle2,
   X,
   Eye,
+  Mail,
+  PenTool,
+  Star,
+  Users,
+  ShieldCheck,
 } from 'lucide-react';
 import { api } from '../api/client';
+import { useAuth } from '../context/AuthContext';
+import { DigitalSignatureModal } from '../components/DigitalSignatureModal';
 import type { Loan, Booking } from '../types';
 
 export const LoansAndBookingsView: React.FC = () => {
+  const { user } = useAuth();
   const [activeSubTab, setActiveSubTab] = useState<'prestamos' | 'reservas' | 'boletos'>('prestamos');
   const [loans, setLoans] = useState<Loan[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -29,6 +37,16 @@ export const LoansAndBookingsView: React.FC = () => {
 
   // Modal para ver boleto QR
   const [viewingTicket, setViewingTicket] = useState<any | null>(null);
+
+  // Modal para calificar función desde boleto (RF-03.3)
+  const [reviewingTicket, setReviewingTicket] = useState<any | null>(null);
+  const [ticketRating, setTicketRating] = useState<number>(5);
+  const [ticketComment, setTicketComment] = useState<string>('');
+  const [reviewLoading, setReviewLoading] = useState<boolean>(false);
+
+  // Modal para firma remota de co-responsable (RF-02.3)
+  const [signingLoanCoResp, setSigningLoanCoResp] = useState<Loan | null>(null);
+  const [coRespInviteLoading, setCoRespInviteLoading] = useState<string | null>(null);
 
   useEffect(() => {
     loadData();
@@ -81,6 +99,52 @@ export const LoansAndBookingsView: React.FC = () => {
     }
   };
 
+  // Enviar invitación de correo al co-responsable (RF-02.3)
+  const handleSendCoRespInvite = async (loanId: string, email?: string) => {
+    try {
+      setCoRespInviteLoading(loanId);
+      const res = await api.loans.sendCoResponsibleInvite(loanId, email);
+      alert(res.message || 'Invitación con token temporal enviada por correo al co-responsable.');
+    } catch (err: any) {
+      alert(`Error al enviar invitación: ${err.message}`);
+    } finally {
+      setCoRespInviteLoading(null);
+    }
+  };
+
+  // Guardar firma remota del co-responsable (RF-02.3)
+  const handleSaveCoResponsibleSignature = async (signatureBase64: string) => {
+    if (!signingLoanCoResp) return;
+    try {
+      await api.loans.signCoResponsible(signingLoanCoResp.id, signatureBase64);
+      alert('¡Firma de co-responsable asentada con éxito en el expediente oficial!');
+      setSigningLoanCoResp(null);
+      loadData();
+    } catch (err: any) {
+      alert(`Error al registrar firma: ${err.message}`);
+    }
+  };
+
+  // Enviar reseña verificada desde boleto (RF-03.3)
+  const handleSubmitTicketReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reviewingTicket?.proyeccion?.id) return;
+    try {
+      setReviewLoading(true);
+      await api.events.postReview(reviewingTicket.proyeccion.id, {
+        rating: ticketRating,
+        comment: ticketComment,
+      });
+      alert('¡Tu reseña verificada ha sido publicada en la cartelera de la Cineteca!');
+      setReviewingTicket(null);
+      setTicketComment('');
+    } catch (err: any) {
+      alert(`Error: ${err.message || 'Solo asistentes con QR escaneado pueden calificar.'}`);
+    } finally {
+      setReviewLoading(false);
+    }
+  };
+
   return (
     <div className="view-container">
       {/* Encabezado */}
@@ -88,7 +152,7 @@ export const LoansAndBookingsView: React.FC = () => {
         <div>
           <h2 className="section-title">Mis Solicitudes, Responsivas y Boletos</h2>
           <p className="section-subtitle">
-            Historial de trámites activos en CUTonalá, firmas digitales y actas de entrega.
+            Historial de trámites activos en CUTonalá, firmas digitales compartidas y actas de entrega.
           </p>
         </div>
 
@@ -142,6 +206,7 @@ export const LoansAndBookingsView: React.FC = () => {
                   <th>Fecha Límite</th>
                   <th>Tipo</th>
                   <th>Estado</th>
+                  <th>Co-Responsables (RF-02.3)</th>
                   <th>Responsiva PDF</th>
                   <th>Inspección / Checklist</th>
                 </tr>
@@ -183,6 +248,55 @@ export const LoansAndBookingsView: React.FC = () => {
                         {loan.estado}
                       </span>
                     </td>
+
+                    {/* Co-Responsables (RF-02.3) */}
+                    <td className="text-xs">
+                      {loan.coResponsables && loan.coResponsables.length > 0 ? (
+                        <div className="space-y-1">
+                          {loan.coResponsables.map((cr) => (
+                            <div key={cr.id} className="flex flex-col gap-0.5">
+                              <div className="flex items-center gap-1 font-medium text-primary">
+                                <Users size={12} className="text-accent" />
+                                <span>{cr.nombre}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <span
+                                  className={`badge text-[10px] py-0 px-1.5 ${
+                                    cr.haFirmado ? 'badge-accent' : 'badge-warning'
+                                  }`}
+                                >
+                                  {cr.haFirmado ? '✓ Firmado' : '⏳ Firma Pendiente'}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                          <div className="flex gap-1 mt-1">
+                            <button
+                              type="button"
+                              onClick={() => handleSendCoRespInvite(loan.id, loan.coResponsables?.[0]?.email)}
+                              disabled={coRespInviteLoading === loan.id}
+                              className="btn btn-secondary btn-xs text-[10px] flex items-center gap-1 py-0.5 px-1.5"
+                              title="Enviar correo con enlace de firma remota (Nodemailer)"
+                            >
+                              <Mail size={11} />
+                              {coRespInviteLoading === loan.id ? 'Enviando...' : 'Reenviar Correo'}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setSigningLoanCoResp(loan)}
+                              className="btn btn-accent btn-xs text-[10px] flex items-center gap-1 py-0.5 px-1.5"
+                              title="Firmar digitalmente ahora como co-responsable"
+                            >
+                              <PenTool size={11} />
+                              Firmar
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-muted text-[11px]">Titular Único</span>
+                      )}
+                    </td>
+
                     <td>
                       <a
                         href={api.loans.downloadResponsivaPdf(loan.id)}
@@ -229,7 +343,7 @@ export const LoansAndBookingsView: React.FC = () => {
             <Building2 size={48} className="text-muted" />
             <h3 className="mt-3 font-semibold">No tienes reservas de espacios</h3>
             <p className="text-secondary text-sm">
-              Solicita auditorios o salas en la sección Espacios & Aulas.
+              Visita la sección de Espacios & Aulas para apartar auditorios o laboratorios.
             </p>
           </div>
         ) : (
@@ -238,10 +352,10 @@ export const LoansAndBookingsView: React.FC = () => {
               <thead>
                 <tr>
                   <th>Folio</th>
-                  <th>Espacio</th>
+                  <th>Espacio / Recinto</th>
                   <th>Fecha y Horario</th>
                   <th>Asistentes</th>
-                  <th>Motivo</th>
+                  <th>Motivo de Uso</th>
                   <th>Estado</th>
                 </tr>
               </thead>
@@ -251,12 +365,11 @@ export const LoansAndBookingsView: React.FC = () => {
                     <td className="font-mono text-xs font-bold text-accent">{b.folio}</td>
                     <td>
                       <div className="font-semibold text-primary">{b.espacio?.nombre}</div>
-                      <span className="text-xs text-secondary">{b.espacio?.edificio}</span>
+                      <span className="text-xs text-muted">{b.espacio?.edificio}</span>
                     </td>
                     <td className="text-xs">
                       <div>
                         {new Date(b.fechaInicio).toLocaleDateString('es-MX', {
-                          weekday: 'short',
                           day: 'numeric',
                           month: 'short',
                         })}
@@ -320,15 +433,24 @@ export const LoansAndBookingsView: React.FC = () => {
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-default flex justify-between items-center">
-                <span className="text-xs text-muted">Boleto Digital</span>
+              <div className="mt-4 pt-3 border-t border-default flex justify-between items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setReviewingTicket(t)}
+                  className="btn btn-secondary btn-xs flex items-center gap-1 text-[11px]"
+                  title="Calificar y publicar reseña verificada (RF-03.3)"
+                >
+                  <Star size={12} className="text-amber-500 fill-amber-500" />
+                  Calificar Proyección
+                </button>
+
                 <button
                   type="button"
                   onClick={() => setViewingTicket(t)}
-                  className="btn btn-secondary btn-xs flex items-center gap-1"
+                  className="btn btn-primary btn-xs flex items-center gap-1 text-[11px]"
                 >
                   <Eye size={13} />
-                  Ver QR
+                  Ver Boleto QR
                 </button>
               </div>
             </div>
@@ -465,6 +587,96 @@ export const LoansAndBookingsView: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Modal de Calificación Verificada desde Boleto (RF-03.3) */}
+      {reviewingTicket && (
+        <div className="modal-backdrop">
+          <div className="modal-container max-w-md">
+            <div className="modal-header">
+              <div className="flex items-center gap-2">
+                <ShieldCheck size={20} className="text-accent" />
+                <h3 className="modal-title text-base">Calificar Función de Cineteca</h3>
+              </div>
+              <button
+                onClick={() => setReviewingTicket(null)}
+                className="modal-close-btn"
+                aria-label="Cerrar modal"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmitTicketReview}>
+              <div className="modal-body space-y-4">
+                <div className="p-3 bg-muted rounded-md text-xs">
+                  <strong>Función:</strong> {reviewingTicket.proyeccion?.titulo}<br />
+                  <strong>Folio Boleto:</strong> {reviewingTicket.folioBoleto}
+                </div>
+
+                <div>
+                  <label className="input-label mb-1">Calificación de la Experiencia:</label>
+                  <div className="flex gap-2">
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setTicketRating(s)}
+                        className="text-amber-400 hover:scale-110 transition"
+                      >
+                        <Star
+                          size={22}
+                          className={s <= ticketRating ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="input-label">Tu Opinión Pos-Evento:</label>
+                  <textarea
+                    rows={3}
+                    required
+                    placeholder="Comenta sobre la proyección, acústica de la sala o la experiencia..."
+                    value={ticketComment}
+                    onChange={(e) => setTicketComment(e.target.value)}
+                    className="input-text w-full text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  onClick={() => setReviewingTicket(null)}
+                  className="btn btn-secondary text-xs"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={reviewLoading}
+                  className="btn btn-accent text-xs flex items-center gap-1"
+                >
+                  <CheckCircle2 size={14} />
+                  {reviewLoading ? 'Guardando...' : 'Publicar Reseña Verificada'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Firma Digital para Co-Responsable (RF-02.3) */}
+      {signingLoanCoResp && (
+        <DigitalSignatureModal
+          isOpen={!!signingLoanCoResp}
+          onClose={() => setSigningLoanCoResp(null)}
+          onSaveSignature={handleSaveCoResponsibleSignature}
+          userName={user?.nombre}
+          folioPrestamo={`CO-RESP-${signingLoanCoResp.folio}`}
+        />
       )}
     </div>
   );
