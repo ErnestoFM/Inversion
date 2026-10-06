@@ -2,6 +2,7 @@
 
 Registro cronológico de las sesiones de trabajo en el proyecto:
 
+- [[Bitacora/2026-10-06|2026-10-06]]: Aprovisionamiento y vinculación de infraestructura real en GCP (leadforge-499919), habilitación de APIs de Cloud Run y Artifact Registry, creación de repositorio de imágenes y configuración de Service Account para CI/CD.
 - [[Bitacora/2026-10-05|2026-10-05]]: Resolución de conflictos de merge, diagnóstico de avance del monorepo y suite completa de pruebas E2E con Playwright (8/8 pasadas) para validar la Etapa 2 del Frontend.
 - [[Bitacora/2026-10-04|2026-10-04]]: Corrección de identidad de marca/logo SIGRE, des-IAtización de textos, auditoría bibliográfica estricta y atención a observaciones directivas (MML, DRP Offline-First, organigrama y flujos pro forma).
 - [[Bitacora/2026-10-03|2026-10-03]]: Elaboración de la Segunda Presentación (PPTX y Markdown) sobre Inversión Inicial, Selección de Proveedores, Estado de Resultados, TIR (22.84%), VPN y Payback (Mes 28).
