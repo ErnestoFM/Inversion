@@ -14,21 +14,19 @@ RUN corepack enable && corepack prepare pnpm@9.1.0 --activate
 
 WORKDIR /app
 
-# Copiar manifiestos del monorepo
+# Copiar manifiestos y código fuente
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
-COPY packages/shared-types/package.json ./packages/shared-types/
-COPY apps/web/package.json ./apps/web/
-
-# Instalar dependencias exactas
-RUN pnpm install --frozen-lockfile
-
-# Copiar código fuente
 COPY packages/shared-types ./packages/shared-types
+COPY packages/database/package.json ./packages/database/package.json
+COPY apps/api/package.json ./apps/api/package.json
 COPY apps/web ./apps/web
 
 # Argumento opcional de build para la URL del backend en producción
 ARG VITE_API_BASE="/api"
 ENV VITE_API_BASE=$VITE_API_BASE
+
+# Instalar dependencias exactas
+RUN pnpm install --frozen-lockfile
 
 # Compilar tipos compartidos y bundle optimizado de Vite
 RUN pnpm --filter @inversion/shared-types run build
