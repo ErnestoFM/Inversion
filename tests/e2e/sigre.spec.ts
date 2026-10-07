@@ -487,4 +487,37 @@ test.describe('Suite E2E Playwright: SIGRE CUTonalá (Etapa 2)', () => {
 
     await page.screenshot({ path: 'docs/pruebas/screenshots/08_dashboard_ejecutivo.png' });
   });
+
+  test('9. Escáner de Acceso QR con Cámara Física y Validación en Puerta', async ({ page }) => {
+    await page.locator('button:has-text("Ernesto Fierro (Alumno)")').click();
+
+    // Abrir Escáner QR desde botón en Cartelera
+    const openScannerBtn = page.locator('button:has-text("Escáner de Acceso (Cámara QR)")');
+    await expect(openScannerBtn).toBeVisible();
+    await openScannerBtn.click();
+
+    // Verificar modal abierto
+    await expect(page.locator('text=Escáner de Acceso QR (Puerta / Taquilla)')).toBeVisible();
+    await expect(page.locator('button:has-text("Cámara en Vivo")')).toBeVisible();
+
+    // Cambiar a pestaña de Pruebas & Simulación
+    await page.locator('button:has-text("Pruebas & Simulación")').click();
+    await expect(page.locator('button:has-text("Boleto Válido (Ernesto)")')).toBeVisible();
+
+    // Ejecutar simulación de escaneo de boleto válido
+    await page.locator('button:has-text("Boleto Válido (Ernesto)")').click();
+
+    // Verificar resultado exitoso de validación
+    await expect(page.locator('text=Acceso Autorizado')).toBeVisible();
+    await expect(page.locator('text=Ernesto Hatuey Fierro Meléndez')).toBeVisible();
+    await expect(page.locator('text=215789456')).toBeVisible();
+
+    // Guardar captura para la documentación y manuales
+    await page.screenshot({ path: 'docs/pruebas/screenshots/09_escaner_qr_camara.png' });
+
+    // Cerrar modal
+    await page.locator('button:has-text("Cerrar Escáner")').click();
+    await expect(page.locator('text=Escáner de Acceso QR (Puerta / Taquilla)')).not.toBeVisible();
+  });
 });
+

@@ -12,12 +12,17 @@ import {
   Star,
   MessageSquare,
   ShieldCheck,
+  Camera,
 } from 'lucide-react';
 import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import type { EventScreening, EventReview } from '../types';
 
-export const CarteleraView: React.FC = () => {
+interface CarteleraViewProps {
+  onOpenQrScanner?: () => void;
+}
+
+export const CarteleraView: React.FC<CarteleraViewProps> = ({ onOpenQrScanner }) => {
   const { user } = useAuth();
   const [funciones, setFunciones] = useState<EventScreening[]>([]);
   const [loading, setLoading] = useState(true);
@@ -151,7 +156,19 @@ export const CarteleraView: React.FC = () => {
       {/* Hero Cartelera Cineteca */}
       <div className="billboard-hero">
         <div className="hero-content">
-          <div className="badge badge-accent mb-2">Sala Cineteca CUTonalá</div>
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <div className="badge badge-accent">Sala Cineteca CUTonalá</div>
+            {onOpenQrScanner && (
+              <button
+                type="button"
+                onClick={onOpenQrScanner}
+                className="btn btn-secondary btn-sm flex items-center gap-1.5 shadow-sm"
+              >
+                <Camera size={15} className="text-primary" />
+                <span>Escáner de Acceso (Cámara QR)</span>
+              </button>
+            )}
+          </div>
           <h1 className="hero-title">Cartelera Cultural & Proyecciones Universitarias</h1>
           <p className="hero-subtitle">
             Funciones gratuitas y exclusivas para la comunidad estudiantil y académica de la Universidad

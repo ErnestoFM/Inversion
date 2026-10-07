@@ -126,6 +126,17 @@ export const api = {
       }),
     getReviews: (eventId: string) =>
       request<{ success: boolean; data: any[] }>(`/events/${eventId}/reviews`),
+    scanTicket: (qrToken: string) =>
+      request<{
+        success: boolean;
+        message: string;
+        student?: { fullName: string; studentCode: string; career?: string };
+        event?: { title: string; startTime: string };
+        scannedAt?: string;
+      }>('/events/scan-ticket', {
+        method: 'POST',
+        body: JSON.stringify({ qrToken }),
+      }),
   },
 
   // Préstamos, Responsivas & Checklist

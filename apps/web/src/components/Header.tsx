@@ -9,12 +9,17 @@ import {
   ShieldCheck,
   Clock,
   Sparkles,
-  ChevronDown
+  ChevronDown,
+  Camera
 } from 'lucide-react';
 import { api } from '../api/client';
 import type { NotificationItem } from '../types';
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+  onOpenQrScanner?: () => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({ onOpenQrScanner }) => {
   const { user, logout, loginAs } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [currentTime, setCurrentTime] = useState<string>('');
@@ -95,6 +100,17 @@ export const Header: React.FC = () => {
 
         {/* Acciones de Usuario y Tema */}
         <div className="header-actions">
+          {/* Botón de Escáner QR de Puerta / Cineteca */}
+          <button
+            type="button"
+            onClick={onOpenQrScanner}
+            className="icon-btn"
+            title="Escáner QR de Acceso en Puerta (Cámara)"
+            aria-label="Escanear Código QR con Cámara"
+          >
+            <Camera size={19} className="text-primary" />
+          </button>
+
           {/* Botón de Tema (Claro / Oscuro) */}
           <button
             onClick={toggleTheme}

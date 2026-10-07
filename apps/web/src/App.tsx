@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { Header } from './components/Header';
 import { Navigation, type TabKey } from './components/Navigation';
 import { Footer } from './components/Footer';
+import { QrCameraScannerModal } from './components/QrCameraScannerModal';
 import { CarteleraView } from './pages/CarteleraView';
 import { SpacesView } from './pages/SpacesView';
 import { InventoryView } from './pages/InventoryView';
@@ -13,12 +14,13 @@ import { DashboardView } from './pages/DashboardView';
 
 const MainApp: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabKey>('cartelera');
+  const [isQrScannerOpen, setIsQrScannerOpen] = useState<boolean>(false);
   const { user, loginAs } = useAuth();
 
   return (
     <div className="app-layout">
       {/* Header Institucional con UdeG, CUTonalá y Reloj */}
-      <Header />
+      <Header onOpenQrScanner={() => setIsQrScannerOpen(true)} />
 
       {/* Barra de Navegación Principal */}
       <Navigation activeTab={activeTab} onSelectTab={setActiveTab} />
@@ -60,13 +62,21 @@ const MainApp: React.FC = () => {
 
       {/* Vistas Principales */}
       <main className="main-content">
-        {activeTab === 'cartelera' && <CarteleraView />}
+        {activeTab === 'cartelera' && (
+          <CarteleraView onOpenQrScanner={() => setIsQrScannerOpen(true)} />
+        )}
         {activeTab === 'espacios' && <SpacesView />}
         {activeTab === 'inventario' && <InventoryView />}
         {activeTab === 'solicitudes' && <LoansAndBookingsView />}
         {activeTab === 'incidentes' && <IncidentsView />}
         {activeTab === 'dashboard' && <DashboardView />}
       </main>
+
+      {/* Modal de Escaneo con Cámara Física QR */}
+      <QrCameraScannerModal
+        isOpen={isQrScannerOpen}
+        onClose={() => setIsQrScannerOpen(false)}
+      />
 
       {/* Pie de Página Institucional & Marco Legal LGPDPPSO */}
       <Footer />
