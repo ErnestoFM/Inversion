@@ -2,6 +2,7 @@
 
 Registro cronológico de las sesiones de trabajo en el proyecto:
 
+- [[Bitacora/2026-10-09|2026-10-09]]: Corrección de fallo de despliegue en Google Cloud Run (`sigre-api`), compilación del paquete `@inversion/database` a `dist/` para resolver `SyntaxError: Unexpected identifier 'global'` en Node 20 y enlace explícito a `0.0.0.0`.
 - [[Bitacora/2026-10-07|2026-10-07]]: Soporte de cámara física en escáner QR (WebRTC/Html5Qrcode), elaboración de manuales oficiales de usuario y operación con diagramas Mermaid, grabación de demo interactiva (.webp) y suite E2E ampliada (9/9 pasadas).
 - [[Bitacora/2026-10-06|2026-10-06]]: Aprovisionamiento y vinculación de infraestructura real en GCP (leadforge-499919), habilitación de APIs de Cloud Run y Artifact Registry, creación de repositorio de imágenes y configuración de Service Account para CI/CD.
 - [[Bitacora/2026-10-05|2026-10-05]]: Resolución de conflictos de merge, diagnóstico de avance del monorepo y suite completa de pruebas E2E con Playwright (8/8 pasadas) para validar la Etapa 2 del Frontend.

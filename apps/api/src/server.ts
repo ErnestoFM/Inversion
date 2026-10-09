@@ -62,8 +62,8 @@ app.get('/api/v1', (req, res) => {
   });
 });
 
-app.listen(Number(env.PORT), () => {
-  console.log(`🚀 [SIGRE API] Servidor activo en http://localhost:${env.PORT}`);
+app.listen(Number(env.PORT), '0.0.0.0', () => {
+  console.log(`🚀 [SIGRE API] Servidor activo en http://0.0.0.0:${env.PORT}`);
 });
 
 export default app;

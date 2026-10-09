@@ -34,6 +34,7 @@ RUN pnpm install --frozen-lockfile
 
 # Generar Prisma y compilar librerías y API a JavaScript
 RUN pnpm --filter @inversion/database run generate
+RUN pnpm --filter @inversion/database run build
 RUN pnpm --filter @inversion/shared-types run build
 RUN pnpm --filter @inversion/api run build
 
