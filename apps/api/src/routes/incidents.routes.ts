@@ -55,7 +55,11 @@ incidentsRouter.get('/', authenticateJwt, async (req: Request, res: Response) =>
       orderBy: { createdAt: 'desc' }
     });
 
-    return res.json({ success: true, data: incidents });
+    return res.json({
+      success: true,
+      data: incidents,
+      incidentes: incidents
+    });
   } catch (error: any) {
     return res.status(500).json({ success: false, error: error.message || 'Error al listar incidencias' });
   }
@@ -168,13 +172,20 @@ incidentsRouter.post('/', authenticateJwt, requireRoles([UserRole.SUPERADMIN, Us
 incidentsRouter.patch('/:id/commitment', authenticateJwt, requireRoles([UserRole.SUPERADMIN, UserRole.ALMACEN_ADMIN]), async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { commitmentType, agreedAmountMxn, agreedHours, deadlineDate, supervisionNotes } = z.object({
+    const raw = req.body || {};
+    const commitmentType = raw.commitmentType || raw.tipo;
+    const agreedAmountMxn = raw.agreedAmountMxn !== undefined ? Number(raw.agreedAmountMxn) : (raw.montoEstimadoMxn !== undefined ? Number(raw.montoEstimadoMxn) : undefined);
+    const agreedHours = raw.agreedHours !== undefined ? Number(raw.agreedHours) : (raw.horasServicio !== undefined ? Number(raw.horasServicio) : undefined);
+    const deadlineDate = raw.deadlineDate || raw.fechaLimite;
+    const supervisionNotes = raw.supervisionNotes || raw.notasSupervision;
+
+    const validated = z.object({
       commitmentType: z.enum(['REPOSICION_ECONOMICA', 'REPARACION_TECNICA', 'SERVICIO_LABORATORIO']),
       agreedAmountMxn: z.number().positive().optional(),
       agreedHours: z.number().positive().optional(),
       deadlineDate: z.string().optional(),
-      supervisionNotes: z.string().min(5)
-    }).parse(req.body);
+      supervisionNotes: z.string().min(3)
+    }).parse({ commitmentType, agreedAmountMxn, agreedHours, deadlineDate, supervisionNotes });
 
     const incident = await prisma.incident.findUnique({
       where: { id },
@@ -185,17 +196,17 @@ incidentsRouter.patch('/:id/commitment', authenticateJwt, requireRoles([UserRole
       return res.status(404).json({ success: false, error: 'Incidencia no encontrada' });
     }
 
-    const commitmentDetail = `[COMPROMISO ACORDADO - ${commitmentType}] ${supervisionNotes}. ` +
-      (agreedAmountMxn ? `Monto pactado: $${agreedAmountMxn} MXN. ` : '') +
-      (agreedHours ? `Horas de servicio: ${agreedHours} hrs. ` : '') +
-      (deadlineDate ? `Fecha límite: ${deadlineDate}.` : '');
+    const commitmentDetail = `[COMPROMISO ACORDADO - ${validated.commitmentType}] ${validated.supervisionNotes}. ` +
+      (validated.agreedAmountMxn ? `Monto pactado: $${validated.agreedAmountMxn} MXN. ` : '') +
+      (validated.agreedHours ? `Horas de servicio: ${validated.agreedHours} hrs. ` : '') +
+      (validated.deadlineDate ? `Fecha límite: ${validated.deadlineDate}.` : '');
 
     const updatedIncident = await prisma.incident.update({
       where: { id },
       data: {
         status: IncidentStatus.EN_REPARACION_SUPERVISADA,
         supervisionNotes: commitmentDetail,
-        reparationCostMxn: agreedAmountMxn || incident.reparationCostMxn
+        reparationCostMxn: validated.agreedAmountMxn || incident.reparationCostMxn
       }
     });
 
@@ -211,6 +222,7 @@ incidentsRouter.patch('/:id/commitment', authenticateJwt, requireRoles([UserRole
     return res.json({
       success: true,
       data: updatedIncident,
+      incidente: updatedIncident,
       message: 'Compromiso de reparación formalizado exitosamente. Estado cambiado a En Reparación Supervisada.'
     });
   } catch (error: any) {
@@ -221,11 +233,18 @@ incidentsRouter.patch('/:id/commitment', authenticateJwt, requireRoles([UserRole
   }
 });
 
-// 4. Resolver Incidencia / Reparación Supervisada
-incidentsRouter.patch('/:id/resolve', authenticateJwt, requireRoles([UserRole.SUPERADMIN, UserRole.ALMACEN_ADMIN]), async (req: Request, res: Response) => {
+// 4. Resolver Incidencia / Reparación Supervisada (Soporta PATCH y POST)
+const resolveIncidentHandler = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { supervisionNotes, reparationCostMxn, restoreReputationPoints } = resolveIncidentSchema.parse(req.body);
+    const body = req.body || {};
+    const normalizedBody = {
+      supervisionNotes: body.supervisionNotes || body.solucion || 'Incidencia resuelta satisfactoriamente',
+      reparationCostMxn: body.reparationCostMxn,
+      restoreReputationPoints: body.restoreReputationPoints ?? (body.restaurarPuntos ? 15 : 10)
+    };
+
+    const { supervisionNotes, reparationCostMxn, restoreReputationPoints } = resolveIncidentSchema.parse(normalizedBody);
 
     const incident = await prisma.incident.findUnique({ where: { id } });
     if (!incident) {
@@ -273,7 +292,9 @@ incidentsRouter.patch('/:id/resolve', authenticateJwt, requireRoles([UserRole.SU
 
     return res.json({
       success: true,
-      message: 'Incidencia resuelta y expediente archivado exitosamente.'
+      message: 'Incidencia resuelta y expediente archivado exitosamente.',
+      incidente: { ...incident, status: IncidentStatus.RESUELTO },
+      scoreRestaurado: true
     });
   } catch (error: any) {
     if (error instanceof z.ZodError) {
@@ -281,4 +302,7 @@ incidentsRouter.patch('/:id/resolve', authenticateJwt, requireRoles([UserRole.SU
     }
     return res.status(500).json({ success: false, error: error.message || 'Error al resolver incidencia' });
   }
-});
+};
+
+incidentsRouter.patch('/:id/resolve', authenticateJwt, requireRoles([UserRole.SUPERADMIN, UserRole.ALMACEN_ADMIN]), resolveIncidentHandler);
+incidentsRouter.post('/:id/resolve', authenticateJwt, requireRoles([UserRole.SUPERADMIN, UserRole.ALMACEN_ADMIN]), resolveIncidentHandler);

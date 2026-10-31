@@ -21,9 +21,9 @@ const envSchema = z.object({
   SMTP_PASS: z.string().optional(),
   SMTP_FROM: z.string().default('"SIGRE CUTonalá" <notificaciones@cutonala.udg.mx>'),
   GOOGLE_CLIENT_ID: z.string().optional(),
-  GCP_PROJECT_ID: z.string().default('leadforge-499919'),
-  GCS_BUCKET: z.string().default('sigre-storage-leadforge-499919'),
-  RECAPTCHA_KEY_ID: z.string().default('6Le4keItAAAAAP9kezXQe4kjl7kopvvoQ9gTPQuU'),
+  GCP_PROJECT_ID: z.string().default(process.env.GCP_PROJECT_ID || 'monchis-cafe-prod'),
+  GCS_BUCKET: z.string().default(process.env.GCS_BUCKET || 'sigre-storage-prod'),
+  RECAPTCHA_KEY_ID: z.string().default(process.env.RECAPTCHA_KEY_ID || '6Le4keItAAAAAP9kezXQe4kjl7kopvvoQ9gTPQuU'),
   RECAPTCHA_SCORE_THRESHOLD: z.coerce.number().default(0.5)
 });
 

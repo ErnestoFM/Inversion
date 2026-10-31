@@ -34,36 +34,49 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Rutas API v1
-app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/events', eventsRouter);
-app.use('/api/v1/loans', loansRouter);
-app.use('/api/v1/spaces', spacesRouter);
-app.use('/api/v1/resources', resourcesRouter);
-app.use('/api/v1/incidents', incidentsRouter);
-app.use('/api/v1/notifications', notificationsRouter);
-app.use('/api/v1/dashboard', dashboardRouter);
+// Rutas de API — Compatibilidad dual (/api y /api/v1) para garantizar que el frontend web
+// y consumidores externos resuelvan sin error 404
+const apiModules = [
+  { path: '/auth', router: authRouter },
+  { path: '/events', router: eventsRouter },
+  { path: '/loans', router: loansRouter },
+  { path: '/spaces', router: spacesRouter },
+  { path: '/resources', router: resourcesRouter },
+  { path: '/incidents', router: incidentsRouter },
+  { path: '/notifications', router: notificationsRouter },
+  { path: '/dashboard', router: dashboardRouter }
+];
 
-app.get('/api/v1', (req, res) => {
+for (const mod of apiModules) {
+  app.use(`/api${mod.path}`, mod.router);
+  app.use(`/api/v1${mod.path}`, mod.router);
+}
+
+const apiInfoHandler = (req: express.Request, res: express.Response) => {
   res.json({
     name: 'SIGRE API',
     version: '1.0.0',
     institution: 'Centro Universitario de Tonalá (UdeG)',
     endpoints: {
-      auth: '/api/v1/auth',
-      events: '/api/v1/events',
-      loans: '/api/v1/loans',
-      spaces: '/api/v1/spaces',
-      resources: '/api/v1/resources',
-      incidents: '/api/v1/incidents',
-      notifications: '/api/v1/notifications',
-      dashboard: '/api/v1/dashboard'
+      auth: '/api/auth (o /api/v1/auth)',
+      events: '/api/events (o /api/v1/events)',
+      loans: '/api/loans (o /api/v1/loans)',
+      spaces: '/api/spaces (o /api/v1/spaces)',
+      resources: '/api/resources (o /api/v1/resources)',
+      incidents: '/api/incidents (o /api/v1/incidents)',
+      notifications: '/api/notifications (o /api/v1/notifications)',
+      dashboard: '/api/dashboard (o /api/v1/dashboard)'
     }
   });
-});
+};
 
-app.listen(Number(env.PORT), '0.0.0.0', () => {
-  console.log(`🚀 [SIGRE API] Servidor activo en http://0.0.0.0:${env.PORT}`);
-});
+app.get('/api', apiInfoHandler);
+app.get('/api/v1', apiInfoHandler);
+
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(Number(env.PORT), '0.0.0.0', () => {
+    console.log(`🚀 [SIGRE API] Servidor activo en http://0.0.0.0:${env.PORT}`);
+  });
+}
 
 export default app;

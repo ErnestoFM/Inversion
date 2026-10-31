@@ -37,8 +37,8 @@ const reviewSchema = z.object({
   comment: z.string().min(5)
 });
 
-// 1. Cartelera Pública de Eventos y Cineteca
-eventsRouter.get('/cartelera', async (req: Request, res: Response) => {
+// 1. Cartelera Pública de Eventos y Cineteca (Soporta /cartelera y /screenings)
+const carteleraHandler = async (req: Request, res: Response) => {
   try {
     const { type, career } = req.query;
 
@@ -49,7 +49,7 @@ eventsRouter.get('/cartelera', async (req: Request, res: Response) => {
         ...(type ? { type: type as EventType } : {})
       },
       include: {
-        space: { select: { name: true, building: true, capacity: true } },
+        space: { select: { id: true, name: true, building: true, capacity: true } },
         creator: { select: { fullName: true } },
         _count: { select: { attendees: { where: { status: AttendeeStatus.REGISTRADO } }, reviews: true } }
       },
@@ -64,6 +64,7 @@ eventsRouter.get('/cartelera', async (req: Request, res: Response) => {
       visibility: e.visibility,
       posterUrl: e.posterUrl,
       trailerUrl: e.trailerUrl,
+      spaceId: e.spaceId,
       spaceName: e.space?.name || 'Por definir',
       building: e.space?.building || 'CUTonalá',
       startTime: e.startTime.toISOString(),
@@ -75,9 +76,139 @@ eventsRouter.get('/cartelera', async (req: Request, res: Response) => {
       totalReviewsCount: e._count.reviews
     }));
 
-    return res.json({ success: true, data: formatted });
+    return res.json({
+      success: true,
+      data: formatted,
+      funciones: formatted
+    });
   } catch (error: any) {
     return res.status(500).json({ success: false, error: 'Error al consultar la cartelera de eventos.' });
+  }
+};
+
+eventsRouter.get('/cartelera', carteleraHandler);
+eventsRouter.get('/screenings', carteleraHandler);
+
+// 1.1 Detalle de una función / evento
+const screeningDetailHandler = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const event = await prisma.event.findUnique({
+      where: { id },
+      include: {
+        space: { select: { id: true, name: true, building: true, capacity: true } },
+        creator: { select: { fullName: true } },
+        _count: { select: { attendees: { where: { status: AttendeeStatus.REGISTRADO } }, reviews: true } }
+      }
+    });
+
+    if (!event) {
+      return res.status(404).json({ success: false, error: 'Función o evento no encontrado.' });
+    }
+
+    const formatted = {
+      id: event.id,
+      title: event.title,
+      description: event.description,
+      type: event.type,
+      visibility: event.visibility,
+      posterUrl: event.posterUrl,
+      trailerUrl: event.trailerUrl,
+      spaceId: event.spaceId,
+      spaceName: event.space?.name || 'Por definir',
+      building: event.space?.building || 'CUTonalá',
+      startTime: event.startTime.toISOString(),
+      endTime: event.endTime.toISOString(),
+      maxCapacity: event.maxCapacity,
+      registeredCount: event._count.attendees,
+      availableCapacity: Math.max(0, event.maxCapacity - event._count.attendees),
+      creatorName: event.creator.fullName,
+      totalReviewsCount: event._count.reviews
+    };
+
+    return res.json({
+      success: true,
+      data: formatted,
+      funcion: formatted
+    });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, error: 'Error al consultar detalle del evento.' });
+  }
+};
+
+eventsRouter.get('/screenings/:id', screeningDetailHandler);
+
+// 1.2 Mis Boletos / Mis Entradas a Eventos
+eventsRouter.get('/my-tickets', authenticateJwt, async (req: Request, res: Response) => {
+  try {
+    const userId = req.user!.userId;
+
+    const attendees = await prisma.eventAttendee.findMany({
+      where: { userId },
+      include: {
+        event: {
+          include: {
+            space: { select: { name: true, building: true } }
+          }
+        }
+      },
+      orderBy: { event: { startTime: 'desc' } }
+    });
+
+    const tickets = await Promise.all(
+      attendees.map(async (a) => {
+        let qrDataUrl = '';
+        try {
+          if (a.qrToken) {
+            qrDataUrl = await CryptoQrService.generateQrDataUrl(a.qrToken);
+          }
+        } catch {
+          // Fallback silencioso si no se genera data url
+        }
+
+        const folio = a.qrToken ? a.qrToken.slice(0, 10).toUpperCase() : `BOL-${a.id.slice(0, 8).toUpperCase()}`;
+
+        return {
+          id: a.id,
+          eventId: a.eventId,
+          status: a.status,
+          estado: a.status,
+          qrToken: a.qrToken,
+          folioBoleto: folio,
+          codigoQrDataUrl: qrDataUrl,
+          qrCodeDataUrl: qrDataUrl,
+          scannedAt: a.scannedAt?.toISOString(),
+          proyeccion: {
+            id: a.event.id,
+            titulo: a.event.title,
+            fechaHoraInicio: a.event.startTime.toISOString(),
+            fechaHoraFin: a.event.endTime.toISOString(),
+            espacio: {
+              id: a.event.spaceId || '',
+              nombre: a.event.space?.name || 'Cineteca CUTonalá',
+              edificio: a.event.space?.building || 'CUTonalá'
+            }
+          },
+          event: {
+            id: a.event.id,
+            title: a.event.title,
+            startTime: a.event.startTime.toISOString(),
+            endTime: a.event.endTime.toISOString(),
+            spaceName: a.event.space?.name || 'Por definir',
+            building: a.event.space?.building || 'CUTonalá'
+          }
+        };
+      })
+    );
+
+    return res.json({
+      success: true,
+      data: tickets,
+      boletos: tickets
+    });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, error: 'Error al consultar boletos.' });
   }
 });
 
@@ -235,8 +366,8 @@ eventsRouter.post('/', authenticateJwt, async (req: Request, res: Response) => {
   }
 });
 
-// 4. Registro a Evento y Generación de Boleto con QR
-eventsRouter.post('/:id/register', authenticateJwt, async (req: Request, res: Response) => {
+// 4. Registro a Evento y Generación de Boleto con QR (Soporta /:id/register, /:id/ticket y /screenings/:id/ticket)
+const ticketRegistrationHandler = async (req: Request, res: Response) => {
   try {
     const eventId = req.params.id;
     const userId = req.user!.userId;
@@ -281,19 +412,34 @@ eventsRouter.post('/:id/register', authenticateJwt, async (req: Request, res: Re
 
     const qrDataUrl = await CryptoQrService.generateQrDataUrl(qrToken);
 
+    const messageText = isFull
+      ? 'Cupo lleno. Has sido colocado en la lista de espera con prioridad.'
+      : '¡Registro confirmado exitosamente!';
+
     return res.json({
       success: true,
-      message: isFull
-        ? 'Cupo lleno. Has sido colocado en la lista de espera con prioridad.'
-        : '¡Registro confirmado exitosamente!',
+      message: messageText,
+      mensaje: messageText,
       status: attendee.status,
       qrToken,
-      qrDataUrl
+      qrCodeDataUrl: qrDataUrl,
+      qrDataUrl,
+      boleto: {
+        id: attendee.id,
+        eventId,
+        status: attendee.status,
+        qrToken,
+        qrCodeDataUrl: qrDataUrl
+      }
     });
   } catch (error: any) {
     return res.status(500).json({ success: false, error: 'Error al procesar el registro al evento.' });
   }
-});
+};
+
+eventsRouter.post('/:id/register', authenticateJwt, ticketRegistrationHandler);
+eventsRouter.post('/:id/ticket', authenticateJwt, ticketRegistrationHandler);
+eventsRouter.post('/screenings/:id/ticket', authenticateJwt, ticketRegistrationHandler);
 
 // 5. Escaneo de Boleto QR en Puerta (Staff / Encargado)
 eventsRouter.post('/scan-ticket', authenticateJwt, async (req: Request, res: Response) => {

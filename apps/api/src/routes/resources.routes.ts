@@ -49,7 +49,11 @@ resourcesRouter.get('/', async (req: Request, res: Response) => {
       orderBy: { name: 'asc' }
     });
 
-    return res.json({ success: true, data: items });
+    return res.json({
+      success: true,
+      data: items,
+      recursos: items
+    });
   } catch (error: any) {
     return res.status(500).json({ success: false, error: error.message || 'Error al listar recursos' });
   }
@@ -89,7 +93,7 @@ resourcesRouter.get('/:id', async (req: Request, res: Response) => {
       return res.status(404).json({ success: false, error: 'Recurso no encontrado' });
     }
 
-    return res.json({ success: true, data: item });
+    return res.json({ success: true, data: item, recurso: item });
   } catch (error: any) {
     return res.status(500).json({ success: false, error: error.message || 'Error al consultar recurso' });
   }

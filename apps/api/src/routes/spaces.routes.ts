@@ -2,7 +2,8 @@ import { Router, Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '@inversion/database';
 import { authenticateJwt, requireRoles } from '../middlewares/auth.middleware.js';
-import { SpaceType, UserRole } from '@inversion/shared-types';
+import { RedisLockService } from '../services/redis-lock.service.js';
+import { SpaceType, UserRole, RequestStatus, EventType, EventVisibility } from '@inversion/shared-types';
 
 export const spacesRouter = Router();
 
@@ -19,21 +20,36 @@ const createSpaceSchema = z.object({
 
 const updateSpaceSchema = createSpaceSchema.partial();
 
-// 1. Listar espacios con filtros opcionales
+const bookSpaceSchema = z.object({
+  espacioId: z.string().uuid().optional(),
+  spaceId: z.string().uuid().optional(),
+  fechaInicio: z.string().datetime().optional(),
+  startTime: z.string().datetime().optional(),
+  fechaFin: z.string().datetime().optional(),
+  endTime: z.string().datetime().optional(),
+  motivoUso: z.string().min(5).optional(),
+  purpose: z.string().min(5).optional(),
+  asistentesEstimados: z.number().int().positive().optional(),
+  estimatedAttendees: z.number().int().positive().optional()
+});
+
+// 1. Listar espacios con filtros opcionales (Soporta contrato data y espacios)
 spacesRouter.get('/', async (req: Request, res: Response) => {
   try {
-    const { type, building, capacityMin, hasProjector, hasAudio, isActive } = req.query;
+    const { type, tipo, building, capacityMin, capacidadMinima, hasProjector, hasAudio, isActive } = req.query;
 
     const where: any = {};
+    const targetType = (type || tipo) as string;
 
-    if (type && Object.values(SpaceType).includes(type as SpaceType)) {
-      where.type = type as SpaceType;
+    if (targetType && Object.values(SpaceType).includes(targetType as SpaceType)) {
+      where.type = targetType as SpaceType;
     }
     if (building) {
       where.building = { contains: String(building), mode: 'insensitive' };
     }
-    if (capacityMin) {
-      where.capacity = { gte: Number(capacityMin) };
+    const minCap = Number(capacityMin || capacidadMinima);
+    if (!isNaN(minCap) && minCap > 0) {
+      where.capacity = { gte: minCap };
     }
     if (hasProjector !== undefined) {
       where.hasProjector = hasProjector === 'true';
@@ -52,13 +68,271 @@ spacesRouter.get('/', async (req: Request, res: Response) => {
       orderBy: { name: 'asc' }
     });
 
-    return res.json({ success: true, data: spaces });
+    return res.json({
+      success: true,
+      data: spaces,
+      espacios: spaces
+    });
   } catch (error: any) {
     return res.status(500).json({ success: false, error: error.message || 'Error al listar espacios' });
   }
 });
 
-// 2. Detalle de un espacio
+// 2. Mis Reservas de Espacios (RF-02)
+spacesRouter.get('/my-bookings', authenticateJwt, async (req: Request, res: Response) => {
+  try {
+    const userId = req.user!.userId;
+
+    const bookings = await prisma.event.findMany({
+      where: {
+        creatorId: userId,
+        spaceId: { not: null }
+      },
+      include: {
+        space: { select: { id: true, name: true, building: true, capacity: true } }
+      },
+      orderBy: { startTime: 'desc' }
+    });
+
+    const formatted = bookings.map((b) => ({
+      id: b.id,
+      folio: `RES-${b.id.substring(0, 8).toUpperCase()}`,
+      spaceId: b.spaceId,
+      espacio: b.space ? {
+        id: b.space.id,
+        nombre: b.space.name,
+        edificio: b.space.building,
+        capacidad: b.space.capacity
+      } : undefined,
+      startTime: b.startTime.toISOString(),
+      endTime: b.endTime.toISOString(),
+      status: b.status,
+      estado: b.status,
+      purpose: b.description,
+      motivoUso: b.description,
+      estimatedAttendees: b.maxCapacity,
+      asistentesEstimados: b.maxCapacity,
+      created_at: b.createdAt.toISOString()
+    }));
+
+    return res.json({
+      success: true,
+      data: formatted,
+      reservas: formatted
+    });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, error: error.message || 'Error al obtener mis reservas' });
+  }
+});
+
+// 3. Crear reserva directa de espacio (RF-02.1)
+spacesRouter.post('/book', authenticateJwt, async (req: Request, res: Response) => {
+  try {
+    const parsed = bookSpaceSchema.parse(req.body);
+    const spaceId = parsed.espacioId || parsed.spaceId;
+    const startTimeStr = parsed.fechaInicio || parsed.startTime;
+    const endTimeStr = parsed.fechaFin || parsed.endTime;
+    const purpose = parsed.motivoUso || parsed.purpose || 'Uso académico de espacio';
+    const attendees = parsed.asistentesEstimados || parsed.estimatedAttendees || 20;
+
+    if (!spaceId || !startTimeStr || !endTimeStr) {
+      return res.status(400).json({
+        success: false,
+        error: 'espacioId, fechaInicio y fechaFin son obligatorios'
+      });
+    }
+
+    const start = new Date(startTimeStr);
+    const end = new Date(endTimeStr);
+
+    if (start >= end) {
+      return res.status(400).json({ success: false, error: 'La fecha de fin debe ser posterior a la fecha de inicio' });
+    }
+
+    // Verificar si el espacio existe y está activo
+    const space = await prisma.space.findUnique({ where: { id: spaceId } });
+    if (!space || !space.isActive) {
+      return res.status(404).json({ success: false, error: 'El espacio solicitado no existe o no se encuentra activo' });
+    }
+
+    // Verificar empalme de horarios en base de datos
+    const overlap = await prisma.event.findFirst({
+      where: {
+        spaceId,
+        status: { in: [RequestStatus.APROBADO, RequestStatus.PRE_RESERVADO, RequestStatus.EN_CURSO] },
+        OR: [
+          { startTime: { lt: end }, endTime: { gt: start } }
+        ]
+      }
+    });
+
+    if (overlap) {
+      return res.status(409).json({
+        success: false,
+        error: 'El espacio ya cuenta con una reserva confirmada o en curso en el horario seleccionado'
+      });
+    }
+
+    // Crear el evento de reserva
+    const booking = await prisma.event.create({
+      data: {
+        title: `Reserva: ${space.name} - ${purpose.substring(0, 30)}`,
+        description: purpose,
+        type: EventType.ACADEMICO,
+        visibility: EventVisibility.PUBLICO,
+        spaceId,
+        creatorId: req.user!.userId,
+        startTime: start,
+        endTime: end,
+        maxCapacity: Math.min(attendees, space.capacity),
+        status: RequestStatus.APROBADO
+      },
+      include: {
+        space: true
+      }
+    });
+
+    // Liberar el bloqueo temporal en Redis si existía
+    await RedisLockService.releaseLock('space', spaceId, start, end, req.user!.userId);
+
+    const formattedReserva = {
+      id: booking.id,
+      folio: `RES-${booking.id.substring(0, 8).toUpperCase()}`,
+      spaceId: booking.spaceId,
+      espacio: {
+        id: space.id,
+        nombre: space.name,
+        edificio: space.building,
+        capacidad: space.capacity
+      },
+      startTime: booking.startTime.toISOString(),
+      endTime: booking.endTime.toISOString(),
+      status: booking.status,
+      estado: booking.status,
+      purpose: booking.description,
+      motivoUso: booking.description,
+      asistentesEstimados: booking.maxCapacity
+    };
+
+    return res.status(201).json({
+      success: true,
+      data: formattedReserva,
+      reserva: formattedReserva,
+      folio: formattedReserva.folio,
+      mensaje: 'Reserva confirmada exitosamente'
+    });
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ success: false, error: error.errors });
+    }
+    return res.status(500).json({ success: false, error: error.message || 'Error al crear reserva de espacio' });
+  }
+});
+
+// 4. Adquirir Soft Lock concurrente en Redis (RT-02.1)
+spacesRouter.post('/:id/lock', authenticateJwt, async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { fechaInicio, startTime, fechaFin, endTime } = req.body;
+    const startStr = fechaInicio || startTime;
+    const endStr = fechaFin || endTime;
+
+    if (!startStr || !endStr) {
+      return res.status(400).json({ success: false, error: 'fechaInicio y fechaFin requeridos para adquirir el bloqueo' });
+    }
+
+    const lockResult = await RedisLockService.acquireLock(
+      'space',
+      id,
+      new Date(startStr),
+      new Date(endStr),
+      req.user!.userId,
+      900 // 15 minutos de TTL
+    );
+
+    return res.json({
+      success: lockResult.acquired,
+      lockAdquirido: lockResult.acquired,
+      lockKey: `sigre:lock:space:${id}`,
+      expiraEnSegundos: lockResult.remainingTtl || 900,
+      mensaje: lockResult.acquired
+        ? 'Bloqueo temporal en Redis adquirido con éxito (15 min)'
+        : 'El espacio se encuentra en proceso de reserva por otro usuario. Intenta con otro horario o espacio.'
+    });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, error: error.message || 'Error al adquirir bloqueo en Redis' });
+  }
+});
+
+// 5. Liberar Soft Lock en Redis (RT-02.1)
+spacesRouter.delete('/:id/lock', authenticateJwt, async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { fechaInicio, startTime, fechaFin, endTime } = req.body;
+    const startStr = fechaInicio || startTime;
+    const endStr = fechaFin || endTime;
+
+    if (startStr && endStr) {
+      await RedisLockService.releaseLock('space', id, new Date(startStr), new Date(endStr), req.user!.userId);
+    }
+
+    return res.json({
+      success: true,
+      liberado: true,
+      mensaje: 'Bloqueo temporal liberado'
+    });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, error: error.message || 'Error al liberar bloqueo' });
+  }
+});
+
+// 6. Consultar Disponibilidad de un espacio por fecha
+spacesRouter.get('/:id/availability', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { date, fecha } = req.query;
+    const targetDate = String(fecha || date || new Date().toISOString().split('T')[0]);
+
+    const startOfDay = new Date(`${targetDate}T00:00:00.000Z`);
+    const endOfDay = new Date(`${targetDate}T23:59:59.999Z`);
+
+    const events = await prisma.event.findMany({
+      where: {
+        spaceId: id,
+        status: { in: [RequestStatus.APROBADO, RequestStatus.PRE_RESERVADO, RequestStatus.EN_CURSO] },
+        startTime: { lte: endOfDay },
+        endTime: { gte: startOfDay }
+      },
+      select: {
+        id: true,
+        title: true,
+        startTime: true,
+        endTime: true,
+        status: true
+      },
+      orderBy: { startTime: 'asc' }
+    });
+
+    const isAvailable = events.length === 0;
+
+    return res.json({
+      success: true,
+      data: {
+        spaceId: id,
+        date: targetDate,
+        occupiedSlots: events
+      },
+      espacioId: id,
+      fecha: targetDate,
+      horarioDisponible: isAvailable,
+      reservas: events
+    });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, error: error.message || 'Error al consultar disponibilidad' });
+  }
+});
+
+// 7. Detalle de un espacio
 spacesRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -78,7 +352,6 @@ spacesRouter.get('/:id', async (req: Request, res: Response) => {
             endTime: true,
             type: true
           },
-          orderBy: { startTime: 'asc' },
           take: 5
         }
       }
@@ -88,74 +361,13 @@ spacesRouter.get('/:id', async (req: Request, res: Response) => {
       return res.status(404).json({ success: false, error: 'Espacio no encontrado' });
     }
 
-    return res.json({ success: true, data: space });
+    return res.json({ success: true, data: space, espacio: space });
   } catch (error: any) {
-    return res.status(500).json({ success: false, error: error.message || 'Error al consultar espacio' });
+    return res.status(500).json({ success: false, error: error.message || 'Error al obtener detalle del espacio' });
   }
 });
 
-// 3. Consulta de disponibilidad y franjas ocupadas para una fecha dada
-spacesRouter.get('/:id/availability', async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const { date } = req.query; // Formato YYYY-MM-DD
-
-    if (!date || typeof date !== 'string') {
-      return res.status(400).json({ success: false, error: 'Parámetro date (YYYY-MM-DD) requerido' });
-    }
-
-    const targetDate = new Date(date);
-    if (isNaN(targetDate.getTime())) {
-      return res.status(400).json({ success: false, error: 'Fecha inválida. Usa formato YYYY-MM-DD' });
-    }
-
-    const startOfDay = new Date(targetDate);
-    startOfDay.setHours(0, 0, 0, 0);
-
-    const endOfDay = new Date(targetDate);
-    endOfDay.setHours(23, 59, 59, 999);
-
-    // Buscar eventos y préstamos aprobados o en curso que ocupen el espacio en esa fecha
-    const events = await prisma.event.findMany({
-      where: {
-        spaceId: id,
-        status: { in: ['APROBADO', 'EN_CURSO', 'PRE_RESERVADO', 'PENDIENTE_APROBACION'] },
-        OR: [
-          { startTime: { gte: startOfDay, lte: endOfDay } },
-          { endTime: { gte: startOfDay, lte: endOfDay } },
-          { startTime: { lte: startOfDay }, endTime: { gte: endOfDay } }
-        ]
-      },
-      select: {
-        id: true,
-        title: true,
-        startTime: true,
-        endTime: true,
-        status: true
-      },
-      orderBy: { startTime: 'asc' }
-    });
-
-    return res.json({
-      success: true,
-      data: {
-        spaceId: id,
-        date,
-        occupiedSlots: events.map((e) => ({
-          eventId: e.id,
-          title: e.title,
-          start: e.startTime,
-          end: e.endTime,
-          status: e.status
-        }))
-      }
-    });
-  } catch (error: any) {
-    return res.status(500).json({ success: false, error: error.message || 'Error al consultar disponibilidad' });
-  }
-});
-
-// 4. Crear nuevo espacio (Admin)
+// 8. Crear nuevo espacio (Admin)
 spacesRouter.post('/', authenticateJwt, requireRoles([UserRole.SUPERADMIN, UserRole.ALMACEN_ADMIN]), async (req: Request, res: Response) => {
   try {
     const data = createSpaceSchema.parse(req.body);
@@ -166,7 +378,7 @@ spacesRouter.post('/', authenticateJwt, requireRoles([UserRole.SUPERADMIN, UserR
     }
 
     const space = await prisma.space.create({ data });
-    return res.status(201).json({ success: true, data: space, message: 'Espacio registrado exitosamente' });
+    return res.status(201).json({ success: true, data: space, espacio: space, message: 'Espacio registrado exitosamente' });
   } catch (error: any) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ success: false, error: error.errors });
@@ -175,7 +387,7 @@ spacesRouter.post('/', authenticateJwt, requireRoles([UserRole.SUPERADMIN, UserR
   }
 });
 
-// 5. Modificar espacio existente (Admin)
+// 9. Modificar espacio existente (Admin)
 spacesRouter.put('/:id', authenticateJwt, requireRoles([UserRole.SUPERADMIN, UserRole.ALMACEN_ADMIN]), async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -186,7 +398,7 @@ spacesRouter.put('/:id', authenticateJwt, requireRoles([UserRole.SUPERADMIN, Use
       data
     });
 
-    return res.json({ success: true, data: space, message: 'Espacio actualizado exitosamente' });
+    return res.json({ success: true, data: space, espacio: space, message: 'Espacio actualizado exitosamente' });
   } catch (error: any) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ success: false, error: error.errors });
@@ -195,7 +407,7 @@ spacesRouter.put('/:id', authenticateJwt, requireRoles([UserRole.SUPERADMIN, Use
   }
 });
 
-// 6. Activar/Desactivar espacio (Admin)
+// 10. Activar/Desactivar espacio (Admin)
 spacesRouter.patch('/:id/status', authenticateJwt, requireRoles([UserRole.SUPERADMIN, UserRole.ALMACEN_ADMIN]), async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -213,6 +425,7 @@ spacesRouter.patch('/:id/status', authenticateJwt, requireRoles([UserRole.SUPERA
     return res.json({
       success: true,
       data: space,
+      espacio: space,
       message: `Espacio ${isActive ? 'habilitado' : 'inhabilitado'} exitosamente`
     });
   } catch (error: any) {

@@ -20,12 +20,24 @@ notificationsRouter.get('/', authenticateJwt, async (req: Request, res: Response
       where: { userId, isRead: false }
     });
 
+    const formatted = notifications.map((n) => ({
+      id: n.id,
+      titulo: n.title,
+      mensaje: n.message,
+      tipo: n.title.includes('Rechazada') ? 'RESERVA_RECHAZADA' : n.title.includes('Aprobada') ? 'RESERVA_APROBADA' : n.title.includes('Incidencia') ? 'INCIDENCIA' : 'GENERAL',
+      leido: n.isRead,
+      created_at: n.createdAt.toISOString()
+    }));
+
     return res.json({
       success: true,
       data: {
         notifications,
         unreadCount
-      }
+      },
+      notificaciones: formatted,
+      totalNoLeidas: unreadCount,
+      unreadCount
     });
   } catch (error: any) {
     return res.status(500).json({ success: false, error: error.message || 'Error al obtener notificaciones' });

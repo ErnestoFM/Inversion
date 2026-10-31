@@ -1,28 +1,3 @@
-# Estructura y Guión de la Presentación: Problemática y Propuesta de Solución (SIGRE)
-
-**Materia:** Formulación y Evaluación de Proyectos de Inversión  
-**Docente:** Mtra. Abril Adriana Angulo Sherman  
-**Institución:** Universidad de Guadalajara | Centro Universitario de Tonalá (CUTonalá)  
-**Tiempo Límite:** 10 Minutos exactos  
-**Norma Editorial:** APA 7ma Edición  
-
----
-
-## 🎨 Guía de Estética y Recomendaciones de Diseño (PowerPoint / Canva)
-- **Paleta de Colores:**
-  - Azul Institucional Primario: `#002B49` (Fondos de portada/cierre, títulos principales).
-  - Azul Tecnológico / Acento: `#006699` o `#0080FF` (Tarjetas, destacados, íconos).
-  - Gris Neutro Fondo: `#F8F9FA` (Fondo de diapositivas de contenido para máxima legibilidad).
-  - Texto Principal: `#212529` (Contraste óptimo contra fondos claros).
-- **Tipografía:**
-  - Títulos: Montserrat, Inter o Arial (Negrita, 28-36 pt).
-  - Cuerpo / Puntos: Calibri, Open Sans o Roboto (Regular/Medium, 16-20 pt).
-  - Citas y notas: Cursiva (12-14 pt).
-- **Estructura Visual:** 
-  - Regla 6x6: No más de 6 líneas por diapositiva y no más de 6-8 palabras por línea.
-  - Uso de tarjetas visuales (contenedores con bordes suaves) e íconos temáticos para evitar bloques densos de texto.
-
----
 
 ## 🖥️ Diapositiva 1: Portada Oficial de Identificación
 - **Tiempo Estimado:** 0:00 - 0:45 (45 segundos)

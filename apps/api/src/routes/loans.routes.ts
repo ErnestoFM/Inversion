@@ -37,8 +37,8 @@ const checklistEntradaSchema = z.object({
   incidentDescription: z.string().optional()
 });
 
-// 1. Listar solicitudes de préstamo con filtros y control de rol
-loansRouter.get('/', authenticateJwt, async (req: Request, res: Response) => {
+// 1. Listar solicitudes de préstamo con filtros y control de rol (Soporta / y /my-loans)
+const listLoansHandler = async (req: Request, res: Response) => {
   try {
     const { status, search } = req.query;
     const where: any = {};
@@ -70,11 +70,18 @@ loansRouter.get('/', authenticateJwt, async (req: Request, res: Response) => {
       orderBy: { createdAt: 'desc' }
     });
 
-    return res.json({ success: true, data: loans });
+    return res.json({
+      success: true,
+      data: loans,
+      prestamos: loans
+    });
   } catch (error: any) {
     return res.status(500).json({ success: false, error: error.message || 'Error al listar préstamos' });
   }
-});
+};
+
+loansRouter.get('/', authenticateJwt, listLoansHandler);
+loansRouter.get('/my-loans', authenticateJwt, listLoansHandler);
 
 // 2. Detalle de una solicitud de préstamo
 loansRouter.get('/:id', authenticateJwt, async (req: Request, res: Response) => {
@@ -109,10 +116,22 @@ loansRouter.get('/:id', authenticateJwt, async (req: Request, res: Response) => 
   }
 });
 
-// 3. Crear Solicitud de Préstamo con Firma y Validaciones CUTonalá
-loansRouter.post('/', authenticateJwt, async (req: Request, res: Response) => {
+// 3. Crear Solicitud de Préstamo con Firma y Validaciones CUTonalá (Soporta / y /request)
+const createLoanHandler = async (req: Request, res: Response) => {
   try {
-    const data = createLoanSchema.parse(req.body);
+    const raw = req.body || {};
+    const normalized = {
+      spaceId: raw.spaceId || raw.espacioId,
+      itemIds: raw.itemIds || (raw.recursoId ? [raw.recursoId] : []),
+      purpose: raw.purpose || raw.justificacionExtendida || raw.motivoUso || 'Préstamo de equipo institucional',
+      startTime: raw.startTime || raw.fechaInicio,
+      endTime: raw.endTime || raw.fechaLimiteDevolucion,
+      isExtendedLoan: raw.isExtendedLoan ?? raw.esPrestamoExtendido ?? false,
+      coResponsibleStudentCodes: raw.coResponsibleStudentCodes || (raw.coResponsableCodigo ? [raw.coResponsableCodigo] : []),
+      signatureBase64: raw.signatureBase64 || raw.firmaDigitalBase64 || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAA='
+    };
+
+    const data = createLoanSchema.parse(normalized);
     const userId = req.user!.userId;
     const ipAddress = req.ip || req.socket.remoteAddress || '127.0.0.1';
 
@@ -187,14 +206,20 @@ loansRouter.post('/', authenticateJwt, async (req: Request, res: Response) => {
     return res.status(201).json({
       success: true,
       message: 'Solicitud de préstamo registrada con éxito. Pasa a revisión administrativa.',
+      mensaje: 'Solicitud de préstamo registrada con éxito. Pasa a revisión administrativa.',
       folioNumber,
-      loanId: loan.id
+      loanId: loan.id,
+      prestamo: loan,
+      data: loan
     });
   } catch (error: any) {
     if (error instanceof z.ZodError) return res.status(400).json({ success: false, error: error.errors });
     return res.status(500).json({ success: false, error: error.message || 'Error al procesar la solicitud.' });
   }
-});
+};
+
+loansRouter.post('/', authenticateJwt, createLoanHandler);
+loansRouter.post('/request', authenticateJwt, createLoanHandler);
 
 // 3.1. Enviar / Reenviar Invitación a Co-Responsables vía Correo (Nodemailer)
 loansRouter.post('/:id/send-co-responsible-invite', authenticateJwt, async (req: Request, res: Response) => {
@@ -476,8 +501,8 @@ loansRouter.patch('/:id/reject', authenticateJwt, requireRoles([UserRole.ALMACEN
   }
 });
 
-// 7. Descarga del Acta PDF Oficial
-loansRouter.get('/:id/pdf', authenticateJwt, async (req: Request, res: Response) => {
+// 7. Descarga del Acta PDF Oficial (Soporta /:id/pdf y /:id/responsiva-pdf)
+const downloadPdfHandler = async (req: Request, res: Response) => {
   try {
     const loan = await prisma.loanRequest.findUnique({ where: { id: req.params.id } });
     if (!loan || !loan.responsivaPdfPath) {
@@ -498,5 +523,81 @@ loansRouter.get('/:id/pdf', authenticateJwt, async (req: Request, res: Response)
     return res.download(localPath);
   } catch (error: any) {
     return res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+loansRouter.get('/:id/pdf', authenticateJwt, downloadPdfHandler);
+loansRouter.get('/:id/responsiva-pdf', authenticateJwt, downloadPdfHandler);
+
+// 8. Endpoint Unificado de Verificación de Checklist (Salida y Entrada)
+loansRouter.post('/:id/checklist', authenticateJwt, async (req: Request, res: Response) => {
+  try {
+    const loanId = req.params.id;
+    const { tipo, checklist } = req.body;
+
+    const loan = await prisma.loanRequest.findUnique({
+      where: { id: loanId },
+      include: {
+        user: true,
+        space: true,
+        items: { include: { item: true } }
+      }
+    });
+
+    if (!loan) return res.status(404).json({ success: false, error: 'Solicitud no encontrada.' });
+
+    const notes = checklist?.observaciones || checklist?.condicion || 'Inspección de checklist registrada';
+
+    if (tipo === 'entrada') {
+      for (const item of loan.items) {
+        await prisma.inventoryItem.update({
+          where: { id: item.itemId },
+          data: { status: ItemStatus.DISPONIBLE }
+        });
+      }
+
+      const updated = await prisma.loanRequest.update({
+        where: { id: loanId },
+        data: {
+          status: RequestStatus.FINALIZADO,
+          returnNotes: notes
+        },
+        include: { user: true, items: { include: { item: true } } }
+      });
+
+      return res.json({
+        success: true,
+        message: 'Checklist de entrada verificado exitosamente',
+        mensaje: 'Checklist de entrada verificado exitosamente',
+        prestamo: updated,
+        data: updated
+      });
+    } else {
+      for (const item of loan.items) {
+        await prisma.inventoryItem.update({
+          where: { id: item.itemId },
+          data: { status: ItemStatus.PRESTADO }
+        });
+      }
+
+      const updated = await prisma.loanRequest.update({
+        where: { id: loanId },
+        data: {
+          status: RequestStatus.EN_CURSO,
+          deliveryNotes: notes
+        },
+        include: { user: true, items: { include: { item: true } } }
+      });
+
+      return res.json({
+        success: true,
+        message: 'Checklist de salida verificado exitosamente',
+        mensaje: 'Checklist de salida verificado exitosamente',
+        prestamo: updated,
+        data: updated
+      });
+    }
+  } catch (error: any) {
+    return res.status(500).json({ success: false, error: error.message || 'Error al procesar checklist' });
   }
 });

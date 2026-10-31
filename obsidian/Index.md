@@ -19,6 +19,8 @@ Bienvenido al Vault de Obsidian del proyecto **SIGRE (Sistema Integrado de Gesti
 ---
 
 ## 馃搮 脷ltimas Bit谩coras
+- [[Bitacora/2026-10-31]] - *Auditor韆 T閏nica y Seguridad Integral 100% Real: Remediaci髇 de malas pr醕ticas, eliminaci髇 de claves quemadas y sa-key.json, sincronizaci髇 de endpoints backend-frontend (incidencias, cineteca, bloqueos), protecci髇 SPA en Nginx, manifiestos Cloud Build y aprovisionamiento en la nueva nube GCP.*
+- [[Bitacora/2026-10-23]] - *Protocolo de Investigaci贸n Completo: Finalizaci贸n y compilaci贸n de los 13 elementos requeridos por la Mtra. Elizabeth Cristina Hern谩ndez Hern谩ndez (Secciones 1 a 13, marco te贸rico, hip贸tesis, metodolog铆a Scrumban/cuasiexperimental, presupuesto CAPEX $140k, manuales paso a paso, evidencias E2E Playwright, conclusiones, Gantt con ruta cr铆tica y glosario).*
 - [[Bitacora/2026-10-09]] - *Correcci贸n Despliegue Cloud Run: Compilaci贸n de @inversion/database a dist/ para resolver SyntaxError en Node 20 y enlace expl铆cito a 0.0.0.0.*
 - [[Bitacora/2026-10-07]] - *C谩mara F铆sica en Esc谩ner QR y Manuales de Usuario: Soporte WebRTC/Html5Qrcode, manuales de usuario y operaci贸n con diagramas Mermaid, grabaci贸n interactiva (.webp) y 9 pruebas E2E aprobadas.*
 - [[Bitacora/2026-10-06]] - *Infraestructura Real GCP: Vinculaci贸n con cuenta de facturaci贸n activa, habilitaci贸n de Cloud Run/Artifact Registry, creaci贸n de repositorio sigre y Service Account para CI/CD.*
