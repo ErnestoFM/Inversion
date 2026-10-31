@@ -99,33 +99,20 @@ jobs:
 
       # --- Aprovisionamiento Automatizado de Infraestructura Base (Idempotente) ---
       - name: Aprovisionar Infraestructura en GCP si no existe
+        continue-on-error: true
         run: |
           echo "1. Habilitando APIs requeridas en Google Cloud..."
-          gcloud services enable run.googleapis.com sqladmin.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com secretmanager.googleapis.com storage.googleapis.com --project=${{ env.GCP_PROJECT_ID }} --quiet
+          gcloud services enable run.googleapis.com sqladmin.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com secretmanager.googleapis.com storage.googleapis.com --project=${{ env.GCP_PROJECT_ID }} --quiet || true
 
           echo "2. Verificando / Creando repositorio Artifact Registry..."
           gcloud artifacts repositories describe ${{ env.GCP_ARTIFACT_REPO }} --location=${{ env.GCP_REGION }} --project=${{ env.GCP_PROJECT_ID }} 2>/dev/null || \
-          gcloud artifacts repositories create ${{ env.GCP_ARTIFACT_REPO }} --repository-format=docker --location=${{ env.GCP_REGION }} --description="Repositorio Docker SIGRE" --project=${{ env.GCP_PROJECT_ID }} --quiet
+          gcloud artifacts repositories create ${{ env.GCP_ARTIFACT_REPO }} --repository-format=docker --location=${{ env.GCP_REGION }} --description="Repositorio Docker SIGRE" --project=${{ env.GCP_PROJECT_ID }} --quiet || true
 
           echo "3. Verificando / Creando bucket de Cloud Storage..."
           gcloud storage buckets describe gs://sigre-storage-${{ env.GCP_PROJECT_ID }} --project=${{ env.GCP_PROJECT_ID }} 2>/dev/null || \
           gcloud storage buckets create gs://sigre-storage-${{ env.GCP_PROJECT_ID }} --location=${{ env.GCP_REGION }} --project=${{ env.GCP_PROJECT_ID }} 2>/dev/null || true
 
-          echo "4. Verificando / Creando instancia de Cloud SQL (sigre-postgres)..."
-          SQL_EXISTS=$(gcloud sql instances list --filter="name:sigre-postgres" --format="value(name)" --project=${{ env.GCP_PROJECT_ID }} 2>/dev/null || true)
-          if [ -z "$SQL_EXISTS" ]; then
-            echo "Creando instancia PostgreSQL 15 en Cloud SQL..."
-            gcloud sql instances create sigre-postgres --database-version=POSTGRES_15 --tier=db-f1-micro --region=${{ env.GCP_REGION }} --storage-type=SSD --storage-size=10GB --authorized-networks="0.0.0.0/0" --project=${{ env.GCP_PROJECT_ID }} --quiet
-            gcloud sql databases create sigre_db --instance=sigre-postgres --project=${{ env.GCP_PROJECT_ID }} 2>/dev/null || true
-            DB_PASS=$(openssl rand -base64 18)
-            gcloud sql users create sigre_user --instance=sigre-postgres --password="$DB_PASS" --project=${{ env.GCP_PROJECT_ID }} 2>/dev/null || true
-            PUBLIC_IP=$(gcloud sql instances describe sigre-postgres --format="value(ipAddresses[0].ipAddress)" --project=${{ env.GCP_PROJECT_ID }})
-            DB_URL="postgresql://sigre_user:${DB_PASS}@${PUBLIC_IP}:5432/sigre_db?schema=public"
-            echo -n "$DB_URL" | gcloud secrets create SIGRE_DATABASE_URL --data-file=- --project=${{ env.GCP_PROJECT_ID }} 2>/dev/null || \
-            echo -n "$DB_URL" | gcloud secrets versions add SIGRE_DATABASE_URL --data-file=- --project=${{ env.GCP_PROJECT_ID }} 2>/dev/null
-          fi
-
-          echo "5. Verificando / Creando Secrets en Secret Manager..."
+          echo "4. Verificando Secrets en Secret Manager..."
           for SECRET in SIGRE_JWT_ACCESS_SECRET SIGRE_JWT_REFRESH_SECRET SIGRE_REDIS_URL; do
             gcloud secrets describe $SECRET --project=${{ env.GCP_PROJECT_ID }} 2>/dev/null || \
             (openssl rand -base64 32 | gcloud secrets create $SECRET --data-file=- --project=${{ env.GCP_PROJECT_ID }} 2>/dev/null || true)
@@ -174,7 +161,7 @@ jobs:
             --max-instances 5 \
             --memory 512Mi \
             --cpu 1 \
-            --add-cloudsql-instances ${{ env.GCP_PROJECT_ID }}:${{ env.GCP_REGION }}:sigre-postgres \
+            --add-cloudsql-instances ${{ env.GCP_PROJECT_ID }}:${{ env.GCP_REGION }}:monchis-cafe-postgres-prod \
             --set-env-vars "NODE_ENV=production,WEB_URL=${{ secrets.WEB_URL }},GCS_BUCKET=sigre-storage-${{ env.GCP_PROJECT_ID }},RECAPTCHA_KEY_ID=${{ secrets.RECAPTCHA_KEY_ID }}" \
             --set-secrets "DATABASE_URL=SIGRE_DATABASE_URL:latest,REDIS_URL=SIGRE_REDIS_URL:latest,JWT_ACCESS_SECRET=SIGRE_JWT_ACCESS_SECRET:latest,JWT_REFRESH_SECRET=SIGRE_JWT_REFRESH_SECRET:latest" \
             --quiet
