@@ -1,6 +1,7 @@
 import { test, expect, Page } from '@playwright/test';
 import {
   mockUserStudent,
+  mockUserAdmin,
   mockSpaces,
   mockResources,
   mockScreenings,
@@ -10,8 +11,11 @@ import {
   mockDashboardStats,
 } from './mockData';
 
+let currentMockUser = mockUserStudent;
+
 // Interceptor exhaustivo de API para pruebas E2E deterministas
 async function setupApiMocks(page: Page) {
+  currentMockUser = mockUserStudent;
   await page.route(
     (url) => url.pathname.startsWith('/api/'),
     async (route) => {
@@ -22,12 +26,23 @@ async function setupApiMocks(page: Page) {
 
     // 1. Autenticación
     if (path.includes('/auth/login') && method === 'POST') {
+      try {
+        const postData = request.postDataJSON() || {};
+        if (postData.email && postData.email.includes('admin')) {
+          currentMockUser = mockUserAdmin;
+        } else {
+          currentMockUser = mockUserStudent;
+        }
+      } catch (e) {
+        currentMockUser = mockUserStudent;
+      }
       return route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({
           token: 'mock-jwt-token-ey123456789',
-          user: mockUserStudent,
+          accessToken: 'mock-jwt-token-ey123456789',
+          user: currentMockUser,
         }),
       });
     }
@@ -36,7 +51,7 @@ async function setupApiMocks(page: Page) {
       return route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ user: mockUserStudent }),
+        body: JSON.stringify({ user: currentMockUser }),
       });
     }
 
@@ -269,6 +284,21 @@ test.describe('Suite E2E Playwright: SIGRE CUTonalá (Etapa 2)', () => {
     await page.goto('/');
   });
 
+  async function loginAsUser(page: Page, email = 'ernesto.fierro@alumnos.udg.mx', password = 'Cutonala2026!') {
+    const userName = page.locator('.user-name');
+    if (await userName.isVisible()) return;
+
+    const loginBtn = page.locator('button:has-text("Acceso Institucional")');
+    await expect(loginBtn).toBeVisible();
+    await loginBtn.click();
+
+    await page.locator('input[type="email"]').fill(email);
+    await page.locator('input[type="password"]').fill(password);
+    await page.locator('button[type="submit"]:has-text("Ingresar al Sistema")').click();
+
+    await expect(userName).toBeVisible();
+  }
+
   test('1. Identidad Institucional, Reloj y Conmutación Dark Mode', async ({ page }) => {
     // Encabezado institucional UdeG / CUTonalá
     await expect(page.locator('.logo-sigre')).toHaveText('SIGRE');
@@ -298,12 +328,15 @@ test.describe('Suite E2E Playwright: SIGRE CUTonalá (Etapa 2)', () => {
   });
 
   test('2. Autenticación Rápida Institucional y Badge de Alumno', async ({ page }) => {
-    // Banner de acceso de prueba en modo invitado
-    const demoStudentBtn = page.locator('button:has-text("Ernesto Fierro (Alumno)")');
-    await expect(demoStudentBtn).toBeVisible();
+    // Botón de acceso institucional formal en Header
+    const loginBtn = page.locator('button:has-text("Acceso Institucional")');
+    await expect(loginBtn).toBeVisible();
+    await loginBtn.click();
 
-    // Iniciar sesión con un clic
-    await demoStudentBtn.click();
+    // Completar credenciales institucionales
+    await page.locator('input[type="email"]').fill('ernesto.fierro@alumnos.udg.mx');
+    await page.locator('input[type="password"]').fill('Cutonala2026!');
+    await page.locator('button[type="submit"]:has-text("Ingresar al Sistema")').click();
 
     // Verificar datos de sesión en Header (Primer nombre y badge de reputación)
     await expect(page.locator('.user-name')).toHaveText('Ernesto');
@@ -319,7 +352,7 @@ test.describe('Suite E2E Playwright: SIGRE CUTonalá (Etapa 2)', () => {
 
   test('3. Cartelera Cineteca & Reserva de Asiento con Código QR', async ({ page }) => {
     // Login inicial
-    await page.locator('button:has-text("Ernesto Fierro (Alumno)")').click();
+    await loginAsUser(page);
     await expect(page.locator('.user-name')).toHaveText('Ernesto');
 
     // Pestaña Cartelera Cineteca
@@ -346,7 +379,7 @@ test.describe('Suite E2E Playwright: SIGRE CUTonalá (Etapa 2)', () => {
   });
 
   test('4. Catálogo de Espacios, Filtros y Soft Lock de 15 Min en Redis', async ({ page }) => {
-    await page.locator('button:has-text("Ernesto Fierro (Alumno)")').click();
+    await loginAsUser(page);
 
     // Pestaña Espacios & Aulas
     await page.locator('nav button:has-text("Espacios & Aulas")').click();
@@ -380,7 +413,7 @@ test.describe('Suite E2E Playwright: SIGRE CUTonalá (Etapa 2)', () => {
   });
 
   test('5. Inventario de Materiales y Firma Digital en Canvas HTML5', async ({ page }) => {
-    await page.locator('button:has-text("Ernesto Fierro (Alumno)")').click();
+    await loginAsUser(page);
 
     // Pestaña Inventario & Préstamos
     await page.locator('nav button:has-text("Inventario & Préstamos")').click();
@@ -431,7 +464,7 @@ test.describe('Suite E2E Playwright: SIGRE CUTonalá (Etapa 2)', () => {
   });
 
   test('6. Mis Solicitudes, Responsivas y Checklists de Entrega', async ({ page }) => {
-    await page.locator('button:has-text("Ernesto Fierro (Alumno)")').click();
+    await loginAsUser(page);
 
     // Pestaña Mis Solicitudes
     await page.locator('nav button:has-text("Mis Solicitudes & Responsivas")').click();
@@ -452,7 +485,7 @@ test.describe('Suite E2E Playwright: SIGRE CUTonalá (Etapa 2)', () => {
   });
 
   test('7. Incidentes, Sanciones y Política de Trust Score', async ({ page }) => {
-    await page.locator('button:has-text("Ernesto Fierro (Alumno)")').click();
+    await loginAsUser(page);
 
     // Pestaña Incidentes
     await page.locator('nav button:has-text("Incidentes & Reparaciones")').click();
@@ -468,7 +501,7 @@ test.describe('Suite E2E Playwright: SIGRE CUTonalá (Etapa 2)', () => {
   });
 
   test('8. Panel de Control Ejecutivo, Métrica Operativa y Matriz de Desgaste', async ({ page }) => {
-    await page.locator('button:has-text("Ernesto Fierro (Alumno)")').click();
+    await loginAsUser(page, 'admin.sigre@udg.mx');
 
     // Pestaña Panel de Control
     await page.locator('nav button:has-text("Panel de Control")').click();
@@ -489,7 +522,7 @@ test.describe('Suite E2E Playwright: SIGRE CUTonalá (Etapa 2)', () => {
   });
 
   test('9. Escáner de Acceso QR con Cámara Física y Validación en Puerta', async ({ page }) => {
-    await page.locator('button:has-text("Ernesto Fierro (Alumno)")').click();
+    await loginAsUser(page);
 
     // Abrir Escáner QR desde botón en Cartelera
     const openScannerBtn = page.locator('button:has-text("Escáner de Acceso (Cámara QR)")');

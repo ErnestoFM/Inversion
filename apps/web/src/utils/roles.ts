@@ -83,3 +83,4 @@ export const getRoleBadgeClass = (role: UserRole | string | undefined): string =
       return 'badge-accent';
   }
 };
+

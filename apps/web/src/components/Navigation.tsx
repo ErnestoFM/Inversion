@@ -44,13 +44,13 @@ export const Navigation: React.FC<NavigationProps> = ({ activeTab, onSelectTab }
     },
     {
       key: 'incidentes',
-      label: isStaff ? 'Gestión de Incidentes' : 'Reportar Incidencias',
+      label: isStaff ? 'Gestión de Incidentes' : 'Incidentes & Reparaciones',
       icon: <AlertTriangle size={18} />,
       visible: true,
     },
     {
       key: 'dashboard',
-      label: 'Panel Ejecutivo & Inversión',
+      label: 'Panel de Control',
       icon: <LayoutDashboard size={18} />,
       badge: 'Ejecutivo',
       visible: hasDashboardAccess,

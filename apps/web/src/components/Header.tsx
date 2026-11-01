@@ -201,7 +201,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenQrScanner, onOpenLogin }) 
                     
                     <div className="mt-2 flex flex-col gap-1">
                       <span className={`badge ${getRoleBadgeClass(user.rol)} text-xs self-start`}>
-                        {getRoleLabel(user.rol)}
+                        Rol: {user.rol} ({getRoleLabel(user.rol)})
                       </span>
                       {(user.codigo || user.studentCode) && (
                         <span className="text-[11px] text-muted font-mono">
