@@ -56,9 +56,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(true);
     try {
       const recaptchaToken = await getRecaptchaToken('LOGIN');
-      const res = await api.auth.login(email, password, recaptchaToken);
-      localStorage.setItem('sigre_token', res.token);
-      setToken(res.token);
+      const res: any = await api.auth.login(email, password, recaptchaToken);
+      const tokenValue = res.token || res.accessToken;
+      if (tokenValue) {
+        localStorage.setItem('sigre_token', tokenValue);
+        setToken(tokenValue);
+      }
       setUser(res.user);
     } finally {
       setLoading(false);

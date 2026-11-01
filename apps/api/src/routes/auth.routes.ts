@@ -155,15 +155,21 @@ authRouter.post('/login', async (req: Request, res: Response) => {
     res.cookie('accessToken', accessToken, { httpOnly: true, secure: env.NODE_ENV === 'production' });
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: env.NODE_ENV === 'production' });
 
+    const token = accessToken;
+
     return res.json({
       message: 'Inicio de sesión exitoso',
       accessToken,
+      token,
       user: {
         id: user.id,
         email: user.email,
         fullName: user.fullName,
+        nombre: user.fullName,
         studentCode: user.studentCode,
+        codigo: user.studentCode,
         role: user.role,
+        rol: user.role,
         reputationScore: user.reputationScore
       }
     });
@@ -193,5 +199,17 @@ authRouter.get('/me', authenticateJwt, async (req: Request, res: Response) => {
   });
 
   if (!user) return res.status(404).json({ error: 'Usuario no encontrado.' });
-  return res.json(user);
+
+  const formattedUser = {
+    ...user,
+    nombre: user.fullName,
+    codigo: user.studentCode,
+    rol: user.role
+  };
+
+  return res.json({
+    success: true,
+    data: formattedUser,
+    user: formattedUser
+  });
 });
