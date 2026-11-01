@@ -1355,6 +1355,22 @@ body {
 .text-center { text-align: center; }
 .relative { position: relative; }
 
+.bg-surface { background: var(--bg-surface); }
+.bg-muted { background: var(--bg-muted); }
+.border-default { border-color: var(--border-default); }
+.border { border: 1px solid var(--border-default); }
+.border-t { border-top: 1px solid var(--border-default); }
+.rounded { border-radius: var(--radius-sm); }
+.rounded-md { border-radius: var(--radius-md); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.p-1 { padding: 4px; }
+.p-2 { padding: 8px; }
+.p-3 { padding: 12px; }
+.p-4 { padding: 16px; }
+.px-3 { padding-left: 12px; padding-right: 12px; }
+.py-1 { padding-top: 4px; padding-bottom: 4px; }
+.shadow-sm { box-shadow: var(--shadow-sm); }
+
 .bg-primary-soft { background: rgba(0, 43, 73, 0.1); }
 .bg-accent-soft { background: var(--bg-accent-soft); }
 .bg-info-soft { background: rgba(37, 99, 235, 0.1); }
@@ -1489,6 +1505,196 @@ body {
   background: var(--bg-accent-soft);
   color: var(--color-accent);
   border: 1px solid var(--color-accent);
+}
+
+/* ══════════════ SWITCHER PÍLDORA FINANCIERA (HEADER DE CARD) ══════════════ */
+.financial-subtabs-pill {
+  display: inline-flex;
+  gap: 4px;
+  background: var(--bg-muted);
+  padding: 4px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-default);
+}
+
+.financial-subtab-pill-btn {
+  padding: 6px 14px;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.financial-subtab-pill-btn:hover {
+  color: var(--text-primary);
+}
+
+.financial-subtab-pill-btn.active {
+  background: var(--bg-surface);
+  color: var(--color-accent);
+  border-color: var(--border-default);
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .financial-subtab-pill-btn.active {
+  background: var(--bg-surface);
+  color: #4ADE80;
+  border-color: rgba(74, 222, 128, 0.35);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* ══════════════ TARJETAS CAPEX Y AHORRO PATRIMONIAL ══════════════ */
+.capex-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.capex-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.capex-card:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+}
+
+.capex-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.capex-rubro-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+[data-theme="dark"] .capex-rubro-badge {
+  color: #4ADE80;
+}
+
+.capex-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 4px;
+}
+
+.capex-card-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  line-height: 1.45;
+}
+
+.capex-card-footer {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-default);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.capex-footer-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.capex-footer-value {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.capex-banner-total {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--bg-accent-soft);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (min-width: 640px) {
+  .capex-banner-total {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.capex-banner-total-amount {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-accent);
+}
+
+[data-theme="dark"] .capex-banner-total-amount {
+  color: #4ADE80;
+}
+
+/* Patrimonio Cards */
+.patrimonio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.patrimonio-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 18px 16px;
+  text-align: center;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.patrimonio-card:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+}
+
+.patrimonio-value {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.patrimonio-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 6px;
+}
+
+.patrimonio-desc {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  line-height: 1.45;
 }
 
 /* ══════════════ GRID DE OCUPACIÓN DE RECINTOS ══════════════ */

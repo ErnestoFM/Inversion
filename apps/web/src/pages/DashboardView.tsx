@@ -239,37 +239,25 @@ export const DashboardView: React.FC = () => {
               </div>
 
               {/* Sub-tabs switcher */}
-              <div className="flex gap-1 bg-muted p-1 rounded-lg">
+              <div className="financial-subtabs-pill">
                 <button
                   type="button"
                   onClick={() => setActiveFinancialTab('flujo')}
-                  className={`px-3 py-1 rounded text-xs font-semibold transition ${
-                    activeFinancialTab === 'flujo'
-                      ? 'bg-surface text-primary shadow-sm'
-                      : 'text-secondary hover:text-primary'
-                  }`}
+                  className={`financial-subtab-pill-btn ${activeFinancialTab === 'flujo' ? 'active' : ''}`}
                 >
                   Flujo Trienal Proforma
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveFinancialTab('capex')}
-                  className={`px-3 py-1 rounded text-xs font-semibold transition ${
-                    activeFinancialTab === 'capex'
-                      ? 'bg-surface text-primary shadow-sm'
-                      : 'text-secondary hover:text-primary'
-                  }`}
+                  className={`financial-subtab-pill-btn ${activeFinancialTab === 'capex' ? 'active' : ''}`}
                 >
                   Presupuesto CAPEX ($140k)
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveFinancialTab('patrimonio')}
-                  className={`px-3 py-1 rounded text-xs font-semibold transition ${
-                    activeFinancialTab === 'patrimonio'
-                      ? 'bg-surface text-primary shadow-sm'
-                      : 'text-secondary hover:text-primary'
-                  }`}
+                  className={`financial-subtab-pill-btn ${activeFinancialTab === 'patrimonio' ? 'active' : ''}`}
                 >
                   Ahorro Patrimonial UdeG
                 </button>
@@ -344,76 +332,76 @@ export const DashboardView: React.FC = () => {
 
               {activeFinancialTab === 'capex' && (
                 <div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="capex-grid">
                     {evaluacion.capexDesglose.map((item, idx) => {
                       const porcentaje = ((item.monto / evaluacion.capexTotal) * 100).toFixed(1);
                       return (
-                        <div key={idx} className="p-4 bg-muted rounded-lg border border-default flex flex-col justify-between">
+                        <div key={idx} className="capex-card">
                           <div>
-                            <div className="flex justify-between items-start">
-                              <span className="text-xs font-bold text-accent">Rubro {idx + 1}</span>
+                            <div className="capex-card-header">
+                              <span className="capex-rubro-badge">Rubro {idx + 1}</span>
                               <span className="badge badge-secondary text-xs">{porcentaje}% del CAPEX</span>
                             </div>
-                            <h4 className="text-sm font-bold text-primary mt-1">{item.concepto}</h4>
-                            <p className="text-xs text-secondary mt-1">{item.descripcion}</p>
+                            <h4 className="capex-card-title">{item.concepto}</h4>
+                            <p className="capex-card-desc">{item.descripcion}</p>
                           </div>
-                          <div className="mt-3 pt-2 border-t border-default flex justify-between items-center">
-                            <span className="text-xs text-muted">Monto Presupuestado</span>
-                            <span className="font-mono text-sm font-bold text-primary">{formatMxn(item.monto)}</span>
+                          <div className="capex-card-footer">
+                            <span className="capex-footer-label">Monto Presupuestado</span>
+                            <span className="capex-footer-value">{formatMxn(item.monto)}</span>
                           </div>
                         </div>
                       );
                     })}
                   </div>
-                  <div className="mt-4 p-3 bg-accent-soft rounded-lg text-xs text-primary flex justify-between items-center">
+                  <div className="capex-banner-total">
                     <span>Presupuesto austero formulado con investigación comparativa de 3 proveedores por cada rubro (Google Cloud, Dell Technologies, Asesoría Especializada INDAUTOR).</span>
-                    <strong className="font-mono text-sm font-bold text-accent">Total: {formatMxn(evaluacion.capexTotal)}</strong>
+                    <strong className="capex-banner-total-amount">Total: {formatMxn(evaluacion.capexTotal)}</strong>
                   </div>
                 </div>
               )}
 
               {activeFinancialTab === 'patrimonio' && (
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="p-4 bg-muted rounded-lg border border-default text-center">
+                <div className="patrimonio-grid">
+                  <div className="patrimonio-card">
                     <ShieldCheck size={28} className="text-success mx-auto mb-2" />
-                    <div className="text-2xl font-bold font-mono text-success">
+                    <div className="patrimonio-value text-success">
                       -{evaluacion.impactoPatrimonial.reduccionMermasPorcentaje}%
                     </div>
-                    <div className="text-xs font-semibold text-primary mt-1">Reducción de Mermas</div>
-                    <p className="text-xs text-secondary mt-1">
+                    <div className="patrimonio-title">Reducción de Mermas</div>
+                    <p className="patrimonio-desc">
                       Eliminación de pérdidas de accesorios y equipo gracias a actas PDF con firma digital y validación obligatoria.
                     </p>
                   </div>
 
-                  <div className="p-4 bg-muted rounded-lg border border-default text-center">
+                  <div className="patrimonio-card">
                     <CheckCircle2 size={28} className="text-accent mx-auto mb-2" />
-                    <div className="text-2xl font-bold font-mono text-accent">
+                    <div className="patrimonio-value text-accent">
                       {evaluacion.impactoPatrimonial.eliminacionEmpalmesPorcentaje}%
                     </div>
-                    <div className="text-xs font-semibold text-primary mt-1">Eliminación de Empalmes</div>
-                    <p className="text-xs text-secondary mt-1">
+                    <div className="patrimonio-title">Eliminación de Empalmes</div>
+                    <p className="patrimonio-desc">
                       Sincronización de disponibilidad en tiempo real para auditorios, cineteca y laboratorios sin conflictos de agenda.
                     </p>
                   </div>
 
-                  <div className="p-4 bg-muted rounded-lg border border-default text-center">
+                  <div className="patrimonio-card">
                     <Clock size={28} className="text-info mx-auto mb-2" />
-                    <div className="text-2xl font-bold font-mono text-info">
+                    <div className="patrimonio-value text-info">
                       &lt; {evaluacion.impactoPatrimonial.tiempoDespachoSegundos}s
                     </div>
-                    <div className="text-xs font-semibold text-primary mt-1">Despacho en Ventanilla</div>
-                    <p className="text-xs text-secondary mt-1">
+                    <div className="patrimonio-title">Despacho en Ventanilla</div>
+                    <p className="patrimonio-desc">
                       Reducción drástica del tiempo de atención en almacén frente a los {evaluacion.impactoPatrimonial.tiempoDespachoAnteriorMinutos} minutos promedio del sistema tradicional en papel.
                     </p>
                   </div>
 
-                  <div className="p-4 bg-muted rounded-lg border border-default text-center">
+                  <div className="patrimonio-card">
                     <DollarSign size={28} className="text-warning mx-auto mb-2" />
-                    <div className="text-2xl font-bold font-mono text-warning">
+                    <div className="patrimonio-value text-warning">
                       +{formatMxn(evaluacion.impactoPatrimonial.ahorroEstimadoMermasMxn)}
                     </div>
-                    <div className="text-xs font-semibold text-primary mt-1">Ahorro Institucional Acumulado</div>
-                    <p className="text-xs text-secondary mt-1">
+                    <div className="patrimonio-title">Ahorro Institucional Acumulado</div>
+                    <p className="patrimonio-desc">
                       Estimación de costos directos evitados en reposición de equipo de cómputo y horas-hombre administrativas.
                     </p>
                   </div>
