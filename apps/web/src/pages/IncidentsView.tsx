@@ -14,6 +14,7 @@ import {
 import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import type { Incident, Resource } from '../types';
+import { isStaffUser } from '../utils/roles';
 
 export const IncidentsView: React.FC = () => {
   const { user, refreshUser } = useAuth();
@@ -166,7 +167,7 @@ export const IncidentsView: React.FC = () => {
     }
   };
 
-  const isStaff = user?.rol === 'ADMIN' || user?.rol === 'COORDINADOR' || user?.rol === 'TECNICO_LAB';
+  const isStaff = isStaffUser(user);
   const isScoreLow = (user?.reputationScore || 100) < 70;
 
   return (

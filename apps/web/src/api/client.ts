@@ -14,9 +14,13 @@ const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
 function getAuthHeaders(): HeadersInit {
   const token = localStorage.getItem('sigre_token');
+  const validToken = token && token !== 'undefined' && token !== 'null' && token.trim().length > 0 ? token : null;
+  if (!validToken && token) {
+    localStorage.removeItem('sigre_token');
+  }
   return {
     'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(validToken ? { Authorization: `Bearer ${validToken}` } : {}),
   };
 }
 
@@ -39,10 +43,10 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 export const api = {
   // Auth
   auth: {
-    login: (email: string, password?: string, recaptchaToken?: string) =>
-      request<{ token: string; user: User }>('/auth/login', {
+    login: (email: string, password: string, recaptchaToken?: string) =>
+      request<{ token?: string; accessToken?: string; user: User }>('/auth/login', {
         method: 'POST',
-        body: JSON.stringify({ email, password: password || 'Cutonala2026!', recaptchaToken }),
+        body: JSON.stringify({ email, password, recaptchaToken }),
       }),
     me: () => request<{ user: User }>('/auth/me'),
   },

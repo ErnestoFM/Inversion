@@ -1,10 +1,25 @@
+export type UserRole =
+  | 'ESTUDIANTE'
+  | 'DOCENTE'
+  | 'ALMACEN_ADMIN'
+  | 'DIFUSION_EVENTOS'
+  | 'SUPERADMIN'
+  | 'ADMIN'
+  | 'COORDINADOR'
+  | 'TECNICO_LAB';
+
 export interface User {
   id: string;
   email: string;
   nombre: string;
-  codigo: string;
-  rol: 'ESTUDIANTE' | 'DOCENTE' | 'ADMIN' | 'COORDINADOR' | 'TECNICO_LAB';
+  fullName?: string;
+  codigo?: string;
+  studentCode?: string;
+  rol: UserRole;
+  role?: UserRole;
   carrera?: string | null;
+  career?: string | null;
+  semester?: number | null;
   telefono?: string | null;
   reputationScore: number;
 }

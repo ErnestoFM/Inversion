@@ -8,19 +8,22 @@ import {
   LogOut,
   ShieldCheck,
   Clock,
-  Sparkles,
   ChevronDown,
-  Camera
+  Camera,
+  LogIn,
+  GraduationCap,
 } from 'lucide-react';
 import { api } from '../api/client';
 import type { NotificationItem } from '../types';
+import { getRoleLabel, getRoleBadgeClass } from '../utils/roles';
 
 interface HeaderProps {
   onOpenQrScanner?: () => void;
+  onOpenLogin?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onOpenQrScanner }) => {
-  const { user, logout, loginAs } = useAuth();
+export const Header: React.FC<HeaderProps> = ({ onOpenQrScanner, onOpenLogin }) => {
+  const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [currentTime, setCurrentTime] = useState<string>('');
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
@@ -175,15 +178,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenQrScanner }) => {
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
                 className="user-profile-btn"
+                aria-expanded={showUserMenu}
               >
                 <div className="avatar-circle">
-                  {user.nombre.charAt(0).toUpperCase()}
+                  {(user.nombre || user.fullName || 'U').charAt(0).toUpperCase()}
                 </div>
-                <div className="user-details">
-                  <span className="user-name">{user.nombre.split(' ')[0]}</span>
+                <div className="user-details text-left">
+                  <span className="user-name">{(user.nombre || user.fullName || 'Usuario').split(' ')[0]}</span>
                   <div className="user-trust-tag">
                     <ShieldCheck size={13} className="text-accent" />
-                    <span>{user.reputationScore}/100 pts</span>
+                    <span>{user.reputationScore ?? 100}/100 pts</span>
                   </div>
                 </div>
                 <ChevronDown size={14} className="text-secondary ml-1" />
@@ -191,51 +195,37 @@ export const Header: React.FC<HeaderProps> = ({ onOpenQrScanner }) => {
 
               {showUserMenu && (
                 <div className="user-dropdown-menu">
-                  <div className="dropdown-user-header">
-                    <strong>{user.nombre}</strong>
-                    <div className="text-sm text-secondary font-mono">{user.email}</div>
-                    <span className="badge badge-accent mt-2">Rol: {user.rol}</span>
+                  <div className="dropdown-user-header text-left">
+                    <strong className="block text-primary text-sm font-semibold">{user.nombre || user.fullName}</strong>
+                    <div className="text-xs text-secondary font-mono mt-0.5 truncate">{user.email}</div>
+                    
+                    <div className="mt-2 flex flex-col gap-1">
+                      <span className={`badge ${getRoleBadgeClass(user.rol)} text-xs self-start`}>
+                        {getRoleLabel(user.rol)}
+                      </span>
+                      {(user.codigo || user.studentCode) && (
+                        <span className="text-[11px] text-muted font-mono">
+                          Código: {user.codigo || user.studentCode}
+                        </span>
+                      )}
+                      {user.carrera && (
+                        <span className="text-[11px] text-secondary flex items-center gap-1 mt-0.5">
+                          <GraduationCap size={12} className="text-accent shrink-0" />
+                          <span className="truncate">{user.carrera}</span>
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   <div className="dropdown-divider" />
 
-                  <div className="dropdown-section-title">Cambiar a cuenta de prueba:</div>
-                  <button
-                    className="menu-item-btn"
-                    onClick={() => {
-                      loginAs('ESTUDIANTE');
-                      setShowUserMenu(false);
-                    }}
-                  >
-                    🎓 Estudiante (Ernesto Fierro)
-                  </button>
-                  <button
-                    className="menu-item-btn"
-                    onClick={() => {
-                      loginAs('DOCENTE');
-                      setShowUserMenu(false);
-                    }}
-                  >
-                    👩‍🏫 Docente (Dra. Elizabeth)
-                  </button>
-                  <button
-                    className="menu-item-btn"
-                    onClick={() => {
-                      loginAs('ADMIN');
-                      setShowUserMenu(false);
-                    }}
-                  >
-                    🏛️ Coordinador / Admin SIGRE
-                  </button>
-                  <button
-                    className="menu-item-btn"
-                    onClick={() => {
-                      loginAs('TECNICO');
-                      setShowUserMenu(false);
-                    }}
-                  >
-                    🔧 Técnico de Laboratorio
-                  </button>
+                  <div className="px-3 py-2 text-xs text-secondary flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <ShieldCheck size={14} className="text-accent" />
+                      Índice de Confianza:
+                    </span>
+                    <strong className="font-mono text-accent">{user.reputationScore ?? 100} pts</strong>
+                  </div>
 
                   <div className="dropdown-divider" />
 
@@ -254,11 +244,12 @@ export const Header: React.FC<HeaderProps> = ({ onOpenQrScanner }) => {
             </div>
           ) : (
             <button
-              onClick={() => loginAs('ESTUDIANTE')}
-              className="btn btn-accent btn-sm"
+              type="button"
+              onClick={onOpenLogin}
+              className="btn btn-accent btn-sm flex items-center gap-1.5"
             >
-              <Sparkles size={14} className="mr-1" />
-              Acceso Institucional
+              <LogIn size={15} />
+              <span>Acceso Institucional</span>
             </button>
           )}
         </div>

@@ -18,9 +18,11 @@ import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { DigitalSignatureModal } from '../components/DigitalSignatureModal';
 import type { Loan, Booking } from '../types';
+import { isStaffUser } from '../utils/roles';
 
 export const LoansAndBookingsView: React.FC = () => {
   const { user } = useAuth();
+  const isStaff = isStaffUser(user);
   const [activeSubTab, setActiveSubTab] = useState<'prestamos' | 'reservas' | 'boletos'>('prestamos');
   const [loans, setLoans] = useState<Loan[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -208,7 +210,7 @@ export const LoansAndBookingsView: React.FC = () => {
                   <th>Estado</th>
                   <th>Co-Responsables (RF-02.3)</th>
                   <th>Responsiva PDF</th>
-                  <th>Inspección / Checklist</th>
+                  <th>{isStaff ? 'Inspección / Checklist' : 'Estado en Almacén'}</th>
                 </tr>
               </thead>
               <tbody>
@@ -310,26 +312,36 @@ export const LoansAndBookingsView: React.FC = () => {
                       </a>
                     </td>
                     <td>
-                      <div className="flex gap-1">
-                        <button
-                          type="button"
-                          onClick={() => handleOpenChecklist(loan, 'salida')}
-                          className="btn btn-secondary btn-xs flex items-center gap-1"
-                          title="Inspección de Entrega"
-                        >
-                          <ClipboardCheck size={13} />
-                          Salida
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleOpenChecklist(loan, 'entrada')}
-                          className="btn btn-accent btn-xs flex items-center gap-1"
-                          title="Inspección de Devolución"
-                        >
-                          <CheckCircle2 size={13} />
-                          Entrada
-                        </button>
-                      </div>
+                      {isStaff ? (
+                        <div className="flex gap-1">
+                          <button
+                            type="button"
+                            onClick={() => handleOpenChecklist(loan, 'salida')}
+                            className="btn btn-secondary btn-xs flex items-center gap-1"
+                            title="Inspección de Entrega"
+                          >
+                            <ClipboardCheck size={13} />
+                            Salida
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleOpenChecklist(loan, 'entrada')}
+                            className="btn btn-accent btn-xs flex items-center gap-1"
+                            title="Inspección de Devolución"
+                          >
+                            <CheckCircle2 size={13} />
+                            Entrada
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="badge badge-secondary text-xs">
+                          {loan.estado === 'ACTIVO'
+                            ? '✓ En Posesión'
+                            : loan.estado === 'DEVUELTO'
+                            ? '✓ Entregado'
+                            : 'En Trámite'}
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))}
