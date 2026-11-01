@@ -536,22 +536,25 @@ export const DashboardView: React.FC = () => {
               <span className="text-xs text-muted">Jornada 08:00 - 19:00 hrs</span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
+            <div className="occupancy-grid">
               {stats.ocupacionEspaciosHoy.map((esp) => (
-                <div key={esp.id} className="p-3 bg-muted rounded-md border border-default">
-                  <div className="flex justify-between items-start">
-                    <strong className="text-sm text-primary">{esp.nombre}</strong>
-                    <span
-                      className={`status-dot ${
-                        esp.ocupadoActualmente ? 'dot-occupied' : 'dot-available'
-                      }`}
-                      title={esp.ocupadoActualmente ? 'Ocupado actualmente' : 'Libre en este momento'}
-                    />
+                <div key={esp.id} className="occupancy-card">
+                  <div>
+                    <div className="occupancy-card-header">
+                      <strong className="occupancy-card-title">{esp.nombre}</strong>
+                      <span
+                        className={`status-dot ${
+                          esp.ocupadoActualmente ? 'dot-occupied' : 'dot-available'
+                        }`}
+                        title={esp.ocupadoActualmente ? 'Ocupado actualmente' : 'Libre en este momento'}
+                      />
+                    </div>
+                    <div className="occupancy-card-building">{esp.edificio}</div>
                   </div>
-                  <div className="text-xs text-secondary mt-1">{esp.edificio}</div>
-                  <div className="flex justify-between items-center mt-3 text-xs">
-                    <span className="text-muted">Capacidad: {esp.capacidad}</span>
-                    <span className="font-bold text-accent">
+
+                  <div className="occupancy-card-footer">
+                    <span className="text-muted">Capacidad: <strong>{esp.capacidad}</strong></span>
+                    <span className={`occupancy-badge ${esp.ocupadoActualmente ? 'occupied' : 'available'}`}>
                       {esp.reservasHoy} {esp.reservasHoy === 1 ? 'evento' : 'eventos'} hoy
                     </span>
                   </div>
