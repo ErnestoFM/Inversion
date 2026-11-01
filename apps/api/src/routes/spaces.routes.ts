@@ -68,10 +68,44 @@ spacesRouter.get('/', async (req: Request, res: Response) => {
       orderBy: { name: 'asc' }
     });
 
+    const defaultImages: Record<string, string> = {
+      AUDITORIO: 'https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?auto=format&fit=crop&w=800&q=80',
+      AULA: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80',
+      CINETECA: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80',
+      LABORATORIO: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80',
+      SALA_JUNTAS: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
+      CANCHA: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80'
+    };
+
+    const formattedSpaces = spaces.map((s) => {
+      const equip: string[] = [];
+      if (s.hasProjector) equip.push('Proyector Láser 4K');
+      if (s.hasAudio) equip.push('Sistema de Audio Shure');
+      if (s.type === SpaceType.CINETECA) equip.push('Sonido Envolvente Dolby');
+      if (s.type === SpaceType.LABORATORIO) equip.push('40 Workstations i7');
+
+      const fallbackImg = defaultImages[s.type] || defaultImages.AULA;
+
+      return {
+        ...s,
+        // Campos en español y anidados para compatibilidad total con la UI
+        nombre: s.name,
+        codigoEspacio: s.code,
+        edificio: s.building,
+        piso: s.building.includes('Planta Alta') || s.building.includes('Primer Nivel') ? '1' : (s.building.includes('Nivel 2') ? '2' : 'PB'),
+        capacidad: s.capacity,
+        tipo: s.type,
+        activo: s.isActive,
+        equipamiento: equip,
+        fotos: [fallbackImg],
+        reglamento: s.rulesText || 'Normativa institucional de CUTonalá UdeG.'
+      };
+    });
+
     return res.json({
       success: true,
-      data: spaces,
-      espacios: spaces
+      data: formattedSpaces,
+      espacios: formattedSpaces
     });
   } catch (error: any) {
     return res.status(500).json({ success: false, error: error.message || 'Error al listar espacios' });

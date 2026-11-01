@@ -192,11 +192,16 @@ export const SpacesView: React.FC = () => {
               <div className="space-img-wrapper">
                 <img
                   src={
-                    espacio.fotos[0] ||
+                    (espacio.fotos && espacio.fotos.length > 0 && espacio.fotos[0]) ||
                     'https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?auto=format&fit=crop&w=600&q=80'
                   }
-                  alt={espacio.nombre}
+                  alt={espacio.nombre || 'Espacio CUTonalá'}
                   className="space-img"
+                  onError={(e) => {
+                    // Fallback automático si la imagen externa falla
+                    (e.target as HTMLImageElement).src =
+                      'https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?auto=format&fit=crop&w=600&q=80';
+                  }}
                 />
                 <span className="badge badge-primary space-type-badge">{espacio.tipo}</span>
               </div>

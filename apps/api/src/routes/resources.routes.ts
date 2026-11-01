@@ -49,10 +49,27 @@ resourcesRouter.get('/', async (req: Request, res: Response) => {
       orderBy: { name: 'asc' }
     });
 
+    const formattedItems = items.map((item) => ({
+      ...item,
+      // Compatibilidad con la UI de frontend
+      nombre: item.name,
+      codigoInventario: item.assetTag,
+      categoria: item.category,
+      marca: item.brand,
+      modelo: item.model,
+      numeroSerie: item.serialNumber,
+      estado: item.status,
+      condicionFisica: 'EXCELENTE',
+      ubicacion: 'Almacén Central CUTonalá',
+      diasMaxPrestamo: 3,
+      requiereCapacitacion: item.category === ItemCategory.HERRAMIENTAS || item.category === ItemCategory.PROYECCION,
+      horasUsoTotales: item.currentHoursUsed
+    }));
+
     return res.json({
       success: true,
-      data: items,
-      recursos: items
+      data: formattedItems,
+      recursos: formattedItems
     });
   } catch (error: any) {
     return res.status(500).json({ success: false, error: error.message || 'Error al listar recursos' });

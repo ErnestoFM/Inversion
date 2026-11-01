@@ -218,6 +218,10 @@ export const CarteleraView: React.FC<CarteleraViewProps> = ({ onOpenQrScanner })
                     src={funcion.posterUrl || 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80'}
                     alt={funcion.titulo}
                     className="billboard-poster"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80';
+                    }}
                   />
                   <span className="rating-tag">{funcion.clasificacion || 'B'}</span>
                   <div className="seats-badge">

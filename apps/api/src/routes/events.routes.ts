@@ -62,7 +62,7 @@ const carteleraHandler = async (req: Request, res: Response) => {
       description: e.description,
       type: e.type,
       visibility: e.visibility,
-      posterUrl: e.posterUrl,
+      posterUrl: e.posterUrl || 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80',
       trailerUrl: e.trailerUrl,
       spaceId: e.spaceId,
       spaceName: e.space?.name || 'Por definir',
@@ -73,7 +73,22 @@ const carteleraHandler = async (req: Request, res: Response) => {
       registeredCount: e._count.attendees,
       availableCapacity: Math.max(0, e.maxCapacity - e._count.attendees),
       creatorName: e.creator.fullName,
-      totalReviewsCount: e._count.reviews
+      totalReviewsCount: e._count.reviews,
+
+      // Mapeo retrocompatible con CarteleraView
+      titulo: e.title,
+      sinopsis: e.description,
+      clasificacion: 'B',
+      duracionMin: 120,
+      fechaHoraInicio: e.startTime.toISOString(),
+      fechaHoraFin: e.endTime.toISOString(),
+      cupoMaximo: e.maxCapacity,
+      asientosDisponibles: Math.max(0, e.maxCapacity - e._count.attendees),
+      espacio: {
+        id: e.spaceId || '',
+        nombre: e.space?.name || 'Sala Cineteca',
+        edificio: e.space?.building || 'CUTonalá'
+      }
     }));
 
     return res.json({
