@@ -365,17 +365,20 @@ export const QrCameraScannerModal: React.FC<QrCameraScannerModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal-container qr-scanner-modal max-w-xl">
+    <div className="modal-backdrop" onClick={onClose} role="dialog" aria-modal="true">
+      <div
+        className="qr-scanner-modal"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Cabecera del Escáner */}
-        <div className="modal-header">
-          <div className="flex items-center gap-2">
-            <div className="p-2 bg-primary/10 text-primary rounded-lg">
-              <Camera size={20} />
+        <div className="qr-modal-header">
+          <div className="qr-modal-brand">
+            <div className="qr-modal-icon">
+              <Camera size={22} />
             </div>
             <div>
-              <h3 className="modal-title text-base sm:text-lg">Escáner de Acceso QR (Puerta / Taquilla)</h3>
-              <p className="text-xs text-secondary">
+              <h3 className="qr-modal-title">Escáner de Acceso QR (Puerta / Taquilla)</h3>
+              <p className="qr-modal-subtitle">
                 Validación de boletos de Cineteca y responsivas en tiempo real
               </p>
             </div>
@@ -391,20 +394,16 @@ export const QrCameraScannerModal: React.FC<QrCameraScannerModalProps> = ({
         </div>
 
         {/* Pestañas de Modo de Escaneo */}
-        <div className="scanner-tabs-bar flex border-b border-default bg-muted/40 px-4 pt-2 gap-2">
+        <div className="qr-tabs-bar">
           <button
             type="button"
             onClick={() => {
               setActiveTab('camera');
               setScanResult(null);
             }}
-            className={`tab-btn text-xs font-semibold pb-2 px-3 border-b-2 flex items-center gap-1.5 transition-colors ${
-              activeTab === 'camera'
-                ? 'border-primary text-primary'
-                : 'border-transparent text-secondary hover:text-primary'
-            }`}
+            className={`qr-tab-btn ${activeTab === 'camera' ? 'active' : ''}`}
           >
-            <Camera size={14} /> Cámara en Vivo
+            <Camera size={15} /> Cámara en Vivo
           </button>
           <button
             type="button"
@@ -413,13 +412,9 @@ export const QrCameraScannerModal: React.FC<QrCameraScannerModalProps> = ({
               setActiveTab('file');
               setScanResult(null);
             }}
-            className={`tab-btn text-xs font-semibold pb-2 px-3 border-b-2 flex items-center gap-1.5 transition-colors ${
-              activeTab === 'file'
-                ? 'border-primary text-primary'
-                : 'border-transparent text-secondary hover:text-primary'
-            }`}
+            className={`qr-tab-btn ${activeTab === 'file' ? 'active' : ''}`}
           >
-            <Upload size={14} /> Subir Imagen QR
+            <Upload size={15} /> Subir Imagen QR
           </button>
           <button
             type="button"
@@ -428,42 +423,38 @@ export const QrCameraScannerModal: React.FC<QrCameraScannerModalProps> = ({
               setActiveTab('manual');
               setScanResult(null);
             }}
-            className={`tab-btn text-xs font-semibold pb-2 px-3 border-b-2 flex items-center gap-1.5 transition-colors ${
-              activeTab === 'manual'
-                ? 'border-primary text-primary'
-                : 'border-transparent text-secondary hover:text-primary'
-            }`}
+            className={`qr-tab-btn ${activeTab === 'manual' ? 'active' : ''}`}
           >
-            <Sparkles size={14} /> Pruebas & Simulación
+            <Sparkles size={15} /> Pruebas & Simulación
           </button>
         </div>
 
-        <div className="modal-body p-4 sm:p-5">
+        <div className="qr-modal-body">
           {/* VISTA 1: RESULTADO DEL ESCANEO (Si ya detectó un QR) */}
           {scanResult ? (
-            <div className="scan-result-card animate-fadeIn">
+            <div className="qr-result-card animate-fadeIn">
               {scanResult.status === 'SUCCESS' && (
-                <div className="result-banner bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 text-center">
-                  <div className="w-12 h-12 bg-emerald-500/20 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <CheckCircle2 size={28} />
+                <div className="qr-result-banner success">
+                  <div className="qr-result-icon-box">
+                    <CheckCircle2 size={30} />
                   </div>
-                  <h4 className="text-emerald-700 dark:text-emerald-400 font-bold text-lg">
+                  <h4 className="qr-result-title">
                     {scanResult.message}
                   </h4>
-                  <p className="text-xs text-emerald-600/80 dark:text-emerald-400/80">
+                  <p className="qr-result-desc">
                     Boleto validado y registrado como ASISTIÓ en el sistema
                   </p>
 
                   {/* Ficha del Asistente */}
                   {scanResult.student && (
-                    <div className="student-badge-card bg-surface mt-3 p-3 rounded-lg border border-default text-left">
-                      <div className="text-xs text-secondary font-medium uppercase tracking-wider mb-1 flex items-center gap-1">
-                        <UserCheck size={13} className="text-primary" /> Asistente Registrado
+                    <div className="qr-student-badge-card">
+                      <div className="qr-student-header">
+                        <UserCheck size={14} style={{ color: 'var(--color-accent)' }} /> Asistente Registrado
                       </div>
-                      <div className="font-bold text-sm text-primary">
+                      <div className="qr-student-name">
                         {scanResult.student.fullName}
                       </div>
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-secondary mt-1">
+                      <div className="qr-student-meta">
                         <span>
                           <strong>Código:</strong> {scanResult.student.studentCode}
                         </span>
@@ -481,7 +472,7 @@ export const QrCameraScannerModal: React.FC<QrCameraScannerModalProps> = ({
 
                   {/* Detalle del Evento */}
                   {scanResult.event && (
-                    <div className="mt-2 text-xs text-secondary text-left px-1">
+                    <div className="qr-result-desc" style={{ marginTop: 4 }}>
                       <strong>Evento:</strong> {scanResult.event.title}
                     </div>
                   )}
@@ -489,23 +480,30 @@ export const QrCameraScannerModal: React.FC<QrCameraScannerModalProps> = ({
               )}
 
               {scanResult.status === 'ALREADY_SCANNED' && (
-                <div className="result-banner bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-center">
-                  <div className="w-12 h-12 bg-amber-500/20 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <AlertTriangle size={28} />
+                <div className="qr-result-banner already-scanned">
+                  <div className="qr-result-icon-box">
+                    <AlertTriangle size={30} />
                   </div>
-                  <h4 className="text-amber-700 dark:text-amber-400 font-bold text-lg">
+                  <h4 className="qr-result-title">
                     {scanResult.message}
                   </h4>
-                  <p className="text-xs text-amber-600/80 dark:text-amber-400/80">
+                  <p className="qr-result-desc">
                     Este boleto ya fue presentado en puerta anteriormente a las{' '}
                     <strong>{scanResult.scannedAt}</strong>
                   </p>
 
                   {scanResult.student && (
-                    <div className="student-badge-card bg-surface mt-3 p-3 rounded-lg border border-default text-left">
-                      <div className="text-xs text-secondary font-medium">
-                        Titular original: <strong>{scanResult.student.fullName}</strong> (
-                        {scanResult.student.studentCode})
+                    <div className="qr-student-badge-card">
+                      <div className="qr-student-header">
+                        <AlertTriangle size={14} style={{ color: '#F59E0B' }} /> Titular Original
+                      </div>
+                      <div className="qr-student-name">
+                        {scanResult.student.fullName}
+                      </div>
+                      <div className="qr-student-meta">
+                        <span>
+                          <strong>Código:</strong> {scanResult.student.studentCode}
+                        </span>
                       </div>
                     </div>
                   )}
@@ -513,26 +511,27 @@ export const QrCameraScannerModal: React.FC<QrCameraScannerModalProps> = ({
               )}
 
               {scanResult.status === 'INVALID' && (
-                <div className="result-banner bg-rose-500/10 border border-rose-500/30 rounded-xl p-4 text-center">
-                  <div className="w-12 h-12 bg-rose-500/20 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <XCircle size={28} />
+                <div className="qr-result-banner invalid">
+                  <div className="qr-result-icon-box">
+                    <XCircle size={30} />
                   </div>
-                  <h4 className="text-rose-700 dark:text-rose-400 font-bold text-lg">
+                  <h4 className="qr-result-title">
                     Código Inválido o No Reconocido
                   </h4>
-                  <p className="text-xs text-rose-600/80 dark:text-rose-400/80 mt-1">
+                  <p className="qr-result-desc">
                     {scanResult.message}
                   </p>
                 </div>
               )}
 
-              <div className="flex gap-2 justify-center mt-4">
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
                 <button
                   type="button"
                   onClick={handleResumeScan}
-                  className="btn btn-accent flex items-center gap-2"
+                  className="login-submit-button"
+                  style={{ maxWidth: 280, height: 42 }}
                 >
-                  <RefreshCw size={15} /> Escanear Siguiente Boleto
+                  <RefreshCw size={16} /> Escanear Siguiente Boleto
                 </button>
               </div>
             </div>
@@ -540,10 +539,10 @@ export const QrCameraScannerModal: React.FC<QrCameraScannerModalProps> = ({
             <>
               {/* VISTA 2: CÁMARA EN VIVO */}
               {activeTab === 'camera' && (
-                <div className="camera-scan-container">
+                <div className="qr-camera-container">
                   {/* Selector de cámara si hay más de una */}
                   {cameras.length > 1 && (
-                    <div className="mb-2 flex items-center justify-between text-xs text-secondary">
+                    <div className="qr-camera-select-bar">
                       <span>Dispositivo de Video:</span>
                       <select
                         value={selectedCameraId}
@@ -551,7 +550,7 @@ export const QrCameraScannerModal: React.FC<QrCameraScannerModalProps> = ({
                           setSelectedCameraId(e.target.value);
                           startCamera(e.target.value);
                         }}
-                        className="input-select text-xs py-1 px-2 rounded border border-default bg-surface"
+                        className="qr-camera-select"
                       >
                         {cameras.map((c) => (
                           <option key={c.id} value={c.id}>
@@ -563,49 +562,50 @@ export const QrCameraScannerModal: React.FC<QrCameraScannerModalProps> = ({
                   )}
 
                   {/* Visor con overlay reticular y animación de escaneo */}
-                  <div className="camera-viewport-wrapper relative rounded-xl overflow-hidden bg-black aspect-square max-h-72 mx-auto border-2 border-primary/40 shadow-inner flex items-center justify-center">
-                    <div id="qr-reader-viewport" className="w-full h-full" />
+                  <div className="qr-camera-viewport">
+                    <div id="qr-reader-viewport" />
 
                     {/* HUD / Retícula de escaneo futurista */}
-                    <div className="hud-overlay absolute inset-0 pointer-events-none flex flex-col justify-between p-6">
-                      <div className="flex justify-between">
-                        <div className="w-6 h-6 border-t-2 border-l-2 border-cyan-400" />
-                        <div className="w-6 h-6 border-t-2 border-r-2 border-cyan-400" />
+                    <div className="qr-hud-overlay">
+                      <div className="qr-hud-corner-row">
+                        <div className="qr-hud-corner qr-hud-corner-tl" />
+                        <div className="qr-hud-corner qr-hud-corner-tr" />
                       </div>
 
                       {/* Línea láser de escaneo animada */}
-                      <div className="laser-scan-line" />
+                      <div className="qr-laser-line" />
 
-                      <div className="flex justify-between items-end">
-                        <div className="w-6 h-6 border-b-2 border-l-2 border-cyan-400" />
-                        <span className="text-[10px] text-cyan-300 font-mono tracking-wider bg-black/60 px-2 py-0.5 rounded">
+                      <div className="qr-hud-corner-row">
+                        <div className="qr-hud-corner qr-hud-corner-bl" />
+                        <span className="qr-hud-badge">
                           AUTO-FOCUS QR
                         </span>
-                        <div className="w-6 h-6 border-b-2 border-r-2 border-cyan-400" />
+                        <div className="qr-hud-corner qr-hud-corner-br" />
                       </div>
                     </div>
 
                     {isProcessing && (
-                      <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center text-white z-10">
-                        <RefreshCw size={28} className="animate-spin text-cyan-400 mb-2" />
-                        <span className="text-xs font-semibold">Validando criptografía del QR...</span>
+                      <div className="qr-loading-overlay">
+                        <RefreshCw size={30} className="animate-spin text-cyan-400" />
+                        <span>Validando criptografía del QR...</span>
                       </div>
                     )}
                   </div>
 
                   {cameraError ? (
-                    <div className="p-3 bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-400 text-xs rounded-lg mt-3 flex items-start gap-2">
-                      <CameraOff size={16} className="shrink-0 mt-0.5" />
+                    <div className="qr-notice-card">
+                      <CameraOff size={18} className="qr-notice-icon" />
                       <div>
-                        <strong>Aviso de Cámara:</strong> {cameraError}
-                        <div className="mt-1">
+                        <div className="qr-notice-title">Aviso de Cámara</div>
+                        <div>{cameraError}</div>
+                        <div style={{ marginTop: 4 }}>
                           Puedes usar las pestañas superiores para <strong>Subir Imagen QR</strong> o{' '}
                           <strong>Pruebas & Simulación</strong>.
                         </div>
                       </div>
                     </div>
                   ) : (
-                    <p className="text-center text-xs text-secondary mt-2">
+                    <p className="qr-camera-hint">
                       Apunta la cámara al código QR impreso o en la pantalla del celular del alumno.
                     </p>
                   )}
@@ -614,84 +614,87 @@ export const QrCameraScannerModal: React.FC<QrCameraScannerModalProps> = ({
 
               {/* VISTA 3: SUBIR ARCHIVO */}
               {activeTab === 'file' && (
-                <div className="file-scan-container text-center py-6 px-4 border-2 border-dashed border-default rounded-xl bg-muted/20">
-                  <div id="qr-reader-file-temp" className="hidden" />
-                  <div className="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-3">
+                <div className="qr-file-dropzone">
+                  <div id="qr-reader-file-temp" style={{ display: 'none' }} />
+                  <div className="qr-file-icon-box">
                     <Upload size={24} />
                   </div>
-                  <h4 className="font-semibold text-sm">Selecciona una imagen de boleto con QR</h4>
-                  <p className="text-xs text-secondary mt-1 mb-4">
-                    Formatos admitidos: PNG, JPG, WEBP o captura de pantalla
-                  </p>
+                  <div>
+                    <h4 className="qr-file-title">Selecciona una imagen de boleto con QR</h4>
+                    <p className="qr-file-subtitle">
+                      Formatos admitidos: PNG, JPG, WEBP o captura de pantalla
+                    </p>
+                  </div>
                   <input
                     ref={fileInputRef}
                     type="file"
                     accept="image/*"
                     onChange={handleScanFromFile}
-                    className="hidden"
+                    style={{ display: 'none' }}
                   />
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isProcessing}
-                    className="btn btn-primary btn-sm inline-flex items-center gap-2"
+                    className="login-submit-button"
+                    style={{ maxWidth: 220, height: 40, marginTop: 4 }}
                   >
-                    <Upload size={14} /> Explorar Archivos...
+                    <Upload size={16} /> Explorar Archivos...
                   </button>
                 </div>
               )}
 
               {/* VISTA 4: MODO PRUEBAS & SIMULACIÓN RÁPIDA */}
               {activeTab === 'manual' && (
-                <div className="manual-scan-container space-y-4">
+                <div className="qr-manual-box">
                   <div>
-                    <label className="block text-xs font-medium text-secondary mb-1">
+                    <label className="qr-manual-label">
                       Token Criptográfico o Payload QR Manual:
                     </label>
-                    <div className="flex gap-2">
+                    <div className="qr-manual-input-row">
                       <input
                         type="text"
                         value={manualToken}
                         onChange={(e) => setManualToken(e.target.value)}
                         placeholder="Ej. TKT-2026-7841-JWT-TOKEN"
-                        className="input-text text-xs flex-1"
+                        className="qr-manual-input"
                       />
                       <button
                         type="button"
                         disabled={!manualToken.trim() || isProcessing}
                         onClick={() => handleDecodedToken(manualToken)}
-                        className="btn btn-primary btn-xs px-3"
+                        className="qr-validate-btn"
                       >
                         Validar
                       </button>
                     </div>
                   </div>
 
-                  <div className="demo-shortcuts border-t border-default pt-3">
-                    <span className="text-[11px] font-semibold text-secondary uppercase tracking-wider block mb-2">
+                  <div className="qr-simulation-section">
+                    <span className="qr-simulation-title">
                       Atajos de Demostración Rápida:
                     </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <div className="qr-simulation-grid">
                       <button
                         type="button"
                         onClick={() => handleSimulateScan('valido')}
-                        className="btn btn-secondary btn-xs text-left flex items-center gap-1.5 border-emerald-500/40 hover:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                        className="qr-simulation-btn valid"
                       >
-                        <CheckCircle2 size={13} /> Boleto Válido (Ernesto)
+                        <CheckCircle2 size={16} /> Boleto Válido (Ernesto)
                       </button>
                       <button
                         type="button"
                         onClick={() => handleSimulateScan('reusado')}
-                        className="btn btn-secondary btn-xs text-left flex items-center gap-1.5 border-amber-500/40 hover:bg-amber-500/10 text-amber-700 dark:text-amber-400"
+                        className="qr-simulation-btn reused"
                       >
-                        <AlertTriangle size={13} /> Ya Escaneado
+                        <AlertTriangle size={16} /> Ya Escaneado
                       </button>
                       <button
                         type="button"
                         onClick={() => handleSimulateScan('invalido')}
-                        className="btn btn-secondary btn-xs text-left flex items-center gap-1.5 border-rose-500/40 hover:bg-rose-500/10 text-rose-700 dark:text-rose-400"
+                        className="qr-simulation-btn invalid"
                       >
-                        <XCircle size={13} /> Token Falso / Corrupto
+                        <XCircle size={16} /> Token Falso / Corrupto
                       </button>
                     </div>
                   </div>
@@ -702,12 +705,23 @@ export const QrCameraScannerModal: React.FC<QrCameraScannerModalProps> = ({
         </div>
 
         {/* Pie del Modal */}
-        <div className="modal-footer flex items-center justify-between">
-          <div className="text-[11px] text-muted flex items-center gap-1">
-            <ShieldCheck size={13} className="text-primary" />
+        <div className="qr-modal-footer">
+          <div className="qr-security-note">
+            <ShieldCheck size={15} style={{ color: 'var(--color-accent)' }} />
             <span>Verificación HMAC Criptográfica SHA-256 CUTonalá</span>
           </div>
-          <button type="button" onClick={onClose} className="btn btn-secondary btn-sm">
+          <button
+            type="button"
+            onClick={onClose}
+            className="modal-close-btn"
+            style={{
+              border: '1px solid var(--border-default)',
+              padding: '8px 16px',
+              borderRadius: 'var(--radius-md)',
+              fontWeight: 600,
+              fontSize: '0.85rem'
+            }}
+          >
             Cerrar Escáner
           </button>
         </div>
