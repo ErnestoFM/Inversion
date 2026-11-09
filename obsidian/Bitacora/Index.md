@@ -1,8 +1,16 @@
 # Índice de Bitácoras
 
-Registro cronológico de las sesiones de trabajo en el proyecto.
+Registro cronológico de las sesiones de trabajo en el proyecto:
 
+- [[Bitacora/2026-10-31|2026-10-31]]: Auditor�a t�cnica integral 100% real y sin mocks del proyecto SIGRE, remediaci�n de malas pr�cticas, eliminaci�n de credenciales hu�rfanas en texto plano (sa-key.json), supresi�n de claves quemadas en CI/CD, sincronizaci�n y normalizaci�n de contratos API (incidencias, boletos cineteca, reservas, bloqueos concurrentes), prevenci�n de fallos SPA en Nginx, manifiestos Cloud Build y aprovisionamiento para el nuevo proyecto de Google Cloud.
+- [[Bitacora/2026-10-23|2026-10-23]]: Elaboración y compilación del Protocolo de Investigación Completo (Secciones 1 a 13) para Metodología y Práctica de la Investigación (Mtra. Elizabeth Cristina Hernández Hernández) en Markdown y DOCX, integrando marco teórico, hipótesis, metodología Scrumban/cuasiexperimental, presupuesto CAPEX ($140k), manuales de usuario, evidencias de pruebas Playwright, conclusiones, cronograma de Gantt y glosario.
+- [[Bitacora/2026-10-09|2026-10-09]]: Corrección de fallo de despliegue en Google Cloud Run (`sigre-api`), compilación del paquete `@inversion/database` a `dist/` para resolver `SyntaxError: Unexpected identifier 'global'` en Node 20 y enlace explícito a `0.0.0.0`.
+- [[Bitacora/2026-10-07|2026-10-07]]: Soporte de cámara física en escáner QR (WebRTC/Html5Qrcode), elaboración de manuales oficiales de usuario y operación con diagramas Mermaid, grabación de demo interactiva (.webp) y suite E2E ampliada (9/9 pasadas).
+- [[Bitacora/2026-10-06|2026-10-06]]: Aprovisionamiento y vinculación de infraestructura real en GCP (leadforge-499919), habilitación de APIs de Cloud Run y Artifact Registry, creación de repositorio de imágenes y configuración de Service Account para CI/CD.
+- [[Bitacora/2026-10-05|2026-10-05]]: Resolución de conflictos de merge, diagnóstico de avance del monorepo y suite completa de pruebas E2E con Playwright (8/8 pasadas) para validar la Etapa 2 del Frontend.
+- [[Bitacora/2026-10-04|2026-10-04]]: Corrección de identidad de marca/logo SIGRE, des-IAtización de textos, auditoría bibliográfica estricta y atención a observaciones directivas (MML, DRP Offline-First, organigrama y flujos pro forma).
 - [[Bitacora/2026-10-03|2026-10-03]]: Elaboración de la Segunda Presentación (PPTX y Markdown) sobre Inversión Inicial, Selección de Proveedores, Estado de Resultados, TIR (22.84%), VPN y Payback (Mes 28).
+- [[Bitacora/2026-10-02|2026-10-02]]: Definición oficial de la Arquitectura de Software de SIGRE v1.0, especificación de contratos REST API, flujos con diagramas Mermaid (OAuth institucional exclusivo UdG, anti-empalme con Redis, despliegue GCP Cloud Run) y limpieza integral de módulos residuales en Obsidian.
 - [[Bitacora/2026-09-28|2026-09-28]]: Elaboración del Protocolo de Investigación oficial (.docx y Markdown) para Metodología y Práctica de la Investigación (Secciones 1 a 4).
 - [[Bitacora/2026-09-05|2026-09-05]]: Creación de la presentación académica (PPTX y Markdown), guión de 10 min, hipótesis y citas APA para la problemática SIGRE.
 - [[Bitacora/2026-09-04|2026-09-04]]: Solventación del dictamen técnico senior, estandarización de tablas a 11 pt, prosa argumentativa y cálculo de VPN/TIR.

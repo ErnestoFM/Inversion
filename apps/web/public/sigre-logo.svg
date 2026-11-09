@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" fill="none">
+  <defs>
+    <!-- Gradiente azul-verde para la "S" -->
+    <linearGradient id="s-gradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#002B49"/>
+      <stop offset="100%" stop-color="#2E7D57"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Letra S con gradiente -->
+  <text x="0" y="76" font-family="'Outfit', 'Poppins', sans-serif" font-size="80" font-weight="700" fill="url(#s-gradient)">S</text>
+
+  <!-- Letras IGRE en azul institucional -->
+  <text x="48" y="76" font-family="'Outfit', 'Poppins', sans-serif" font-size="80" font-weight="700" fill="#002B49">IGRE</text>
+
+  <!-- Barra decorativa verde -->
+  <rect x="0" y="88" width="60" height="4" rx="2" fill="#2E7D57"/>
+</svg>

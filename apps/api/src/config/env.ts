@@ -8,10 +8,10 @@ dotenv.config();
 const envSchema = z.object({
   PORT: z.string().default('8080'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  DATABASE_URL: z.string(),
-  REDIS_URL: z.string().default('redis://localhost:6379'),
-  JWT_ACCESS_SECRET: z.string().min(32),
-  JWT_REFRESH_SECRET: z.string().min(32),
+  DATABASE_URL: z.string().default(process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/inversion_test?schema=public'),
+  REDIS_URL: z.string().default(process.env.REDIS_URL || 'redis://localhost:6379'),
+  JWT_ACCESS_SECRET: z.string().min(32).default(process.env.JWT_ACCESS_SECRET || 'sigre_jwt_test_access_secret_super_secure_32_chars_min'),
+  JWT_REFRESH_SECRET: z.string().min(32).default(process.env.JWT_REFRESH_SECRET || 'sigre_jwt_test_refresh_secret_super_secure_32_chars_min'),
   JWT_ACCESS_EXPIRES: z.string().default('15m'),
   JWT_REFRESH_EXPIRES: z.string().default('7d'),
   WEB_URL: z.string().default('http://localhost:3000'),
@@ -20,7 +20,11 @@ const envSchema = z.object({
   SMTP_USER: z.string().optional(),
   SMTP_PASS: z.string().optional(),
   SMTP_FROM: z.string().default('"SIGRE CUTonalá" <notificaciones@cutonala.udg.mx>'),
-  GOOGLE_CLIENT_ID: z.string().optional()
+  GOOGLE_CLIENT_ID: z.string().optional(),
+  GCP_PROJECT_ID: z.string().default(process.env.GCP_PROJECT_ID || 'monchis-cafe-prod'),
+  GCS_BUCKET: z.string().default(process.env.GCS_BUCKET || 'sigre-storage-prod'),
+  RECAPTCHA_KEY_ID: z.string().default(process.env.RECAPTCHA_KEY_ID || '6Le4keItAAAAAP9kezXQe4kjl7kopvvoQ9gTPQuU'),
+  RECAPTCHA_SCORE_THRESHOLD: z.coerce.number().default(0.5)
 });
 
 export const env = envSchema.parse(process.env);

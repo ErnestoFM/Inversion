@@ -1,0 +1,17 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/sigre/sigre-api:latest'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/sigre/sigre-api:$SHORT_SHA'
+      - '-f'
+      - 'apps/api/Dockerfile'
+      - '.'
+images:
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/sigre/sigre-api:latest'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/sigre/sigre-api:$SHORT_SHA'
+options:
+  logging: CLOUD_LOGGING_ONLY
+

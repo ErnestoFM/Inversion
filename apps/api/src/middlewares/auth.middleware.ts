@@ -20,7 +20,19 @@ declare global {
 
 export const authenticateJwt = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
-  const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : req.cookies?.accessToken;
+  let token: string | undefined;
+
+  if (authHeader?.startsWith('Bearer ')) {
+    const candidate = authHeader.substring(7).trim();
+    if (candidate && candidate !== 'undefined' && candidate !== 'null') {
+      token = candidate;
+    }
+  }
+
+  // Fallback a cookies si el header no es un Bearer token válido
+  if (!token) {
+    token = req.cookies?.accessToken;
+  }
 
   if (!token) {
     return res.status(401).json({ error: 'Acceso no autorizado. Token requerido.' });
