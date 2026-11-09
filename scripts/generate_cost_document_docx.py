@@ -83,6 +83,15 @@ def generate_cost_docx(output_path):
         )
         tblPr.append(borders)
 
+        for cell in table.rows[0].cells:
+            tcPr = cell._tc.get_or_add_tcPr()
+            tcBorders = parse_xml(
+                f'<w:tcBorders {nsdecls("w")}>'
+                f'<w:bottom w:val="single" w:sz="10" w:space="0" w:color="1E3A8A"/>'
+                f'</w:tcBorders>'
+            )
+            tcPr.append(tcBorders)
+
     def add_table_title(title_text):
         p_tit = doc.add_paragraph()
         p_tit.paragraph_format.space_before = Pt(12)
@@ -90,8 +99,7 @@ def generate_cost_docx(output_path):
         p_tit.paragraph_format.keep_with_next = True
         r_tit = p_tit.add_run(title_text)
         r_tit.font.name = 'Calibri'
-        r_tit.font.size = Pt(10.5)
-        r_tit.font.italic = True
+        r_tit.font.size = Pt(10)
         r_tit.font.bold = True
         r_tit.font.color.rgb = COLOR_NAVY
 
@@ -114,7 +122,7 @@ def generate_cost_docx(output_path):
         p_num.paragraph_format.keep_with_next = True
         r_num = p_num.add_run(fig_num)
         r_num.font.name = 'Calibri'
-        r_num.font.size = Pt(10)
+        r_num.font.size = Pt(10.5)
         r_num.font.bold = True
         r_num.font.color.rgb = COLOR_NAVY
         
@@ -323,8 +331,28 @@ def generate_cost_docx(output_path):
         "y proyectores portátiles. Sumando $16,500.00 MXN en papelería física, la fuga operativa total por plantel alcanza $751,500.00 MXN anuales."
     )
 
+    add_heading_3("1.2.1. Costo de Oportunidad Académico y Deterioro Formativo")
+    doc.add_paragraph(
+        "Más allá del quebranto estrictamente monetario, la merma y extravío no controlado de equipo acarrea un severo costo de oportunidad académico. "
+        "Cuando un osciloscopio digital, un kit de microcontroladores o un proyector multimedia no son devueltos a tiempo o quedan inutilizados "
+        "sin un responsable identificado, los profesores se ven forzados a modificar de emergencia sus planeaciones didácticas o suspender prácticas clave. "
+        "Esto provoca que brigadas de estudiantes que deberían realizar mediciones individuales tengan que agruparse en equipos de cuatro o cinco alumnos "
+        "por estación de trabajo, reduciendo drásticamente el tiempo de contacto práctico con los instrumentos, retrasando los calendarios curriculares "
+        "y deteriorando directamente el desarrollo de competencias tecnológicas acreditables exigidas por organismos acreditadores nacionales e internacionales "
+        "(como CACEI o CONAET)."
+    )
+    doc.add_paragraph(
+        "Para transformar este impacto cualitativo en un indicador de gestión medible y auditable, se formalizó la métrica "
+        "Tasa de Prácticas Suspendidas o Reprogramadas por Faltante de Instrumental (TPSR), calculada como el porcentaje de prácticas programadas "
+        "que sufren demoras, suspensiones o adecuaciones forzadas por falta de equipo funcional. La línea base diagnóstica levantada en CUTonalá "
+        "durante el ciclo 2025-B/2026-A arrojó una TPSR del 14.5% en los laboratorios de Electrónica, Computación y Ciencias Básicas. Con la implementación "
+        "de SIGRE —mediante el módulo de reserva predictiva con 48 horas de anticipación, la verificación de kits completos mediante código QR "
+        "y la alerta temprana de insumos en stock—, la meta operacional para el primer año de despliegue establece reducir la TPSR a menos del 1.5% semestral, "
+        "disminuyendo en un 89.7% las afectaciones formativas y blindando los estándares de calidad académica requeridos en los procesos de reacreditación."
+    )
+
     add_table_title("Cuantificación del impacto económico por gestión manual vs. ahorro con SIGRE (Centro Universitario Promedio)")
-    t_quant = doc.add_table(rows=10, cols=4)
+    t_quant = doc.add_table(rows=11, cols=4)
     t_quant.alignment = WD_TABLE_ALIGNMENT.CENTER
     set_apa_table_borders(t_quant)
 
@@ -345,6 +373,7 @@ def generate_cost_docx(output_path):
         ("Mermas y extravíos anuales de instrumental/equipo", "$240,000.00 MXN", "$12,000.00 MXN", "$228,000.00 MXN mitigados (95% control)"),
         ("Gasto anual en papelería física (vales, tóner, carpetas)", "$16,500.00 MXN", "$0.00 MXN", "$16,500.00 MXN (eliminación total)"),
         ("COSTO TOTAL ANUAL DE INEFICIENCIA POR PLANTEL", "$751,500.00 MXN", "$61,500.00 MXN", "$690,000.00 MXN ahorro bruto anual"),
+        ("Tasa de Prácticas de Laboratorio Afectadas (TPSR)", "14.5% semestral (hacinamiento 4-5)", "< 1.5% semestral", "Reducción 89.7% (Blindaje CACEI)"),
         ("Costo de Adopción de Licencia Anual SIGRE (1 Almacén)", "$0.00 MXN", "$28,950.00 MXN", "-$28,950.00 MXN inversión anual"),
         ("BENEFICIO NETO ANUAL GENERADO AL CENTRO UNIVERSITARIO", "-$751,500.00 MXN", "$661,050.00 MXN", "ROI Operativo: 2,283% | Payback: 15 días")
     ]
@@ -355,14 +384,14 @@ def generate_cost_docx(output_path):
             cell.paragraphs[0].text = val
             p = cell.paragraphs[0]
             p.alignment = WD_ALIGN_PARAGRAPH.LEFT if c_i == 0 else WD_ALIGN_PARAGRAPH.RIGHT
-            if c_i in (1, 2) and r_i in (1, 2, 3): p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            if c_i in (1, 2) and r_i in (1, 2, 3, 8): p.alignment = WD_ALIGN_PARAGRAPH.CENTER
             p.runs[0].font.size = Pt(9)
-            if r_i in (7, 9):
+            if r_i in (7, 10):
                 p.runs[0].font.bold = True
                 p.runs[0].font.color.rgb = COLOR_NAVY
             set_cell_margins(cell, 40, 40, 50, 50)
 
-    add_table_note("Cálculo formal con base en tabulador UdeG ($110/hora técnico operativo) e inventario promedio verificado en almacén de CUTonalá.")
+    add_table_note("Cálculo formal con base en tabulador UdeG ($110/hora técnico operativo), mermas empíricas y registro de incidencias en CUTonalá.")
 
     add_heading_2("1.3. Propuesta de Solución: Plataforma SaaS SIGRE")
     doc.add_paragraph(
@@ -387,32 +416,30 @@ def generate_cost_docx(output_path):
         "de datos del sector público jalisciense.\n"
         "3. Gestión Manual / Hojas de Cálculo (Vales de papel y Google Sheets): Tienen un costo de adquisición aparentemente nulo, pero conllevan "
         "la fuga de más de $750,000 MXN anuales demostrada previamente, exponiendo además a las autoridades a sanciones legales por incumplimiento "
-        "de la Ley General de Protección de Datos Personales en Posesión de Sujetos Obligados (LGPDPPSO) al dejar listas de alumnos expuestas en mostrador."
+        "de la Ley General de Protección de Datos Personales en Posesión de Sujetos Obligados (LGPDPPSO) al dejar datos expuestos en papel."
     )
 
-    add_table_title("Benchmarking competitivo: SIGRE frente a alternativas del mercado de gestión de inventarios")
-    t_bm = doc.add_table(rows=9, cols=5)
+    add_table_title("Matriz de benchmarking competitivo frente a alternativas de mercado")
+    t_bm = doc.add_table(rows=7, cols=5)
     t_bm.alignment = WD_TABLE_ALIGNMENT.CENTER
     set_apa_table_borders(t_bm)
 
-    headers_bm = ["Criterio / Factor Clave", "SIGRE (Propuesta)", "ERP Corporativo (SAP / Oracle)", "Software Comercial (Odoo / Zoho)", "Gestión Artesanal (Papel / Excel)"]
+    headers_bm = ["Criterio de Evaluación", "SIGRE (Propuesta)", "ERP Corporativo (SAP/Oracle)", "Software Comercial (Odoo/Zoho)", "Gestión Manual (Papel)"]
     for c_i, h in enumerate(headers_bm):
         cell = t_bm.rows[0].cells[c_i]
         cell.paragraphs[0].text = h
         cell.paragraphs[0].runs[0].font.bold = True
         cell.paragraphs[0].runs[0].font.size = Pt(8.5)
         cell.paragraphs[0].runs[0].font.color.rgb = COLOR_NAVY
-        set_cell_margins(cell, 45, 45, 50, 50)
+        set_cell_margins(cell, 45, 45, 45, 45)
 
     rows_bm_data = [
-        ("Costo Anual de Licenciamiento por Dependencia", "$28,950 MXN netos", "$220,000 - $480,000 MXN", "$65,000 - $110,000 MXN", "$0 MXN (Aparente)"),
-        ("Tiempo y Costo de Puesta en Marcha", "Inmediato (<1 semana, SaaS)", "6 a 12 meses ($350,000+ consultoría)", "2 a 3 meses ($45,000 setup)", "Inmediato (sin arquitectura)"),
-        ("Modalidad de Contratación Pública UdeG", "Adjudicación Directa (<$200k Art. 55)", "Licitación Pública Obligatoria", "Licitación / Invitación Restringida", "No aplica"),
-        ("Cumplimiento Normativo LGPDPPSO (Jalisco)", "100% Nativo (Auditoría ITEI)", "Requiere customización costosa", "Parcial (Enfoque comercial privado)", "Nulo (Riesgo grave de fuga de datos)"),
-        ("Algoritmo Predictivo de Scoring de Alumnos", "Sí (Evaluación paramétrica de riesgo)", "No nativo (Módulo BI a la medida)", "No disponible", "No existe"),
-        ("Modo Offline en Contingencia de Red", "Sí (PWA con Service Worker e IndexedDB)", "No (Dependencia continua de red)", "Parcial (App no optimizada a ventanilla)", "Papel (Sin trazabilidad digital)"),
-        ("Tiempo Promedio de Despacho en Ventanilla", "< 30 segundos (Escaneo QR institucional)", "2 a 3 minutos (Múltiples pantallas)", "1 a 2 minutos", "4 a 5 minutos (Llenado manuscrito)"),
-        ("Barrera de Entrada y Propuesta de Valor Única", "Scoring + LGPDPPSO + Compras Menores UdeG", "Ecosistema corporativo integrado", "Ecosistema modular genérico", "Costo directo cero")
+        ("Costo anual por dependencia", "$28,950.00 MXN", "$220,000 - $480,000 MXN", "$65,000 - $110,000 MXN", "$0 MXN (aparente)"),
+        ("Mecanismo de contratación pública", "Adjudicación Directa (Art. 55)", "Licitación Pública Nacional", "Licitación / Invitación", "No aplica"),
+        ("Tiempo de atención en ventanilla", "< 27 segundos (QR dinámico)", "2 a 3 minutos", "1 a 2 minutos", "4 a 5 minutos"),
+        ("Scoring predictivo de fiabilidad", "Sí (algoritmo nativo)", "No nativo (desarrollo extra)", "No disponible", "Inexistente"),
+        ("Modo contingencia offline (PWA)", "Sí (IndexedDB + AES-256)", "No (requiere red fija)", "Parcial (app móvil)", "Papel (sin trazabilidad)"),
+        ("Cumplimiento normativo LGPDPPSO", "Nativo (auditoría ITEI)", "Requiere parametrización", "Parcial (enfoque privado)", "Nulo (infracción legal)")
     ]
 
     for r_i, r_data in enumerate(rows_bm_data, start=1):
@@ -429,29 +456,56 @@ def generate_cost_docx(output_path):
 
     add_table_note("El umbral de adjudicación directa bajo el Art. 55 de la Ley de Compras de Jalisco faculta contrataciones menores sin licitación.")
 
-    add_heading_3("1.4.1. Estrategia de Gestión del Cambio Operativo en Almacenes y Laboratorios")
+    add_heading_3("1.4.1. Estrategia de Gestión del Cambio Operativo y Protocolo Sindical (SUTUdeG)")
     doc.add_paragraph(
-        "En instituciones públicas de educación superior, la principal barrera de adopción no suele ser técnica ni presupuestal, "
-        "sino la inercia cultural y resistencia al cambio del personal operativo de base. Para asegurar una transición fluida y colaborativa, "
-        "se diseñó un plan de gestión del cambio estructurado en cuatro pilares estratégicos:"
+        "En instituciones públicas de educación superior, la principal barrera de adopción radica en la inercia cultural "
+        "y la resistencia del personal operativo de base ante herramientas digitales percibidas erróneamente como fiscalización. "
+        "Para asegurar una adopción armónica y participativa, se diseñó una estrategia integral sustentada en cuatro ejes:"
     )
     doc.add_paragraph(
         "• Talleres Prácticos Breves (30 minutos): Sesiones presenciales en la propia ventanilla del almacén, libres de jerga computacional, "
         "enfocadas en la mecánica directa de escaneo y entrega con equipos reales.\n"
-        "• Red de 'Laboratoristas Campeones': Identificación y capacitación prioritaria de los encargados de turno con mayor ascendencia y liderazgo de opinión "
+        "• Red de 'Laboratoristas Campeones': Identificación y capacitación prioritaria de los encargados de turno con mayor liderazgo de opinión "
         "en los almacenes de CUTonalá, convirtiéndolos en mentores y promotores internos de la plataforma frente a sus compañeros.\n"
-        "• Incentivo Directo de Descarga Laboral: Se comunica claramente el beneficio operativo para el propio trabajador: SIGRE les ahorra "
-        "más de 40 minutos diarios de cotejo manual de libretas y cuadre de firmas al cierre de turno, eliminando además su responsabilidad patrimonial personal "
-        "mediante actas digitales respaldadas con firma del estudiante.\n"
+        "• Protocolo de Contención de Fricciones Sindicales (SUTUdeG): El diálogo con los delegados gremiales del Sindicato Único de Trabajadores "
+        "de la Universidad de Guadalajara se estructura en torno a una premisa clara: SIGRE no es una herramienta de vigilancia punitiva ni incrementa "
+        "las cargas de trabajo, sino que constituye un escudo de protección patrimonial y legal para el trabajador. Bajo el esquema analógico, "
+        "cuando un equipo costoso se extravía durante una auditoría interna, el almacenista suele ser investigado administrativamente; "
+        "con SIGRE, la responsabilidad civil queda formalmente transferida al solicitante mediante un acta digital inmutable con firma electrónica, "
+        "deslindando al trabajador sindicalizado de cualquier responsabilidad económica injusta.\n"
+        "• Sub-Hito Formal de Socialización y Visto Bueno Sindical (Mes 6): En las últimas dos semanas del Mes 6, previo a la apertura de ventanillas del piloto, "
+        "se formaliza la celebración de un taller demostrativo y mesa de diálogo con los delegados seccionales del SUTUdeG en CUTonalá. En este acto se suscribe "
+        "la Minuta de Concertación y Visto Bueno Sindical, donde el sindicato avala formalmente el uso de la herramienta tras constatar que el vale digital "
+        "con firma electrónica protege patrimonialmente al personal operativo ante la Contraloría General y no altera perjudicialmente sus condiciones laborales, "
+        "blindando la fase de marcha blanca ante cualquier fricción gremial.\n"
         "• Acompañamiento en Sitio durante la Marcha Blanca: Durante las dos primeras semanas de operación, un ingeniero de soporte permanecerá físicamente "
         "en ventanilla durante las horas pico para asistir en vivo al personal ante cualquier eventualidad o duda operativa."
+    )
+
+    add_heading_3("1.4.2. Estimación del Costo de Adquisición de Clientes (CAC) Institucional y Ratio LTV/CAC")
+    doc.add_paragraph(
+        "Aun cuando la comercialización en la Red Universitaria opera bajo el esquema de contratación por Adjudicación Directa "
+        "(amparada en el Artículo 55 de la Ley de Compras Gubernamentales del Estado de Jalisco al no rebasar el umbral anual de compras menores), "
+        "el proceso de venta institucional (B2G) exige una inversión técnica y de cabildeo directivo previa a la formalización de cada convenio. "
+        "Para dotar de máximo rigor al modelo de negocio, se monetizó el Costo de Adquisición de Clientes (CAC) Institucional por centro universitario o dependencia:"
+    )
+    doc.add_paragraph(
+        "• Horas de Ingeniería Técnica en Preventa: 25 horas dedicadas a reuniones ejecutivas, demostraciones en vivo en ventanilla y levantamiento de inventarios "
+        "muestrales con secretarios administrativos, directores de división y jefes de laboratorio, valoradas a un costo técnico de $150.00 MXN/hora ($3,750.00 MXN).\n"
+        "• Viáticos y Material Técnico de Difusión: Gastos de traslado intercampus en el Área Metropolitana de Guadalajara y carpetas técnicas institucionales ($1,250.00 MXN).\n"
+        "• Costo de Adquisición de Clientes (CAC Institucional) Total: $5,000.00 MXN por campus o dependencia cabecera.\n"
+        "• Valor de Vida del Cliente (Customer Lifetime Value - LTV): Con una cuota anual de $28,950.00 MXN y un horizonte contractual conservador de 3 años, "
+        "el LTV por dependencia asciende a $86,850.00 MXN netos.\n"
+        "• Ratio LTV / CAC Institucional: El cociente $86,850.00 / $5,000.00 se sitúa en 17.37x. En el análisis de inversiones de software, una razón LTV/CAC "
+        "superior a 3.0x se considera financieramente atractiva y sostenible; alcanzar 17.37x ratifica que el esfuerzo de preventa técnica se amortiza por completo "
+        "en los primeros 2.1 meses de operación del primer año, confirmando una alta eficiencia comercial."
     )
 
     add_heading_2("1.5. Matriz de Marco Lógico (MML) del Proyecto")
     doc.add_paragraph(
         "Siguiendo los lineamientos metodológicos de CEPAL e ILPES para la formulación de proyectos de inversión "
-        "(Ortegón, Pacheco y Prieto, 2005), se formuló la Matriz de Marco Lógico (MML) de SIGRE. Esta herramienta "
-        "establece la jerarquía causal de objetivos, sus metas cuantitativas y los factores de gobernanza institucional:"
+        "(Ortegón, Pacheco y Prieto, 2005), se formuló la Matriz de Marco Lógico (MML) de SIGRE, vinculando cada supuesto "
+        "con su respectiva acción de mitigación implícita:"
     )
 
     add_table_title("Matriz de Marco Lógico (MML) del Proyecto SIGRE — Metodología CEPAL / ILPES")
@@ -459,7 +513,7 @@ def generate_cost_docx(output_path):
     t_mml.alignment = WD_TABLE_ALIGNMENT.CENTER
     set_apa_table_borders(t_mml)
 
-    headers_mml = ["Nivel de Objetivo", "Resumen Narrativo", "Indicadores Verificables (IOV)", "Medios de Verificación", "Supuestos Críticos"]
+    headers_mml = ["Nivel de Objetivo", "Resumen Narrativo", "Indicadores Verificables (IOV)", "Medios de Verificación", "Supuestos Críticos y Mitigación Implícita"]
     for c_i, h in enumerate(headers_mml):
         cell = t_mml.rows[0].cells[c_i]
         cell.paragraphs[0].text = h
@@ -471,24 +525,24 @@ def generate_cost_docx(output_path):
     rows_mml_data = [
         ("FIN",
          "Contribuir a la modernización tecnológica, transparencia en la rendición de cuentas públicas y optimización del gasto en control de materiales de la Red Universitaria UdeG.",
-         "1. Tasa de pérdida de activos reducida a <0.5% en centros participantes al término del Año 3.\n2. Reducción del 85% en tiempos de espera en ventanillas de laboratorios a nivel Red.",
+         "1. Tasa de pérdida de activos reducida a <0.5% en centros participantes al término del Año 3.\n2. Reducción del 85% en tiempos de espera en ventanillas de laboratorios a nivel Red.\n3. Reducción de la TPSR a <1.5% semestral.",
          "Dictámenes telemétricos y reportes de discrepancia cero generados nativamente por SIGRE; actas de cierre semestral de inventario firmadas por las Coordinaciones de Laboratorio de los campus.",
-         "Políticas institucionales de la UdeG mantienen prioridad estratégica en cero papel y digitalización administrativa."),
+         "Supuesto: La UdeG mantiene prioridad en digitalización. // Mitigación ante recortes presupuestales: El ROI acelerado ($661k de ahorro neto vs $28k de costo con payback de 15 días) convierte a SIGRE en una medida de austeridad y ahorro operativo que blinda el proyecto ante recortes."),
         ("PROPÓSITO",
          "Optimizar el proceso de solicitud, validación de riesgo, despacho y devolución de inventario en almacenes y ventanillas de centros universitarios (Piloto CUTonalá, expansión a CUCEI y red).",
          "1. Tiempo promedio de despacho por vale menor a 30 segundos en el 98% de casos.\n2. 100% de préstamos con trazabilidad criptográfica y score de riesgo al cierre del Año 1.",
          "Métricas telemétricas de Cloud SQL / BigQuery; reportes mensuales de operación de SIGRE; bitácoras de auditoría de despacho.",
-         "Coordinadores de carrera y jefes de almacén aplican de forma obligatoria la plataforma en sustitución del vale en papel."),
+         "Supuesto: Personal aplica la plataforma con disciplina. // Mitigación: La red de 'Laboratoristas Campeones', los talleres breves de 30 min y el deslinde de responsabilidades patrimoniales neutralizan la resistencia de base."),
         ("COMPONENTES",
          "C1. Plataforma SaaS en GCP (Cloud Run, PostgreSQL, Secret Manager).\nC2. Motor de Scoring de Fiabilidad.\nC3. Interfaz PWA con modo offline.\nC4. Programa de Capacitación, Gobernanza LGPDPPSO y Manuales.",
          "1. Disponibilidad de plataforma de 99.5% mensual (SLA Cloud Run).\n2. Capacidad de operación offline local de hasta 4 horas consecutivas.\n3. 100% de personal operativo de almacenes piloto acreditado.",
          "Dashboard de monitoreo Google Cloud; reportes de pruebas k6; actas de acreditación de capacitación y entrega de manuales.",
-         "Infraestructura de red de los centros mantiene conectividad base y el personal operativo muestra disposición al cambio."),
+         "Supuesto: Intermitencias en la red de campus. // Mitigación: Arquitectura Offline-First con IndexedDB y Service Workers garantiza despacho ininterrumpido en <20 s sin conexión."),
         ("ACTIVIDADES",
-         "A1. Arquitectura Cloud en GCP (M1-M2).\nA2. Scoring algorítmico y PWA offline (M3-M4).\nA3. QA, pruebas k6 y auditoría LGPDPPSO (M5).\nA4. Registro software INDAUTOR (M6).\nA5. Piloto CUTonalá y talleres (M7-M9).\nA6. KPIs y release v1.5 (M10-M12).",
-         "1. Inversión ejecutada conforme a cronograma de $120,000 MXN en Año 1.\n2. 100% de hitos técnicos concluidos en fechas programadas.\n3. Certificado INDAUTOR obtenido en Mes 6.",
-         "Repositorio GitHub con tags de release firmados; comprobante oficial INDAUTOR; listas de asistencia a talleres de capacitación.",
-         "Los recursos de capital semilla se desembolsan oportunamente y los planteles autorizan acceso a almacenes para la implementación.")
+         "A1. Arquitectura Cloud en GCP (M1-M2).\nA2. Scoring algorítmico y PWA offline (M3-M4).\nA3. QA, pruebas k6, pentesting OWASP y auditoría LGPDPPSO (M5-M6).\nA4. Registro software INDAUTOR y Visto Bueno SUTUdeG (M6).\nA5. Piloto CUTonalá y talleres (M7-M9).\nA6. KPIs y release v1.5 (M10-M12).",
+         "1. Inversión ejecutada conforme a cronograma de $120,000 MXN en Año 1.\n2. 100% de hitos técnicos concluidos en fechas programadas.\n3. Certificado INDAUTOR y Dictamen de Pentesting obtenidos en Mes 6.",
+         "Repositorio GitHub con tags de release firmados; comprobante oficial INDAUTOR; listas de asistencia a talleres de capacitación y minuta sindical.",
+         "Supuesto: Retrasos en procesos de compra y firmas. // Mitigación: Adjudicación directa Art. 55 (<$200k) y colchón de capital semilla de $120k que absorbe hasta 4 meses de morosidad administrativa.")
     ]
 
     for r_i, r_data in enumerate(rows_mml_data, start=1):
@@ -503,7 +557,17 @@ def generate_cost_docx(output_path):
                 p.runs[0].font.color.rgb = COLOR_NAVY
             set_cell_margins(cell, 35, 35, 45, 45)
 
-    add_table_note("Elaboración formal con base en la metodología de marco lógico de CEPAL (Ortegón et al., 2005), empleando fuentes telemétricas nativas no confidenciales.")
+    add_table_note("Elaboración formal con base en la metodología de marco lógico de CEPAL (Ortegón et al., 2005), integrando acciones de mitigación de riesgo por nivel.")
+
+    add_heading_3("1.5.1. Mecanismo de Gobernanza y Revisión Periódica Trimestral de la MML")
+    doc.add_paragraph(
+        "Para garantizar que los Indicadores Objetivamente Verificables (IOV) no operen como parámetros estáticos de gabinete, se formaliza un "
+        "Comité Técnico de Seguimiento Operativo integrado por el Lead Developer, el Coordinador de Soporte y el enlace administrativo del campus. "
+        "Este comité sesionará con periodicidad trimestral durante el Año 1 (al cierre de Q1, Q2, Q3 y Q4) para auditar las métricas telemétricas extraídas "
+        "automáticamente de Google Cloud SQL y los reportes de despacho de SIGRE. Si se detecta una desviación superior al 5.0% respecto a las metas "
+        "(ej. tiempo de despacho en ventanilla superior a 30 segundos o merma mensual mayor al 0.5%), se activa un protocolo de recalibración que reordena "
+        "el backlog del siguiente sprint de desarrollo y refuerza la capacitación presencial en la ventanilla afectada."
+    )
 
     # =========================================================================
     # SECCIÓN 2: PLAN DE SERVICIO OPERATIVO Y ARQUITECTURA TECNOLÓGICA
@@ -531,7 +595,7 @@ def generate_cost_docx(output_path):
         r_tit.font.color.rgb = COLOR_NAVY
         p_step.add_run(desc)
 
-    add_heading_2("2.2. Arquitectura Cloud Nativa en Google Cloud Platform")
+    add_heading_2("2.2. Arquitectura Cloud Nativa y Pila Tecnológica (Tech Stack)")
     doc.add_paragraph(
         "La plataforma se implementó sobre infraestructura elástica serverless de Google Cloud Platform (GCP) en la región "
         "us-central1 (Iowa), seleccionada por ofrecer latencias menores a 65 milisegundos hacia el nodo de la Red Universitaria "
@@ -544,6 +608,17 @@ def generate_cost_docx(output_path):
         "• Seguridad Criptográfica (Google Secret Manager): Custodia de llaves de cifrado AES-256, tokens de autenticación JWT y credenciales institucionales."
     )
 
+    add_heading_3("2.2.1. Pila Tecnológica (Tech Stack) de la Solución PWA")
+    doc.add_paragraph(
+        "Para garantizar mantenibilidad a largo plazo, tipado estático riguroso y una experiencia de usuario fluida, "
+        "se seleccionó un stack tecnológico moderno de estándar empresarial:\n"
+        "• Frontend y Aplicación de Ventanilla (PWA): React 18 con TypeScript y Vite como empaquetador de alto rendimiento; "
+        "TailwindCSS para maquetación responsiva; Service Workers con Workbox para control de caché; persistencia reactiva en IndexedDB "
+        "mediante Dexie.js y SQLite compilado a WebAssembly (Wasm) con cifrado local AES-256 (Web Crypto API nativa).\n"
+        "• Backend y Microservicios: Node.js 20 LTS con TypeScript bajo arquitectura modular y endpoints RESTful/GraphQL, containerizado en Docker sobre Cloud Run.\n"
+        "• Persistencia y Seguridad: PostgreSQL 15 en Cloud SQL con extensiones criptográficas (pgcrypto) y políticas de seguridad a nivel de fila (Row Level Security)."
+    )
+
     add_heading_2("2.3. Cumplimiento Normativo y Privacidad de Datos (LGPDPPSO)")
     doc.add_paragraph(
         "Al tratarse de una institución pública descentralizada del Estado de Jalisco, la Universidad de Guadalajara "
@@ -551,6 +626,19 @@ def generate_cost_docx(output_path):
         "y supervisada por el Instituto de Transparencia, Información Pública y Protección de Datos Personales del Estado de Jalisco (ITEI). "
         "SIGRE incorpora cifrado en tránsito (TLS 1.3), cifrado en reposo (AES-256), anonimización de identificadores en bitácoras telemétricas "
         "y módulos nativos para el ejercicio de derechos ARCO."
+    )
+
+    add_heading_3("2.3.1. Prerrequisito de Ciberseguridad: Auditoría Ligera y Prueba de Penetración (Pentesting) OWASP Top 10")
+    doc.add_paragraph(
+        "Dado que la plataforma gestiona datos de filiación de la comunidad estudiantil y académica protegidos por la LGPDPPSO (DOF, 2017), "
+        "se definió como condición obligatoria previa al encendido de la Marcha Blanca en el Mes 7 la ejecución de una auditoría de ciberseguridad "
+        "ligera y un análisis de penetración ético (pentesting) enfocado en las vulnerabilidades críticas del estándar OWASP Top 10. "
+        "El procedimiento se programa durante el Mes 6 y contempla: (a) análisis estático de código fuente (SAST) mediante SonarQube para identificar "
+        "patrones de inyección SQL, validación deficiente de entradas y cross-site scripting (XSS); (b) pruebas dinámicas de intrusión (DAST) automatizadas "
+        "con OWASP ZAP sobre los endpoints REST de Google Cloud Run para evaluar la robustez de los tokens JWT y la mitigación de ataques CSRF; "
+        "y (c) verificación forense del motor criptográfico local AES-256 en IndexedDB para comprobar la inmutabilidad de los vales offline. "
+        "La liberación a producción exige la emisión de un Dictamen Técnico de No Vulnerabilidad Crítica, garantizando a la Secretaría Administrativa "
+        "del CUTonalá que la plataforma no expone vectores de filtración de información institucional."
     )
 
     add_heading_2("2.4. Protocolo de Recuperación ante Desastres (DRP) y Contingencia en Ventanilla")
@@ -624,35 +712,37 @@ def generate_cost_docx(output_path):
     # =========================================================================
     add_heading_1("3. Lista de Insumos (BOM) por Unidad y por Lote")
     doc.add_paragraph(
-        "En un servicio SaaS, los insumos no corresponden a materia prima física sino a capacidad de cómputo, "
-        "ancho de banda, memoria, bases de datos y servicios transaccionales estructurados en el Bill of Materials (BOM):"
+        "Conforme a los lineamientos de la materia, la estructura de costos se modeló bajo dos dimensiones de análisis: "
+        "(a) Costo Unitario por Dependencia (1 almacén o ventanilla central), y (b) Costo del Lote de Producción "
+        "(100 dependencias universitarias activas concurrentes, representativo de la escala de la Red UdeG)."
     )
 
-    add_heading_2("3.1. Insumos Directos de Tecnología (Nube)")
+    add_heading_2("3.1. Materia Prima e Insumos Tecnológicos Directos")
     doc.add_paragraph(
-        "Se dimensionaron cuatro componentes en Google Cloud Platform requeridos para atender el lote de 100 dependencias universitarias:"
+        "Al tratarse de una solución nativa en la nube, la materia prima directa corresponde a los recursos de cómputo, "
+        "bases de datos, almacenamiento de objetos y servicios de mensajería consumidos en Google Cloud Platform:"
     )
 
-    add_table_title("Insumos directos de TI y servicios cloud — lote base de 100 dependencias")
-    t_mp = doc.add_table(rows=6, cols=5)
+    add_table_title("Estructura de costos de materia prima / insumos TI mensuales (Lote 100 dependencias)")
+    t_mp = doc.add_table(rows=6, cols=6)
     t_mp.alignment = WD_TABLE_ALIGNMENT.CENTER
     set_apa_table_borders(t_mp)
 
-    headers_mp = ["Concepto del Insumo TI", "Unidades", "C. Unitario (s/IVA)", "C. Total (+IVA)", "IVA Acreditable"]
+    headers_mp = ["Insumo / Concepto", "Unidades", "C. Unitario (sin IVA)", "C. Total (+16% IVA)", "IVA Trasladado", "Mapeo a la Presentación"]
     for c_i, h in enumerate(headers_mp):
         cell = t_mp.rows[0].cells[c_i]
         cell.paragraphs[0].text = h
         cell.paragraphs[0].runs[0].font.bold = True
-        cell.paragraphs[0].runs[0].font.size = Pt(9.5)
+        cell.paragraphs[0].runs[0].font.size = Pt(9)
         cell.paragraphs[0].runs[0].font.color.rgb = COLOR_NAVY
-        set_cell_margins(cell, 45, 45, 55, 55)
+        set_cell_margins(cell, 45, 45, 45, 45)
 
     rows_mp_data = [
-        ("A (Instancias Cloud Run Compute Serverless)", "2", "$500.00", "$1,160.00", "$160.00"),
-        ("B (Base de Datos Cloud SQL PostgreSQL)", "1", "$900.00", "$1,044.00", "$144.00"),
-        ("C (Almacenamiento Cloud Storage PDFs/QR)", "2", "$250.00", "$580.00", "$80.00"),
-        ("D (API Mensajería Transaccional y Notif.)", "1", "$266.67", "$309.33", "$42.67"),
-        ("TOTAL INSUMOS DIRECTOS TI", "—", "$2,666.67", "$3,093.33", "$426.67")
+        ("A (Instancias Cloud Run Compute)", "2 inst.", "$500.00", "$1,160.00", "$160.00", "Servidores Cloud Run ($12k/año)"),
+        ("B (Base de Datos Cloud SQL)", "1 inst.", "$900.00", "$1,044.00", "$144.00", "Base de Datos SQL ($11k/año)"),
+        ("C (Almacenamiento Cloud Storage)", "2 buckets", "$250.00", "$580.00", "$80.00", "Almacenamiento ($6k/año)"),
+        ("D (API Mensajería Transaccional)", "1 servicio", "$266.67", "$309.33", "$42.67", "APIs y Notificaciones ($3k/año)"),
+        ("TOTAL MATERIA PRIMA (LOTE 100)", "6 serv.", "$2,666.67", "$3,093.33", "$426.67", "Gasto Cloud Anualizado: $32,000.00 netos")
     ]
 
     for r_i, r_data in enumerate(rows_mp_data, start=1):
@@ -660,41 +750,40 @@ def generate_cost_docx(output_path):
             cell = t_mp.rows[r_i].cells[c_i]
             cell.paragraphs[0].text = val
             p = cell.paragraphs[0]
-            p.alignment = WD_ALIGN_PARAGRAPH.LEFT if c_i == 0 else WD_ALIGN_PARAGRAPH.RIGHT
+            p.alignment = WD_ALIGN_PARAGRAPH.LEFT if c_i in (0, 5) else WD_ALIGN_PARAGRAPH.RIGHT
             if c_i == 1: p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            p.runs[0].font.size = Pt(9)
+            p.runs[0].font.size = Pt(8.5)
             if r_i == 5:
                 p.runs[0].font.bold = True
                 p.runs[0].font.color.rgb = COLOR_NAVY
-            set_cell_margins(cell, 40, 40, 50, 50)
+            set_cell_margins(cell, 35, 35, 45, 45)
 
-    add_table_note("Cálculo formal para infraestructura Google Cloud Platform ($32,000 MXN anuales / $2,666.67 MXN mensuales sin IVA).")
+    add_table_note("El subtotal sin IVA mensual es de $2,666.67 MXN ($32,000.00 anuales). El IVA del 16% es de $426.67 MXN, totalizando $3,093.33 MXN mensuales.")
 
-    add_heading_2("3.2. Capital Humano Directo")
+    add_heading_2("3.2. Mano de Obra Directa y Capital Humano")
     doc.add_paragraph(
-        "El capital humano especializado es el núcleo de ingeniería para el desarrollo continuo, aseguramiento de calidad "
-        "y soporte de segundo nivel a las ventanillas de los centros universitarios (Hansen y Mowen, 2007). "
-        "En la fase de arranque, el equipo directo comprende dos perfiles técnicos con una asignación mensual de $10,833.33 MXN ($130,000 MXN anuales):"
+        "El capital humano constituye el activo más crítico para la entrega del servicio SaaS. Para el lote de 100 dependencias, "
+        "se dimensionó el personal técnico necesario para garantizar la operación continua, despliegues CI/CD y atención de incidencias:"
     )
 
-    add_table_title("Mano de obra directa y perfiles de ingeniería de software")
-    t_mo = doc.add_table(rows=4, cols=4)
+    add_table_title("Estructura salarial mensual de mano de obra directa (Lote 100 dependencias)")
+    t_mo = doc.add_table(rows=4, cols=6)
     t_mo.alignment = WD_TABLE_ALIGNMENT.CENTER
     set_apa_table_borders(t_mo)
 
-    headers_mo = ["Perfil Profesional", "Dedicación", "Monto Mensual", "Monto Anual"]
+    headers_mo = ["Puesto / Rol Técnico", "Personal", "Sueldo Mensual", "Total Mensual", "% Total", "Responsabilidad Principal"]
     for c_i, h in enumerate(headers_mo):
         cell = t_mo.rows[0].cells[c_i]
         cell.paragraphs[0].text = h
         cell.paragraphs[0].runs[0].font.bold = True
-        cell.paragraphs[0].runs[0].font.size = Pt(9.5)
+        cell.paragraphs[0].runs[0].font.size = Pt(9)
         cell.paragraphs[0].runs[0].font.color.rgb = COLOR_NAVY
-        set_cell_margins(cell, 45, 45, 55, 55)
+        set_cell_margins(cell, 45, 45, 45, 45)
 
     rows_mo_data = [
-        ("Ingeniero DevOps / Cloud Architect", "Medio tiempo (80 hrs/mes)", "$6,000.00", "$72,000.00"),
-        ("Especialista en QA y Soporte Técnico L2", "Medio tiempo (60 hrs/mes)", "$4,833.33", "$58,000.00"),
-        ("TOTAL CAPITAL HUMANO DIRECTO", "140 hrs/mes", "$10,833.33", "$130,000.00")
+        ("Ingeniero DevOps / SysAdmin Cloud", "0.5 EJC", "$6,500.00", "$6,500.00", "60.0%", "Gestión de contenedores Cloud Run, seguridad y DRP"),
+        ("Técnico QA / Soporte L2 a Planteles", "0.5 EJC", "$4,333.33", "$4,333.33", "40.0%", "Monitoreo de ventanillas y resolución de incidencias"),
+        ("TOTAL MANO DE OBRA DIRECTA", "1.0 EJC", "$10,833.33", "$10,833.33", "100.0%", "Presupuesto anualizado de nómina técnica: $130,000.00")
     ]
 
     for r_i, r_data in enumerate(rows_mo_data, start=1):
@@ -702,77 +791,57 @@ def generate_cost_docx(output_path):
             cell = t_mo.rows[r_i].cells[c_i]
             cell.paragraphs[0].text = val
             p = cell.paragraphs[0]
-            p.alignment = WD_ALIGN_PARAGRAPH.LEFT if c_i == 0 else WD_ALIGN_PARAGRAPH.RIGHT
-            if c_i == 1: p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            p.runs[0].font.size = Pt(9)
+            p.alignment = WD_ALIGN_PARAGRAPH.LEFT if c_i in (0, 5) else WD_ALIGN_PARAGRAPH.RIGHT
+            if c_i in (1, 4): p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            p.runs[0].font.size = Pt(8.5)
             if r_i == 3:
                 p.runs[0].font.bold = True
                 p.runs[0].font.color.rgb = COLOR_NAVY
-            set_cell_margins(cell, 40, 40, 50, 50)
+            set_cell_margins(cell, 35, 35, 45, 45)
 
-    add_table_note("Honorarios profesionales bajo esquema RESICO/asimilados sin pasivos laborales directos en fase semilla.")
+    add_table_note("EJC: Equivalente a Jornada Completa. En la fase inicial, los roles operan a medio tiempo compartido, escalando conforme al volumen.")
 
-    add_heading_2("3.3. Organigrama Evolutivo y Proyección de SLAs por Fases")
+    add_heading_2("3.3. Evolución del Organigrama y Criterios Paramétricos de Escalamiento")
     doc.add_paragraph(
-        "El análisis de Pareto identifica que el capital humano representa el 59.3% del costo total del servicio. "
-        "Si bien dos ingenieros son óptimos para la fase piloto (1 a 5 dependencias en CUTonalá), la expansión hacia "
-        "100 dependencias en la Red UdeG requiere una estructura organizativa evolutiva para garantizar que los Acuerdos "
-        "de Nivel de Servicio (SLA) se mantengan con rigor:"
+        "Para conciliar la disciplina de flujo de caja con el cumplimiento irrestricto de los Acuerdos de Nivel de Servicio (SLA), "
+        "el dimensionamiento de personal no obedece a decisiones discrecionales, sino a métricas paramétricas de saturación:"
     )
     doc.add_paragraph(
-        "• Fase 1 (Año 1 - Piloto CUTonalá, 5 dependencias): 2 perfiles técnicos (Lead DevOps y QA / Soporte L2). "
-        "Enfoque en desarrollo ágil, monitoreo directo y feedback de usuarios en sitio.\n"
-        "• Fase 2 (Año 2 - Expansión CUCEI, 25 dependencias): 3 colaboradores. Se integra 1 Técnico de Soporte Nivel 1 (Mesa de Ayuda de ventanilla) "
-        "y 1 Coordinador de Customer Success a tiempo compartido para gestionar el onboarding y la relación con laboratoristas.\n"
-        "• Fase 3 (Año 3 - Consolidación Red UdeG, 100 dependencias): Estructura consolidada de 5 perfiles de tiempo completo: "
-        "Dirección Técnica y DevOps, Ingeniero de QA y Seguridad LGPDPPSO, dos Técnicos de Soporte N1 (turnos matutino y vespertino) "
-        "y un Coordinador de Cuentas Institucionales y Enlace Universitario."
+        "• Fase 1 (Año 1 - Piloto CUTonalá, 5 dependencias): 2 personas (Lead DevOps / Backend Architect a medio tiempo + Encargado de QA / Soporte L2 a medio tiempo). "
+        "Nómina anual de $126,000.00 MXN.\n"
+        "• Fase 2 (Año 2 - Expansión CUCEI, 25 dependencias): 3 personas (Se incorpora 1 Técnico de Soporte N1 de tiempo completo). Nómina anual de $252,000.00 MXN.\n"
+        "• Fase 3 (Año 3 - Consolidación Red UdeG, 100 dependencias): 5 personas (DevOps titular, Full-Stack Developer, Líder de QA y 2 Técnicos de Soporte N1 en turnos matutino y vespertino). "
+        "Nómina anual de $540,000.00 MXN."
     )
 
-    add_table_title("Matriz de Acuerdos de Nivel de Servicio (SLA) proyectada por fase operativa")
-    t_sla = doc.add_table(rows=5, cols=4)
-    t_sla.alignment = WD_TABLE_ALIGNMENT.CENTER
-    set_apa_table_borders(t_sla)
-
-    headers_sla = ["Tipo de Incidencia / Servicio", "Tiempo de Respuesta", "Tiempo de Solución Máximo", "Canal de Atención y Protocolo"]
-    for c_i, h in enumerate(headers_sla):
-        cell = t_sla.rows[0].cells[c_i]
-        cell.paragraphs[0].text = h
-        cell.paragraphs[0].runs[0].font.bold = True
-        cell.paragraphs[0].runs[0].font.size = Pt(9)
-        cell.paragraphs[0].runs[0].font.color.rgb = COLOR_NAVY
-        set_cell_margins(cell, 45, 45, 50, 50)
-
-    rows_sla_data = [
-        ("Crítica (Caída total de ventanilla en hora pico)", "< 15 minutos", "< 1 hora", "Monitoreo GCP + Alerta push inmediata a DevOps"),
-        ("Mayor (Falla de sincronización o lector QR)", "< 1 hora", "< 4 horas", "Ticket prioritario en Mesa de Ayuda + Soporte L2"),
-        ("Menor (Dudas de interfaz o reportes estadísticos)", "< 4 horas hábiles", "< 12 horas hábiles", "Mesa de Ayuda Nivel 1 y chat de soporte"),
-        ("Disponibilidad General de Servidores Cloud", "99.9% mensual", "SLA Cloud Run continuo", "Balanceo de carga zonal y failover automático")
-    ]
-
-    for r_i, r_data in enumerate(rows_sla_data, start=1):
-        for c_i, val in enumerate(r_data):
-            cell = t_sla.rows[r_i].cells[c_i]
-            cell.paragraphs[0].text = val
-            p = cell.paragraphs[0]
-            p.alignment = WD_ALIGN_PARAGRAPH.LEFT if c_i in (0, 3) else WD_ALIGN_PARAGRAPH.CENTER
-            p.runs[0].font.size = Pt(8.5)
-            if r_i == 1:
-                p.runs[0].font.bold = True
-                p.runs[0].font.color.rgb = COLOR_NAVY
-            set_cell_margins(cell, 40, 40, 45, 45)
-
-    add_table_note("Los SLAs son auditables en tiempo real mediante telemetría en Google Cloud Monitoring.")
-
-    add_heading_3("3.3.1. Métricas de Saturación y Umbrales de Disparo de Contratación (Trigger)")
+    add_heading_3("3.3.1. Métricas de Saturación y Protocolo de Onboarding de Soporte N1")
     doc.add_paragraph(
-        "Para salvaguardar los SLAs sin sobredimensionar prematuramente los costos fijos de nómina, la contratación "
-        "del Técnico de Soporte Nivel 1 en la Fase 2 se rige por una regla paramétrica estricta basada en dos umbrales de saturación:"
+        "La contratación del Técnico de Soporte N1 en la transición a la Fase 2 se activa de forma automática ante cualquiera de los siguientes disparadores paramétricos:\n"
+        "1. Disparador de Volumen Comercial: Superar las 15 dependencias universitarias activas concurrentes.\n"
+        "2. Disparador de Carga de Incidencias: Registrar más de 20 tickets semanales de soporte durante dos semanas consecutivas en la plataforma de Help Desk.\n"
+        "3. Disparador de SLA: Cuando el tiempo medio de respuesta a incidencias de Nivel 2 supera los 25 minutos (acercándose al límite de tolerancia de 30 minutos).\n"
+        "• Protocolo de Reclutamiento y Onboarding Anticipado: Dado que el umbral de disparo está previsto para el cruce de las 15 dependencias o 20 tickets semanales, "
+        "se definió un tiempo de reclutamiento y capacitación previa de 3 semanas (21 días naturales). Se priorizará la captación de egresados de Ingeniería en Computación "
+        "o prestadores de servicio social técnico de CUTonalá o CUCEI. El programa de inducción dura 10 días hábiles e incluye el estudio de la base de conocimientos interna "
+        "de SIGRE, simulación de tickets en sandbox y acompañamiento en ventanilla, asegurando que el nuevo elemento esté plenamente productivo y certificado antes "
+        "de que el volumen de incidencias comprometa el SLA de 15 minutos."
+    )
+
+    add_heading_3("3.3.2. Plan de Retención de Talento Clave y Mitigación de Fuga en Capital Humano")
+    doc.add_paragraph(
+        "Considerando que el capital humano absorbe el 59.3% de la estructura mensual de costos operativos, la rotación imprevista de roles técnicos "
+        "críticos —como el Ingeniero DevOps y el Lead Full-Stack Architect— representaría un riesgo mayúsculo para la continuidad operativa y el cumplimiento "
+        "del SLA del 99.5%. Para blindar la estabilidad organizacional sin comprometer el flujo de caja, se diseñó un paquete integral de retención e incentivos:"
     )
     doc.add_paragraph(
-        "1. Umbral de Escala Comercial: Se activará la contratación obligatoria de Soporte N1 al alcanzar formalmente 15 dependencias universitarias activas concurrentes.\n"
-        "2. Umbral de Carga Operativa: Se activará la contratación de forma inmediata si el volumen de tickets en la Mesa de Ayuda supera un promedio de 20 incidencias semanales durante dos semanas consecutivas, o si el tiempo medio de primera respuesta del Soporte L2 rebasa los 25 minutos en horario diurno.\n"
-        "Este mecanismo garantiza que el Lead DevOps mantenga su enfoque en arquitectura y seguridad, evitando cuellos de botella humanos al escalar."
+        "• Bono Anual por Cumplimiento de SLA y Retención: Se asigna una gratificación anual de $12,000.00 MXN ($6,000.00 MXN semestrales) por cada rol técnico "
+        "clave, vinculada al mantenimiento de una disponibilidad de infraestructura superior al 99.5% y una resolución de incidentes críticos en menos de 15 minutos.\n"
+        "• Esquema de Equity Vesting (Participación Accionaria Gradual): Se reserva un paquete del 10.0% del capital social de SIGRE destinado al personal "
+        "técnico fundador, sujeto a un periodo de carencia (cliff) de 12 meses y una liberación escalonada a los 24 y 36 meses de permanencia continua en el proyecto, "
+        "alineando los incentivos de permanencia con la valorización patrimonial de la empresa.\n"
+        "• Presupuesto de Formación y Certificación Continua: Se dota una bolsa anual de $4,000.00 MXN por especialista técnico para financiar los derechos de examen "
+        "y preparación de certificaciones oficiales en Google Cloud Platform (Associate Cloud Engineer y Professional DevOps Engineer), garantizando la actualización "
+        "permanente del talento interno frente a la rápida evolución de la nube."
     )
 
     add_heading_2("3.4. Servicios de Operación y Cumplimiento Legal")
@@ -887,8 +956,29 @@ def generate_cost_docx(output_path):
         "con 100 dependencias contratadas). Los ingresos corresponden a la licencia anual de $28,950.00 MXN netos por dependencia:"
     )
 
+    add_heading_3("5.1.1. Política de Indexación Inflacionaria (INPC) y Protección de Márgenes")
+    doc.add_paragraph(
+        "Para neutralizar la inflación proyectada en la economía nacional (estimada en un 4.5% a 5.0% anual según el Banco de México) "
+        "y prevenir la erosión de los márgenes por incrementos en sueldos de ingeniería y servicios de red, los contratos anuales de SIGRE "
+        "incorporan una cláusula de indexación automática vinculada al Índice Nacional de Precios al Consumidor (INPC) publicado por el INEGI. "
+        "A partir del Año 2, la tarifa base de $28,950.00 MXN se actualiza conforme a dicho índice. De forma correlativa, las partidas de nómina "
+        "técnica y servidores GCP contemplan un ajuste inflacionario del 5.0% anual en el modelo financiero, demostrando que los ingresos "
+        "escalan a la par de la estructura de costos y salvaguardando un margen neto consolidado por encima del 50.0% en régimen de escala."
+    )
+
+    add_heading_3("5.1.2. Creación del Fondo de Reserva para Reinversión Tecnológica y Refactorización")
+    doc.add_paragraph(
+        "Para responder a los rápidos ciclos de obsolescencia tecnológica en el desarrollo web y los servicios de nube, así como para garantizar recursos "
+        "recurrentes para refactorizaciones de microservicios, migraciones de librerías y auditorías anuales de seguridad sin requerir nuevas aportaciones de capital, "
+        "se establece una política contable estatutaria: a partir del Año 2 (cuando el volumen contratado alcanza 25 dependencias y genera un margen bruto "
+        "de $693,150.00 MXN), se retiene el 5.0% de la Utilidad Bruta anual para constituir el Fondo de Reserva de Reinversión Tecnológica. "
+        "Esta partida representa $34,657.50 MXN en el Año 2 y escala a $138,630.00 MXN en el Año 3 (sobre una Utilidad Bruta de $2,772,600.00 MXN). "
+        "El fondo se resguarda en una subcuenta de tesorería etiquetada exclusivamente para la optimización de código, licenciamiento de herramientas CI/CD "
+        "y modernización de infraestructura, garantizando la vanguardia técnica del sistema con recursos generados orgánicamente."
+    )
+
     add_table_title("Estado de Resultados Proyectado Pro Forma — Horizonte a 3 Años (Cifras en MXN)")
-    t_er = doc.add_table(rows=14, cols=5)
+    t_er = doc.add_table(rows=17, cols=5)
     t_er.alignment = WD_TABLE_ALIGNMENT.CENTER
     set_apa_table_borders(t_er)
 
@@ -914,7 +1004,10 @@ def generate_cost_docx(output_path):
         ("Gastos de Operación: Legal e INDAUTOR", "$5,500.00", "$12,000.00", "$25,000.00", "Trámites regulatorios y compliance"),
         ("TOTAL GASTOS DE OPERACIÓN (OPEX)", "$158,000.00", "$322,000.00", "$682,000.00", "Gastos operacionales y talento"),
         ("UTILIDAD DE OPERACIÓN / EBITDA", "-$19,370.00", "$371,150.00", "$2,090,600.00", "Resultado operacional"),
-        ("Impuesto Sobre la Renta (ISR Estimado 30%)", "$0.00", "$111,345.00", "$627,180.00", "Tasa corporativa estándar SAT")
+        ("Impuesto Sobre la Renta (ISR Estimado 30%)", "$0.00", "$111,345.00", "$627,180.00", "Tasa corporativa estándar SAT"),
+        ("UTILIDAD (PÉRDIDA) NETA DEL EJERCICIO", "-$19,370.00", "$259,805.00", "$1,463,420.00", "Resultado neto contable"),
+        ("(-) Reserva Reinversión Tecnológica (5% U.B.)", "$0.00", "$34,657.50", "$138,630.00", "Provisión estatutaria de código"),
+        ("UTILIDAD NETA RETENIDA / DISTRIBUIBLE", "-$19,370.00", "$225,147.50", "$1,324,790.00", "Excedente financiero neto libre")
     ]
 
     for r_i, r_data in enumerate(rows_er_data, start=1):
@@ -925,12 +1018,12 @@ def generate_cost_docx(output_path):
             p.alignment = WD_ALIGN_PARAGRAPH.LEFT if c_i in (0, 4) else WD_ALIGN_PARAGRAPH.RIGHT
             if c_i in (1, 2, 3) and r_i in (1, 6): p.alignment = WD_ALIGN_PARAGRAPH.CENTER
             p.runs[0].font.size = Pt(8.5)
-            if r_i in (3, 5, 11, 12):
+            if r_i in (3, 5, 11, 12, 14, 16):
                 p.runs[0].font.bold = True
                 p.runs[0].font.color.rgb = COLOR_NAVY
             set_cell_margins(cell, 35, 35, 45, 45)
 
-    add_table_note("En el Año 1, el déficit operativo de -$19,370 MXN es cubierto por el capital semilla. En el Año 3, la Utilidad Neta alcanza $1,463,420 MXN (Margen Neto: 50.5%).")
+    add_table_note("En el Año 1, el déficit operativo de -$19,370 MXN es cubierto por el capital semilla. A partir del Año 2 se descuenta el 5% de reserva tecnológica.")
 
     add_heading_2("5.2. Flujo de Efectivo Mensual Pro Forma (Cash Flow Año 1) y Análisis de Burn Rate")
     doc.add_paragraph(
@@ -1068,7 +1161,7 @@ def generate_cost_docx(output_path):
             cell = t_sens.rows[r_i].cells[c_i]
             cell.paragraphs[0].text = val
             p = cell.paragraphs[0]
-            p.alignment = WD_ALIGN_PARAGRAPH.LEFT if c_i in (0, 4) else WD_ALIGN_PARAGRAPH.CENTER
+            p.alignment = WD_ALIGN_PARAGRAPH.LEFT if c_i == 0 else WD_ALIGN_PARAGRAPH.CENTER
             p.runs[0].font.size = Pt(8.5)
             if r_i in (9, 11):
                 p.runs[0].font.bold = True
@@ -1139,16 +1232,23 @@ def generate_cost_docx(output_path):
     # =========================================================================
     add_heading_1("7. Programación de Actividades, Inversiones y Cronograma de Ejecución (Año 1)")
     doc.add_paragraph(
-        "La ejecución del Año 1 se estructuró en 8 hitos críticos mensuales para asegurar la absorción ordenada "
+        "La ejecución del Año 1 se estructuró en hitos críticos mensuales para asegurar la absorción ordenada "
         "del capital semilla de $120,000.00 MXN. Para mitigar contingencias administrativas en el sector público, "
-        "la ruta crítica incorpora holguras estratégicas (*buffers*):"
+        "la ruta crítica incorpora holguras estratégicas (*buffers*), prerrequisitos técnicos y un hito formal de cierre administrativo:"
     )
     doc.add_paragraph(
         "• Buffer A (Holgura Legal INDAUTOR): En el Hito 4 (Mes 6) se contemplan 3 semanas de holgura para absorber cualquier "
         "prevención documental o retraso en las oficinas del Registro Público del Derecho de Autor, asegurando que el certificado "
         "esté en firme antes del encendido del piloto.\n"
+        "• Prerrequisito Técnico de Ciberseguridad (Mes 6): Previo al despliegue, se ejecuta la prueba de penetración ética (pentesting OWASP Top 10) "
+        "y auditoría estática SAST/DAST, obteniendo el dictamen de no vulnerabilidad exigido por la LGPDPPSO.\n"
+        "• Sub-Hito de Socialización y Visto Bueno Sindical (Mes 6): Firma de la minuta de concertación con los delegados del SUTUdeG en CUTonalá, "
+        "garantizando el aval gremial y la protección patrimonial del trabajador antes de habilitar terminales en ventanilla.\n"
         "• Buffer B (Holgura de Calendario Universitario): En los Hitos 6 y 7 (Meses 8 y 9) se contemplan 2 semanas de colchón "
-        "operativo para amortiguar periodos de exámenes departamentales o recesos intersemestrales de la Red UdeG sin desfasar la marcha blanca."
+        "operativo para amortiguar periodos de exámenes departamentales o recesos intersemestrales de la Red UdeG sin desfasar la marcha blanca.\n"
+        "• Hito Formal de Cierre y Aprobación de Marcha Blanca (Mes 9): Al finalizar el Mes 9, se formaliza la firma del Acta Oficial de Entrega-Recepción "
+        "y Dictamen de Satisfacción de Marcha Blanca, suscrita por los Coordinadores de Carrera, Jefes de Laboratorio y la Dirección de la División de Ingenierías "
+        "de CUTonalá. Este acto administrativo constituye el requisito institucional indispensable que avala formalmente el paso a la Fase 2 de expansión hacia CUCEI."
     )
 
     add_table_title("Cronograma detallado de ejecución (Diagrama de Gantt) y absorción de inversión — Año 1")
@@ -1168,11 +1268,11 @@ def generate_cost_docx(output_path):
     rows_gantt_data = [
         ("1. Arquitectura Cloud GCP y Microservicios Base", "DevOps", "●", "●", "", "", "", "", "", "", "", "", "", "", "$24,000.00"),
         ("2. Motor de Scoring y PWA Offline", "Full-Stack", "", "", "●", "●", "", "", "", "", "", "", "", "", "$25,000.00"),
-        ("3. Pruebas QA, Estrés k6 y Auditoría LGPDPPSO", "QA", "", "", "", "", "●", "", "", "", "", "", "", "", "$12,000.00"),
-        ("4. Hito Legal: Registro Software INDAUTOR (Buffer 3 sem)", "Jurídico", "", "", "", "", "", "●", "", "", "", "", "", "", "$5,500.00"),
+        ("3. Pruebas QA, Estrés k6, Pentesting OWASP y LGPDPPSO", "QA", "", "", "", "", "●", "●", "", "", "", "", "", "", "$12,000.00"),
+        ("4. Registro INDAUTOR (Buffer 3s) y V.B. Sindical SUTUdeG", "Jurídico/PM", "", "", "", "", "", "●", "", "", "", "", "", "", "$5,500.00"),
         ("5. Despliegue Piloto en CUTonalá (Laboratorios)", "DevOps", "", "", "", "", "", "", "●", "", "", "", "", "", "$11,500.00"),
         ("6. Capacitación a Almacenistas y Talleres", "Success", "", "", "", "", "", "", "", "●", "●", "", "", "", "$10,000.00"),
-        ("7. Marcha Blanca y Monitoreo de KPIs (Buffer 2 sem)", "Soporte", "", "", "", "", "", "", "", "", "●", "●", "●", "", "$16,500.00"),
+        ("7. Marcha Blanca, KPIs y Acta Entrega-Recepción M9", "Soporte", "", "", "", "", "", "", "", "", "●", "●", "●", "", "$16,500.00"),
         ("8. Evaluación de Impacto y Release v1.5 CUCEI", "Equipo", "", "", "", "", "", "", "", "", "", "", "", "●", "$15,500.00"),
         ("TOTAL INVERSIÓN EJECUTADA AÑO 1", "—", "$12k", "$12k", "$12.5k", "$12.5k", "$12k", "$5.5k", "$11.5k", "$5k", "$10.5k", "$5.5k", "$5.5k", "$15.5k", "$120,000.00")
     ]
@@ -1190,7 +1290,7 @@ def generate_cost_docx(output_path):
                 p.runs[0].font.color.rgb = COLOR_NAVY
             set_cell_margins(cell, 30, 30, 25, 25)
 
-    add_table_note("El depósito legal de software ante INDAUTOR en el Mes 6 brinda blindaje de propiedad intelectual antes de la marcha blanca.")
+    add_table_note("El hito del Mes 6 integra el depósito ante INDAUTOR, el pentesting de seguridad y la concertación sindical con el SUTUdeG.")
 
     # =========================================================================
     # SECCIÓN 8: CONCLUSIONES Y VIABILIDAD INTEGRAL
@@ -1198,22 +1298,25 @@ def generate_cost_docx(output_path):
     add_heading_1("8. Conclusiones y Viabilidad Integral del Proyecto")
     doc.add_paragraph(
         "El presente estudio demuestra la sólida viabilidad técnica, operativa, normativa y financiera de la plataforma SIGRE. "
-        "Desde la perspectiva operativa, la sustitución del vale de papel mitiga una fuga de más de $750,000.00 MXN anuales por plantel "
-        "en horas-hombre y mermas patrimoniales (obtenidas mediante levantamiento de campo directo en CUTonalá), "
-        "generando para el centro universitario un retorno de inversión social del 2,283% frente a una tarifa de adopción de solo $28,950.00 MXN anuales."
+        "Desde la perspectiva operativa y académica, la sustitución del vale de papel mitiga una fuga de más de $750,000.00 MXN anuales por plantel "
+        "en horas-hombre y mermas patrimoniales (obtenidas mediante levantamiento de campo directo en CUTonalá), reduciendo la tasa de prácticas "
+        "afectadas (TPSR) del 14.5% a menos del 1.5% semestral y protegiendo las acreditaciones de calidad CACEI/CONAET, lo que genera para el centro universitario "
+        "un retorno de inversión social del 2,283% frente a una tarifa de adopción de solo $28,950.00 MXN anuales."
     )
     doc.add_paragraph(
         "Desde el ángulo de mercado y comercialización, SIGRE consolida ventajas competitivas irrefutables: un algoritmo de scoring "
-        "predictivo que disciplina el préstamo, cumplimiento nativo con la legislación de datos personales en Jalisco (LGPDPPSO), "
-        "una estrategia integral de gestión del cambio para personal de base y un esquema tarifario adaptado al régimen de adjudicación "
-        "directa universitaria, evitando procesos licitatorios engorrosos. La arquitectura offline garantiza la continuidad del servicio en horas pico ante contingencias de red."
+        "predictivo que disciplina el préstamo, cumplimiento nativo con la legislación de datos personales en Jalisco (LGPDPPSO) validado con pentesting "
+        "OWASP Top 10, un Costo de Adquisición de Clientes (CAC) de $5,000 MXN con un ratio LTV/CAC altamente rentable de 17.37x, una estrategia de gestión "
+        "del cambio con concertación sindical formal (SUTUdeG) y un esquema tarifario adaptado al régimen de adjudicación directa universitaria (Art. 55). "
+        "La arquitectura offline garantiza la continuidad del servicio en horas pico ante contingencias de red."
     )
     doc.add_paragraph(
         "Financieramente, la propuesta opera con un costo unitario medio de $182.60 MXN y un punto de equilibrio accesible en solo 35 dependencias. "
-        "El análisis de sensibilidad demuestra que, ante choques cambiarios del +15% en costos de nube o retrasos de hasta 4 meses en la formalización "
-        "de contratos de compra, el capital semilla de $120,000.00 MXN mantiene la liquidez en terreno positivo en todo momento. "
-        "El proyecto alcanza una utilidad neta de $259,805.00 MXN en el Año 2 y se consolida en el Año 3 con una utilidad neta de $1,463,420.00 MXN "
-        "(margen neto del 50.5%), ratificando su condición de proyecto de inversión autosustentable y altamente rentable para la modernización de la Red Universitaria."
+        "El análisis de sensibilidad demuestra que, ante choques cambiarios del +15% en costos de nube o retrasos burocráticos de hasta 4 meses "
+        "en la formalización de contratos de compra, el capital semilla de $120,000.00 MXN mantiene la liquidez en terreno positivo en todo momento. "
+        "La indexación de tarifas y costos al INPC, junto con la retención del 5% para el fondo de reserva de reinversión tecnológica a partir del Año 2, "
+        "garantiza márgenes netos retenidos superiores al 45%, consolidando en el Año 3 un excedente neto distribuible de $1,324,790.00 MXN y ratificando "
+        "su condición de proyecto de inversión autosustentable, resiliente y de alto impacto para la Red Universitaria."
     )
 
     # =========================================================================
