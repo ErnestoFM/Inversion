@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Genera el documento Word corregido: Fuentes de Financiamiento para SIGRE.
-Basado estrictamente en las opciones analizadas por Merchant Maverick (Start-up Business Loan Reviews).
-Opciones: Kiva, Upstart, EquityNet.
-Citas parentéticas APA 7 estrictas en el texto y formato corregido.
-Ejecutar: python scripts/generate_financiamiento_docx.py
+Genera la versión corregida y compacta (máx. 5 páginas) del documento Word:
+"Fuentes_Financiamiento_SIGRE_2.docx".
+Aplica estrictamente las 5 correcciones requeridas:
+1. Reconciliación de los $12,800 MXN de OPEX Año 1 (Total Año 1: $152,800 MXN).
+2. Servicio de la deuda (amortización Kiva $2,111.11/mes y Upstart $1,374.74-$2,015.12/mes).
+3. Precisión de plan gratuito ($0 USD/mes) en EquityNet.
+4. Numeración formal de partidas P1 a P8 y ajuste de título de software en P1.
+5. Nota de alcance geográfico de Merchant Maverick en la introducción de la Sección 3.
+Enlace Merchant Maverick afiliado para EquityNet sin [VERIFICAR]; conservación intacta de todos los demás [VERIFICAR].
 """
 
 from docx import Document
@@ -16,77 +20,105 @@ from docx.oxml import parse_xml
 import os
 
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "docs")
-OUTPUT_FILE = os.path.join(OUTPUT_DIR, "Fuentes_Financiamiento_SIGRE.docx")
+OUTPUT_FILE = os.path.join(OUTPUT_DIR, "Fuentes_Financiamiento_SIGRE_2.docx")
 
 def set_cell_shading(cell, hex_color):
-    """Aplica color de fondo a una celda."""
     shading = parse_xml(f'<w:shd {nsdecls("w")} w:fill="{hex_color}" w:val="clear"/>')
     cell._tc.get_or_add_tcPr().append(shading)
 
+def set_cell_margins(cell, top=60, bottom=60, left=100, right=100):
+    tcPr = cell._tc.get_or_add_tcPr()
+    tcMar = parse_xml(
+        f'<w:tcMar {nsdecls("w")}>'
+        f'<w:top w:w="{top}" w:type="dxa"/>'
+        f'<w:bottom w:w="{bottom}" w:type="dxa"/>'
+        f'<w:left w:w="{left}" w:type="dxa"/>'
+        f'<w:right w:w="{right}" w:type="dxa"/>'
+        f'</w:tcMar>'
+    )
+    tcPr.append(tcMar)
 
 def add_styled_table(doc, headers, rows, col_widths=None):
-    """Crea una tabla limpia con encabezados sombreados."""
     table = doc.add_table(rows=1 + len(rows), cols=len(headers))
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     table.style = "Table Grid"
 
-    # Encabezados
     for i, h in enumerate(headers):
         cell = table.rows[0].cells[i]
         cell.text = ""
+        set_cell_margins(cell, top=80, bottom=80, left=100, right=100)
         p = cell.paragraphs[0]
+        p.paragraph_format.space_before = Pt(0)
+        p.paragraph_format.space_after = Pt(0)
+        p.paragraph_format.line_spacing = 1.05
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         run = p.add_run(h)
         run.bold = True
-        run.font.size = Pt(9.5)
+        run.font.size = Pt(8.5)
         run.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
         run.font.name = "Calibri"
-        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         set_cell_shading(cell, "2F5496")
 
-    # Filas
     for r_idx, row_data in enumerate(rows):
         for c_idx, val in enumerate(row_data):
             cell = table.rows[r_idx + 1].cells[c_idx]
             cell.text = ""
+            set_cell_margins(cell, top=60, bottom=60, left=80, right=80)
             p = cell.paragraphs[0]
+            p.paragraph_format.space_before = Pt(0)
+            p.paragraph_format.space_after = Pt(0)
+            p.paragraph_format.line_spacing = 1.05
             run = p.add_run(str(val))
-            run.font.size = Pt(9)
+            run.font.size = Pt(8.0)
             run.font.name = "Calibri"
             if r_idx % 2 == 1:
                 set_cell_shading(cell, "F2F4F8")
 
-    # Anchos de columna
     if col_widths:
         for r in table.rows:
             for i, w in enumerate(col_widths):
                 r.cells[i].width = Cm(w)
 
-    doc.add_paragraph("")
+    p_spacer = doc.add_paragraph()
+    p_spacer.paragraph_format.space_before = Pt(0)
+    p_spacer.paragraph_format.space_after = Pt(4)
     return table
-
 
 def heading(doc, text, level=1):
     h = doc.add_heading(text, level=level)
-    for run in h.runs:
-        run.font.name = "Calibri"
-        run.font.color.rgb = RGBColor(0x1F, 0x38, 0x64)
+    h.paragraph_format.keep_with_next = True
+    if level == 1:
+        h.paragraph_format.space_before = Pt(10)
+        h.paragraph_format.space_after = Pt(3)
+        for run in h.runs:
+            run.font.name = "Calibri"
+            run.font.size = Pt(13)
+            run.font.bold = True
+            run.font.color.rgb = RGBColor(0x1F, 0x38, 0x64)
+    elif level == 2:
+        h.paragraph_format.space_before = Pt(6)
+        h.paragraph_format.space_after = Pt(2)
+        for run in h.runs:
+            run.font.name = "Calibri"
+            run.font.size = Pt(11)
+            run.font.bold = True
+            run.font.color.rgb = RGBColor(0x2F, 0x54, 0x96)
     return h
-
 
 def para(doc, text, bold_prefix=None):
     p = doc.add_paragraph()
-    p.paragraph_format.space_after = Pt(6)
-    p.paragraph_format.line_spacing = 1.15
+    p.paragraph_format.space_before = Pt(0)
+    p.paragraph_format.space_after = Pt(4)
+    p.paragraph_format.line_spacing = 1.10
     if bold_prefix:
         run_b = p.add_run(bold_prefix)
         run_b.bold = True
-        run_b.font.size = Pt(11)
+        run_b.font.size = Pt(10)
         run_b.font.name = "Calibri"
     run = p.add_run(text)
-    run.font.size = Pt(11)
+    run.font.size = Pt(10)
     run.font.name = "Calibri"
     return p
-
 
 # ──────────────────────────────────────────────
 # Construcción del Documento
@@ -96,410 +128,382 @@ doc = Document()
 
 style = doc.styles["Normal"]
 style.font.name = "Calibri"
-style.font.size = Pt(11)
-style.paragraph_format.space_after = Pt(6)
-style.paragraph_format.line_spacing = 1.15
+style.font.size = Pt(10)
+style.paragraph_format.space_after = Pt(4)
+style.paragraph_format.line_spacing = 1.10
 
+# Márgenes estándar compactos (2.0 cm) para asegurar ajuste perfecto en <= 5 páginas
 for section in doc.sections:
-    section.top_margin = Cm(2.54)
-    section.bottom_margin = Cm(2.54)
-    section.left_margin = Cm(2.54)
-    section.right_margin = Cm(2.54)
+    section.top_margin = Cm(2.0)
+    section.bottom_margin = Cm(2.0)
+    section.left_margin = Cm(2.0)
+    section.right_margin = Cm(2.0)
 
 # ═══════════════════════════════════════════════
-# SECCIÓN 1
+# SECCIÓN 1: PERFIL DEL INVERSOR IDEAL
 # ═══════════════════════════════════════════════
 
 heading(doc, "1. Perfil y Características del Inversor Ideal", level=1)
 
 para(doc, (
-    "SIGRE (Sistema Integrado de Gestión de Recursos y Espacios) es un proyecto tecnológico "
-    "en etapa temprana desarrollado en el Centro Universitario de Tonalá de la Universidad de Guadalajara "
-    "(Universidad de Guadalajara, 2026). Como plataforma de software orientada al sector educativo e institucional, "
-    "su modelo no genera flujos de efectivo explosivos inmediatos, sino que produce valor financiero mediante "
-    "el ahorro institucional y la mitigación de mermas patrimoniales. Por ello, el perfil de inversor o entidad "
-    "financiera adecuada no corresponde a la banca comercial tradicional —que exige garantías hipotecarias y estados "
-    "financieros auditados—, sino a plataformas y esquemas alternativos de financiamiento para startups catalogados "
-    "por portales especializados como Merchant Maverick (2026). Estos modelos priorizan el potencial del producto, "
-    "la tracción operativa y esquemas flexibles de crédito o capital social."
-))
-
-para(doc, (
-    "Para contrastar y estructurar preliminarmente los criterios crediticios aplicables a la escala del proyecto, "
-    "se utilizó como apoyo analítico el modelo de lenguaje Gemini (Google, 2026). A partir de esta evaluación, se definen "
-    "cinco características esenciales que debe reunir el inversor o entidad financiadora para constituir una opción viable."
+    "SIGRE (Sistema Integrado de Gestión de Recursos y Espacios) es un proyecto tecnológico en etapa temprana "
+    "desarrollado en el Centro Universitario de Tonalá de la Universidad de Guadalajara (Universidad de Guadalajara, 2026). "
+    "Como plataforma orientada al sector educativo e institucional, su modelo no genera retornos explosivos inmediatos, "
+    "sino valor mediante ahorro presupuestal y mitigación de pérdidas patrimoniales. Por ello, el perfil de inversor idóneo "
+    "no corresponde a la banca comercial tradicional —que exige garantías reales y balances auditados—, sino a plataformas "
+    "alternativas para startups catalogadas por Merchant Maverick (2026), basadas en viabilidad técnica y esquemas flexibles. "
+    "Para contrastar preliminarmente los criterios crediticios aplicables a la escala del proyecto, se utilizó como apoyo analítico "
+    "el modelo de lenguaje Gemini (Google, 2026). A partir de dicha evaluación, se definen cinco características esenciales:"
 ))
 
 heading(doc, "1.1 Características del Inversor Adecuado", level=2)
 
-characteristics = [
+chars = [
     (
-        "1. Tolerancia al riesgo en proyectos de etapa semilla sin historial crediticio comercial extenso. ",
-        "SIGRE se encuentra en fase inicial de despliegue y validación operativa (Universidad de Guadalajara, 2026). "
-        "No cuenta con declaraciones fiscales de ejercicios previos ni historial comercial consolidado en buró. "
-        "El inversor debe operar bajo modelos de suscripción no tradicionales —como la evaluación basada en algoritmos "
-        "predictivos o respaldo comunitario analizados por Merchant Maverick (2026)—, en los que la viabilidad técnica "
-        "y el perfil del equipo prevalecen sobre el historial crediticio formal."
+        "1. Tolerancia al riesgo en etapa semilla sin historial comercial extenso. ",
+        "SIGRE se encuentra en fase inicial de validación operativa (Universidad de Guadalajara, 2026). El financiador "
+        "debe operar bajo modelos de suscripción no tradicionales —evaluación algorítmica o respaldo social comunitario "
+        "(Merchant Maverick, 2026)— donde la pertinencia técnica y el equipo prevalecen sobre el historial fiscal."
     ),
     (
-        "2. Flexibilidad en esquemas de retorno y amortización (0% interés, periodos de gracia o equity crowdfunding). ",
-        "El flujo de efectivo inicial del proyecto debe canalizarse prioritariamente a la adquisición de activos críticos "
-        "y puesta en marcha. Por tanto, el inversor ideal debe admitir esquemas de micro-crowdfunding sin tasa de interés, "
-        "como el modelo de Kiva (2026), líneas con plazos de amortización diferidos a 36 o 60 meses, o bien, instrumentos "
-        "de financiamiento colectivo de capital donde la retribución se vincule al crecimiento patrimonial y no a pagos fijos inmediatos."
+        "2. Flexibilidad en esquemas de retorno y amortización. ",
+        "La liquidez inicial debe concentrarse en activos críticos. El inversor debe admitir esquemas de micro-crowdfunding "
+        "al 0% de interés como Kiva (2026), plazos diferidos a 36-60 meses, o financiamiento colectivo de capital donde la "
+        "retribución se vincule al crecimiento patrimonial y no a pagos fijos inmediatos que ahoguen el flujo de caja."
     ),
     (
         "3. Estructura de costos financieros transparente y competitiva. ",
-        "Para un presupuesto inicial de $140,000 MXN (Universidad de Guadalajara, 2026), costos por comisiones ocultas o "
-        "tasas anuales equivalentes (APR) predatorias comprometerían la viabilidad financiera del proyecto. El proveedor "
-        "seleccionado debe mantener una política transparente de comisiones de apertura (origination fees) y tasas de interés "
-        "claramente delimitadas desde la solicitud, criterio rigurosamente evaluado en las revisiones de Merchant Maverick (2026)."
+        "Para un presupuesto inicial externo de $140,000 MXN (Universidad de Guadalajara, 2026), comisiones ocultas o tasas APR "
+        "predatorias comprometerían el proyecto. Se exigen comisiones de apertura (origination fees) y tasas de interés "
+        "plenamente delimitadas desde la solicitud, estándar rigurosamente evaluado por Merchant Maverick (2026)."
     ),
     (
         "4. Agilidad en tiempos de aprobación y desembolso de liquidez. ",
-        "El despliegue del sistema responde a un calendario académico y operativo estricto. Procesos de evaluación burocráticos "
-        "que demoren más de un trimestre resultan inviables. Se requiere una entidad que procese la solicitud y transfiera los "
-        "recursos en plazos de entre 48 horas y un mes calendario, permitiendo la compra oportuna de equipos y el pago de licencias."
+        "El despliegue obedece a un calendario académico semestral estricto. Procesos burocráticos mayores a tres meses resultan "
+        "inviables. Se requiere una entidad que apruebe y transfiera fondos en plazos de entre 48 horas y 30 días naturales."
     ),
     (
-        "5. Aporte de valor estratégico y red de validación (Smart Money o difusión en red). ",
-        "Más allá del suministro de capital líquido, el canal de financiamiento debe aportar tracción, visibilidad y "
-        "conexión con redes de ángeles inversionistas o comunidades de usuarios, tal como ocurre en plataformas de financiamiento "
-        "colectivo evaluadas por Merchant Maverick (2026), facilitando la futura expansión del sistema a otros campus universitarios."
+        "5. Aporte de valor estratégico y red de validación (Smart Money). ",
+        "Más allá del capital líquido, el canal de financiamiento debe aportar tracción, visibilidad y acceso a redes de mentores "
+        "e inversionistas ángeles (Merchant Maverick, 2026), facilitando el escalamiento posterior a otros campus de la Red UdeG."
     ),
 ]
 
-for bold_part, body in characteristics:
+for bold_part, body in chars:
     para(doc, body, bold_prefix=bold_part)
 
 # ═══════════════════════════════════════════════
-# SECCIÓN 2
+# SECCIÓN 2: ANÁLISIS COMPARATIVO
 # ═══════════════════════════════════════════════
 
 heading(doc, "2. Análisis Comparativo: Del Financiamiento Personal al Formal según el Tamaño del Proyecto", level=1)
 
 para(doc, (
-    "El acceso a recursos financieros evoluciona de manera paralela a la madurez y dimensiones del proyecto. "
-    "En la evaluación de proyectos de inversión, resulta indispensable categorizar las alternativas disponibles "
-    "para seleccionar el instrumento adecuado a cada fase de desarrollo, evitando el sobreendeudamiento prematuro "
-    "o la dilución innecesaria de la propiedad intelectual."
+    "El acceso a recursos financieros evoluciona de manera paralela a la madurez del proyecto. En la formulación de proyectos "
+    "de inversión, categorizar las alternativas permite seleccionar el instrumento adecuado, mitigando el sobreendeudamiento "
+    "o la dilución anticipada de la propiedad intelectual."
 ))
 
 heading(doc, "2.1 Financiamiento Personal / Bootstrapping / FFF y Tarjetas a Meses sin Intereses", level=2)
 
 para(doc, (
-    "En la fase de concepción y prototipado rápido, el mecanismo natural de fondeo es el financiamiento personal, "
-    "el capital aportado por el círculo cercano (Friends, Family & Fools) y el apalancamiento mediante tarjetas de crédito "
-    "a meses sin intereses. Para SIGRE, esta modalidad posibilitó los primeros ensayos técnicos de servidores y pruebas "
-    "de concepto locales (Universidad de Guadalajara, 2026). Su principal ventaja es la disponibilidad inmediata sin "
-    "trámites ni comisiones; no obstante, su alcance es sumamente limitado (fondos típicamente menores a $30,000 MXN) "
-    "y concentra el riesgo total en el patrimonio del estudiante o desarrollador."
+    "En la fase de concepción, la fuente inmediata es el capital de los fundadores, el círculo cercano (Friends, Family & Fools) "
+    "y tarjetas a meses sin intereses. Para SIGRE, esta modalidad posibilitó los primeros ensayos de servidores y prototipos "
+    "de código (Universidad de Guadalajara, 2026). Su ventaja es la inmediatez sin burocracia, pero su alcance es limitado "
+    "(montos menores a $30,000 MXN) y concentra el riesgo total en el patrimonio del estudiante o desarrollador."
 ))
 
 heading(doc, "2.2 Convocatorias y Plataformas de Capital Semilla Alternativo", level=2)
 
 para(doc, (
-    "Al transitar hacia la validación del Producto Mínimo Viable (MVP), surgen esquemas especializados de capital semilla "
-    "y plataformas colaborativas. Como documenta Merchant Maverick (2026), este segmento incluye modelos de financiamiento "
-    "colectivo donde comunidades de prestamistas financian proyectos al 0% de interés, o plataformas de ángeles inversores "
-    "que aportan recursos a cambio de participación. Su mérito radica en que eliminan la carga del servicio de deuda convencional "
-    "y validan el interés del mercado antes del escalamiento, requiriendo a cambio un esfuerzo riguroso de presentación pública y plan de negocio."
+    "Hacia la validación del Producto Mínimo Viable (MVP), surgen esquemas de financiamiento colaborativo analizados por "
+    "Merchant Maverick (2026), tales como micropréstamos comunitarios al 0% de interés o plataformas de inversión ángel. "
+    "Eliminan el servicio de deuda oneroso y validan el interés de la comunidad previo al escalamiento, requiriendo un plan "
+    "de negocio estructurado y validación pública."
 ))
 
 heading(doc, "2.3 Financiamiento Formal y Líneas de Crédito Online para Startups", level=2)
 
 para(doc, (
-    "El nivel formal comprende prestamistas en línea e intermediarios evaluados bajo la metodología de Merchant Maverick (2026). "
-    "Estas entidades valoran variables objetivas: puntaje crediticio mínimo, tiempo de operación del negocio, ingresos comprobables, "
-    "tasas APR y velocidad de fondeo. Para proyectos jóvenes que no cumplen con los requisitos de la banca múltiple tradicional, "
-    "las fintechs de préstamos estructurados ofrecen liquidez rápida mediante algoritmos de riesgo alternativos, constituyendo "
-    "el puente formal para financiar adquisiciones de hardware y capital de trabajo en etapas de crecimiento."
+    "El nivel formal comprende prestamistas en línea evaluados por Merchant Maverick (2026). Miden variables objetivas: puntaje "
+    "crediticio, antigüedad comercial, facturación e ingresos comprobables, APR y velocidad de fondeo. Para startups en fase temprana "
+    "que carecen de historial bancario tradicional, las fintechs con modelos algorítmicos representan la vía formal para financiar "
+    "hardware y activos indispensables de puesta en marcha."
 ))
 
 # ═══════════════════════════════════════════════
-# SECCIÓN 3
+# SECCIÓN 3: PROPUESTA Y JUSTIFICACIÓN DE 3 FUENTES
 # ═══════════════════════════════════════════════
 
 heading(doc, "3. Propuesta y Justificación de Tres Fuentes de Financiamiento", level=1)
 
 para(doc, (
-    "Con base estricta en el catálogo de análisis y revisiones de prestamistas e instrumentos para startups de "
-    "Merchant Maverick (2026), se seleccionaron tres alternativas reales y diversificadas que se ajustan al modelo de SIGRE. "
-    "Cada opción cubre un ángulo financiero distinto: micro-crowdfunding sin costo financiero, crédito personal/comercial en línea "
-    "con aprobación automatizada, y levantamiento de capital social mediante plataforma de inversión."
+    "Con base estricta en el catálogo de revisiones para startups de Merchant Maverick (2026), se seleccionaron tres alternativas "
+    "reales que se ajustan al modelo de SIGRE, cubriendo micro-crowdfunding sin interés, crédito en línea ágil y levantamiento "
+    "de capital social. Cabe aclarar que, dado que las plataformas evaluadas en el catálogo de Merchant Maverick (Kiva U.S., "
+    "Upstart y EquityNet) operan directamente para entidades y residentes en Estados Unidos, su análisis e integración en este "
+    "presupuesto se realiza bajo el marco metodológico de evaluación de la asignatura (pudiendo instrumentarse en el ámbito local "
+    "mediante un vehículo en EE. UU., socios locales de Kiva o fintechs mexicanas equivalentes)."
 ))
 
 # ── 3.1 Kiva ──
 heading(doc, "3.1 Opción 1: Kiva (Micro-Crowdfunding al 0% de Interés)", level=2)
 
 para(doc, (
-    "Kiva es una organización y plataforma de financiamiento colectivo catalogada y analizada favorablemente por "
-    "Merchant Maverick (2026) como una de las soluciones más viables para emprendedores en fase temprana. Su mecanismo "
-    "opera mediante micropréstamos fondeados por una comunidad internacional de prestamistas individuales (Kiva, 2026)."
+    "Kiva es una plataforma de financiamiento colectivo evaluada por Merchant Maverick (2026) para etapas iniciales. Opera mediante "
+    "micropréstamos fondeados por prestamistas individuales a escala global (Kiva, 2026). Ofrece 0% APR, sin comisiones de apertura "
+    "ni penalizaciones. No exige puntaje crediticio mínimo ni antigüedad comercial; su elegibilidad se basa en suscripción social "
+    "(aportaciones de validación inicial del entorno del emprendedor). Otorga hasta $15,000 USD (Kiva, 2026), equivalentes a "
+    "aproximadamente $270,000 MXN [VERIFICAR: tipo de cambio oficial aplicable], amortizables a 36 meses en 15-30 días de fondeo."
 ))
 
+para(doc, "", bold_prefix="Justificación para SIGRE y Servicio de Deuda: ")
 para(doc, (
-    "De acuerdo con los criterios de evaluación de Merchant Maverick (2026), Kiva destaca por ofrecer una tasa de interés "
-    "del 0% APR y ausencia absoluta de comisiones de apertura o penalizaciones. No impone requisitos de puntaje crediticio "
-    "mínimo ni antigüedad operativa comercial previa, basando su elegibilidad en un esquema de suscripción social donde el "
-    "emprendedor valida su compromiso inicial con aportaciones de su entorno cercano. Los montos máximos alcanzan hasta $15,000 USD "
-    "(Kiva, 2026), equivalentes a aproximadamente $270,000 MXN al tipo de cambio promedio actual [VERIFICAR: tipo de cambio oficial aplicable], "
-    "con plazos de pago de hasta 36 meses. El tiempo de fondeo habitual oscila entre 15 y 30 días naturales."
-))
-
-para(doc, "", bold_prefix="Justificación para SIGRE: ")
-para(doc, (
-    "Kiva constituye la fuente prioritaria idónea para absorber los rubros intangibles más onerosos de SIGRE: el desarrollo "
-    "de ingeniería de software ($60,000 MXN) y la contratación de la infraestructura de servidores cloud en Google Cloud Platform "
-    "para el primer año ($16,000 MXN) (Universidad de Guadalajara, 2026). Al no devengar intereses ni costos de apertura, "
-    "permite desplegar el núcleo del sistema sin generar salidas de efectivo financieras durante la etapa de adopción institucional."
+    "Kiva financia las partidas P1 de software ($60,000 MXN) y P2 de infraestructura cloud para el Año 1 ($16,000 MXN), sumando "
+    "$76,000 MXN (Universidad de Guadalajara, 2026). Al operar al 0% de interés, permite desplegar el sistema sin generar costos "
+    "por intereses durante la etapa de adopción institucional. Devolver el préstamo de $76,000 MXN en 36 meses al 0% APR implica una "
+    "amortización mensual fija de $2,111.11 MXN/mes ($25,333.33 MXN/año)."
 ))
 
 # ── 3.2 Upstart ──
 heading(doc, "3.2 Opción 2: Upstart (Préstamo en Línea con Evaluación mediante Inteligencia Artificial)", level=2)
 
 para(doc, (
-    "Upstart es una plataforma de crédito en línea revisada por Merchant Maverick (2026) dentro de su categoría de financiamiento "
-    "para startups. Su propuesta de valor se basa en un modelo de suscripción que utiliza inteligencia artificial para evaluar factores "
-    "no convencionales del solicitante —como formación académica, área de estudio y potencial de ingresos— en lugar de limitarse "
-    "al historial de crédito histórico (Upstart, 2026)."
+    "Upstart es una plataforma de crédito evaluada por Merchant Maverick (2026) que utiliza inteligencia artificial para analizar "
+    "educación, área de especialidad y potencial de ingresos, en lugar de depender únicamente del historial crediticio (Upstart, 2026). "
+    "Otorga montos de $1,000 a $50,000 USD (aprox. $18,000 a $900,000 MXN [VERIFICAR: monto en pesos]). Su ventaja es la velocidad: "
+    "el 99% de los fondos se liberan en 1-2 días hábiles (Upstart, 2026). Sus tasas APR estimadas se ubican entre 7.80% y 35.99% "
+    "[VERIFICAR: rango oficial aplicable según perfil], con comisiones de apertura del 0% al 12% [VERIFICAR: comisión aplicable], "
+    "sin exigir tiempo en el negocio al otorgarse al fundador para inyección de capital en plazos de 36 a 60 meses."
 ))
 
+para(doc, "", bold_prefix="Justificación para SIGRE y Servicio de Deuda: ")
 para(doc, (
-    "Bajo las métricas de Merchant Maverick (2026), Upstart ofrece montos de crédito desde $1,000 hasta $50,000 USD "
-    "(aprox. $18,000 a $900,000 MXN [VERIFICAR: monto en pesos]). Su gran fortaleza radica en la velocidad de fondeo: el 99% "
-    "de las solicitudes aprobadas se liquidan en 1 a 2 días hábiles (Upstart, 2026). Las tasas de interés estimadas varían en un rango "
-    "de 7.80% a 35.99% APR [VERIFICAR: rango oficial aplicable según perfil], con comisiones de apertura que van del 0% al 12% "
-    "[VERIFICAR: comisión aplicable]. No exige antigüedad operativa de la empresa, ya que el financiamiento se otorga al fundador para inyección en el negocio."
-))
-
-para(doc, "", bold_prefix="Justificación para SIGRE: ")
-para(doc, (
-    "Esta opción se destina a financiar activos físicos y trámites legales inmediatos que demandan liquidez expedita: adquisición "
-    "de 3 lectores ópticos industriales y 1 tableta para almacenes ($20,000 MXN), trámites notariales y registro de propiedad "
-    "intelectual ante INDAUTOR ($12,000 MXN), y materiales para el despliegue operativo en ventanillas ($12,000 MXN), totalizando "
-    "$44,000 MXN (Universidad de Guadalajara, 2026). La inmediatez de desembolso de Upstart (1 a 2 días) asegura la compra oportuna "
-    "del hardware sin demoras logísticas."
+    "Upstart financia activos físicos y normativos inmediatos: P3 Hardware de Ventanilla ($20,000 MXN), P4 Marco Legal e INDAUTOR "
+    "($12,000 MXN) y P5 Despliegue Operativo ($12,000 MXN), totalizando $44,000 MXN (Universidad de Guadalajara, 2026). Su desembolso "
+    "en 24-48 horas asegura el aprovisionamiento oportuno. Amortizar estos $44,000 MXN a 36 meses bajo el rango de 7.80% a 35.99% APR "
+    "[VERIFICAR: rango oficial aplicable según perfil] representa pagos mensuales estimados de entre $1,374.74 y $2,015.12 MXN/mes."
 ))
 
 # ── 3.3 EquityNet ──
 heading(doc, "3.3 Opción 3: EquityNet (Plataforma de Equity Crowdfunding y Red de Inversionistas)", level=2)
 
 para(doc, (
-    "EquityNet es una plataforma pionera de financiamiento colectivo de capital (equity crowdfunding) evaluada por "
-    "Merchant Maverick (2026) como alternativa para startups que buscan respaldo financiero sin contraer obligaciones de deuda fija. "
-    "La plataforma opera un software patentado de análisis empresarial y conecta a fundadores con más de 25,000 inversionistas "
-    "acreditados, ángeles de negocios y fondos de capital semilla (EquityNet, 2026)."
-))
-
-para(doc, (
-    "Merchant Maverick (2026) resalta que en EquityNet no aplican tasas APR ni cargos por intereses, dado que el fondeo se "
-    "estructura mediante venta de participación accionaria minoritaria o notas convertibles. La plataforma cobra un esquema "
-    "de suscripción por el uso de herramientas de planeación y acceso a la red de inversionistas ($0 en plan básico; $199 a $299 USD/mes "
-    "en planes avanzados [VERIFICAR: vigencia de tarifas de suscripción]). Permite solicitar montos desde $10,000 hasta más de $1,000,000 USD. "
-    "El periodo de captación y cierre oscila habitualmente entre 30 y 90 días, sujeto al proceso de debida diligencia de los inversores."
+    "EquityNet conecta a emprendedores con más de 25,000 inversionistas acreditados y fondos ángel mediante software patentado de análisis "
+    "(EquityNet, 2026), siendo evaluada por Merchant Maverick (2026) como alternativa sin pasivos financieros. No genera intereses "
+    "ni deuda fija, estructurándose mediante participación accionaria o notas convertibles. Opera con un plan básico gratuito ($0 USD/mes) "
+    "y membresías avanzadas de $199 a $299 USD/mes [VERIFICAR: vigencia de tarifas de suscripción]. Permite levantar desde $10,000 hasta "
+    "más de $1,000,000 USD en periodos de 30 a 90 días naturales."
 ))
 
 para(doc, "", bold_prefix="Justificación para SIGRE: ")
 para(doc, (
-    "EquityNet se selecciona para respaldar la partida P6 del proyecto: el Fondo de Reserva de Contingencia Técnica ($20,000 MXN) "
-    "(Universidad de Guadalajara, 2026), y simultáneamente servir como vehículo para la posterior ronda de financiamiento en la fase "
-    "de escalamiento regional a otros centros universitarios de la Red UdeG. El valor principal de esta alternativa radica en el "
-    "denominado 'Smart Money': acceso a inversionistas del sector tecnológico que aportan orientación estratégica y vinculación comercial "
-    "sin comprometer el flujo operativo mensual de la plataforma."
+    "EquityNet respalda la partida P6: Fondo de Reserva de Contingencia Técnica ($20,000 MXN) (Universidad de Guadalajara, 2026). "
+    "Para levantar estos $20,000 MXN se utilizará exclusivamente la modalidad básica sin costo ($0 USD/mes) —o bien estos $20,000 MXN "
+    "constituyen la reserva inicial dentro de la preparación de una ronda semilla mayor para escalar a la Red UdeG—, evitando que el costo "
+    "de una membresía mensual consuma el capital recaudado. Aporta 'Smart Money' y contactos estratégicos sin comprometer el flujo mensual."
 ))
 
 # ── 3.4 Tabla Comparativa ──
 heading(doc, "3.4 Tabla Comparativa de Criterios (Evaluación Merchant Maverick)", level=2)
 
 para(doc, (
-    "En la Tabla 1 se presenta la comparativa formal de las tres alternativas seleccionadas, "
-    "contrastadas bajo los parámetros estandarizados de Merchant Maverick (2026)."
+    "En la Tabla 1 se sintetizan las tres opciones contrastadas bajo los parámetros de Merchant Maverick (2026)."
 ))
 
 comp_headers = [
-    "Criterio de Evaluación",
-    "Kiva\n(Crowdfunding 0%)",
-    "Upstart\n(Préstamo Online IA)",
-    "EquityNet\n(Equity Crowdfunding)",
+    "Criterio",
+    "Kiva (Crowdfunding 0%)",
+    "Upstart (Préstamo IA)",
+    "EquityNet (Equity Crowdfunding)",
 ]
 comp_rows = [
     [
-        "Tasa APR / Costo Financiero",
-        "0.0% APR fijo;\nsin comisiones ni intereses (Kiva, 2026)",
-        "7.80% – 35.99% APR [VERIFICAR];\ncomisión 0%–12% (Upstart, 2026)",
-        "0% APR (sin deuda);\nsuscripción $0–$299 USD/mes [VERIFICAR] (EquityNet, 2026)",
+        "Tasa APR / Costo",
+        "0.0% APR fijo;\nsin comisiones (Kiva, 2026)",
+        "7.80%–35.99% APR [VERIFICAR: rango oficial aplicable según perfil];\ncomisión 0%–12% [VERIFICAR: comisión aplicable] (Upstart, 2026)",
+        "0% APR (sin deuda);\nplan básico $0 USD/mes / avanzado $199–$299 USD/mes [VERIFICAR: vigencia de tarifas de suscripción] (EquityNet, 2026)",
     ],
     [
-        "Requisitos de Puntaje Crediticio",
-        "Sin puntaje mínimo;\nevaluación por respaldo social (Merchant Maverick, 2026)",
-        "Flexible / Modelo IA basado en educación y empleo (Merchant Maverick, 2026)",
-        "Sin puntaje crediticio mínimo;\nrequiere plan de negocio formal (Merchant Maverick, 2026)",
+        "Puntaje Crediticio",
+        "Sin mínimo; respaldo social (Merchant Maverick, 2026)",
+        "Flexible / Modelo IA educación y empleo (Merchant Maverick, 2026)",
+        "Sin puntaje mínimo; requiere plan de negocio (Merchant Maverick, 2026)",
     ],
     [
-        "Tiempo Mínimo de Operación",
-        "0 meses (Startups e ideas tempranas permitidas)",
-        "0 meses (Acepta fundadores en etapa pre-operativa)",
-        "0 meses (Admite proyectos en fase de capital semilla)",
+        "Antigüedad Mínima",
+        "0 meses (Startups admitidas)",
+        "0 meses (Fundador persona física)",
+        "0 meses (Capital semilla admitido)",
     ],
     [
-        "Límite Máximo de Financiamiento",
-        "Hasta $15,000 USD\n(~ $270,000 MXN [VERIFICAR])",
-        "Hasta $50,000 USD\n(~ $900,000 MXN [VERIFICAR])",
-        "Desde $10,000 hasta >$1,000,000 USD\nsegún tracción",
+        "Límite Máximo",
+        "Hasta $15,000 USD\n(~ $270,000 MXN [VERIFICAR: tipo de cambio oficial aplicable])",
+        "Hasta $50,000 USD\n(~ $900,000 MXN [VERIFICAR: monto en pesos])",
+        "Desde $10,000 hasta >$1,000,000 USD según tracción",
     ],
     [
-        "Velocidad de Fondeo",
-        "15 a 30 días naturales\n(fase comunitaria)",
-        "1 a 2 días hábiles\n(aprobación automatizada)",
-        "30 a 90 días naturales\n(negociación con ángeles)",
+        "Velocidad Fondeo",
+        "15 a 30 días naturales",
+        "1 a 2 días hábiles",
+        "30 a 90 días naturales",
     ],
     [
-        "Tipo de Instrumento",
-        "Micropréstamo colectivo amortizable a 36 meses",
-        "Línea de crédito personal/comercial amortizable a 36–60 meses",
-        "Capital de riesgo / Participación accionaria minoritaria",
+        "Tipo Instrumento",
+        "Micropréstamo (plazo 36 meses)",
+        "Línea crédito (plazo 36-60 meses)",
+        "Capital accionario / Notas convertibles",
     ],
     [
-        "Aporte de Valor Estratégico",
-        "Campaña de posicionamiento comunitario y validación moral",
-        "Liquidez inmediata para compras urgentes de activos",
-        "Smart Money: red de mentores y contactos de inversión",
+        "Aporte de Valor",
+        "Validación moral y comunitaria",
+        "Liquidez rápida para equipamiento",
+        "Smart Money: mentores y contactos ángel",
     ],
 ]
-add_styled_table(doc, comp_headers, comp_rows, col_widths=[3.8, 4.3, 4.3, 4.3])
+add_styled_table(doc, comp_headers, comp_rows, col_widths=[3.5, 4.4, 4.6, 4.7])
 
 # ═══════════════════════════════════════════════
-# SECCIÓN 4
+# SECCIÓN 4: DESTINO DETALLADO DE RECURSOS
 # ═══════════════════════════════════════════════
 
 heading(doc, "4. Destino Detallado de los Recursos: Inversión Inicial vs. Inversión Periódica", level=1)
 
 para(doc, (
-    "La asignación del capital debe guardar estricta correspondencia con el cronograma y la naturaleza técnica "
-    "de los activos requeridos por SIGRE (Universidad de Guadalajara, 2026). Para garantizar una gestión prudente, "
-    "se priorizan los componentes de la Inversión Inicial (CAPEX), mientras que la Inversión Periódica (OPEX) "
-    "se planifica con mecanismos de autosuficiencia y absorción institucional progresiva."
+    "La asignación de recursos guarda correspondencia con la estructura de costos de SIGRE (Universidad de Guadalajara, 2026), "
+    "priorizando la Inversión Inicial (CAPEX) y planificando la Inversión Periódica (OPEX) con absorción institucional progresiva."
 ))
 
 heading(doc, "4.1 Prioridad de Inversión Inicial (CAPEX)", level=2)
 
 para(doc, (
-    "El presupuesto de capital inicial se consolida en $140,000 MXN, distribuidos en tres bloques según el perfil de cada fuente:"
+    "El presupuesto de capital inicial (CAPEX) asciende a $140,000 MXN financiados externamente mediante seis partidas estructuradas:"
 ))
 
 para(doc, (
-    "a) Fondeo sin costo financiero (Kiva): Asigna $76,000 MXN para sufragar el esfuerzo de desarrollo de software y aseguramiento "
-    "de calidad ($60,000 MXN) y la contratación de servidores en nube por 12 meses ($16,000 MXN). Al tratarse de partidas intangibles "
-    "de largo retorno, financiarlas al 0% de interés previene la asfixia por servicio de deuda."
+    "a) Fondeo sin interés (Kiva, $76,000 MXN): Cubre la partida P1 (Finalización de módulos de producción, endurecimiento de seguridad "
+    "[hardening] y pruebas E2E, $60,000 MXN), consolidando el prototipo preliminar ya desarrollado con bootstrapping, y la partida P2 "
+    "(Infraestructura Cloud Año 1, prepago de $16,000 MXN)."
 ))
 
 para(doc, (
-    "b) Liquidez rápida (Upstart): Canaliza $44,000 MXN hacia elementos físicos y normativos de adquisición inmediata: lectores ópticos "
-    "industriales 2D y tableta de supervisión ($20,000 MXN), blindaje jurídico y derechos de autor INDAUTOR ($12,000 MXN), y material "
-    "de ventanilla y señalética ($12,000 MXN). El desembolso en 24–48 horas garantiza el aprovisionamiento oportuno de mostrador."
+    "b) Liquidez rápida (Upstart, $44,000 MXN): Cubre activos físicos y normativos inmediatos: partida P3 (Hardware de Ventanilla, $20,000 MXN: "
+    "3 lectores 2D y 1 tableta), partida P4 (Marco Legal y registro INDAUTOR, $12,000 MXN) y partida P5 (Despliegue Operativo y Capacitación, $12,000 MXN)."
 ))
 
 para(doc, (
-    "c) Capital semilla estratégico (EquityNet): Reserva $20,000 MXN para constituir el Fondo de Reserva de Contingencia Técnica, "
-    "procurando que el capital provenga de inversionistas ángeles interesados en escalar el sistema a la Red UdeG."
+    "c) Capital semilla estratégico (EquityNet, $20,000 MXN): Cubre la partida P6 (Fondo de Reserva de Contingencia Técnica, $20,000 MXN), "
+    "aclarando que su único propósito es servir de reserva financiera ante imprevistos técnicos o sobrecostos de nube, y no gasto operativo ordinario."
 ))
 
-heading(doc, "4.2 Distribución y Justificación de la Inversión Periódica (OPEX)", level=2)
+heading(doc, "4.2 Distribución del OPEX y Plan de Amortización del Servicio de la Deuda", level=2)
 
 para(doc, (
-    "Los costos operativos anuales ascienden a $28,800 MXN ($2,400 MXN mensuales promedio) (Universidad de Guadalajara, 2026). "
-    "Durante el Año 1, la partida mensual de servidores ($1,400 MXN/mes) queda completamente prepagada mediante la partida P2 "
-    "cubierta por Kiva ($16,000 MXN anuales). A partir del Año 2, la operación regular (servidores, mantenimiento de lectores por "
-    "$4,000 MXN/año y soporte correctivo por $8,000 MXN/año) se transferirá al presupuesto de mantenimiento de CUTonalá. Esta transferencia "
-    "se justifica financieramente en el dictamen técnico del proyecto, el cual demuestra un ahorro institucional de más de $100,000 MXN anuales "
-    "por concepto de reducción de mermas y extravíos de equipamiento (Universidad de Guadalajara, 2026)."
+    "El costo operativo ordinario anual (OPEX) asciende a $28,800 MXN ($2,400 MXN/mes): P2 Nube ($1,400 MXN/mes = $16,800 MXN/año), "
+    "P7 Mantenimiento de hardware ($4,000 MXN/año) y P8 Soporte técnico ($8,000 MXN/año) (Universidad de Guadalajara, 2026)."
+))
+
+para(doc, (
+    "Reconciliación del Año 1: Kiva prepaga $16,000 MXN en P2, existiendo una diferencia de $800 MXN para completar los $16,800 anuales. "
+    "Asimismo, P7 ($4,000 MXN) y P8 ($8,000 MXN) requieren cobertura en el primer ejercicio. Por ende, estos $12,800 MXN restantes del Año 1 "
+    "($800 de ajuste de nube + $4,000 de mantenimiento + $8,000 de soporte) son absorbidos internamente mediante bootstrapping y apoyo operativo "
+    "del laboratorio en CUTonalá, dando una Necesidad Total en el Año 1 de $152,800 MXN ($140,000 MXN de financiamiento externo + $12,800 MXN "
+    "de absorción interna). A partir del Año 2, la institución (CUTonalá) absorbe los $28,800 MXN/año completos ($16,800 de nube + $4,000 "
+    "de mantenimiento + $8,000 de soporte) como parte de su gasto operativo regular."
+))
+
+para(doc, (
+    "Plan de Servicio de la Deuda: La amortización mensual de Kiva ($2,111.11 MXN/mes a 36 meses) sumada a la de Upstart (entre $1,374.74 "
+    "y $2,015.12 MXN/mes a 36 meses) representa un servicio de deuda mensual total estimado de entre $3,485.85 y $4,126.23 MXN/mes "
+    "($41,830.20 a $49,514.76 MXN/año). Durante el arranque, este compromiso se respalda con aportaciones de los fundadores/bootstrapping y, "
+    "una vez en régimen operativo, se cubre con cargo al ahorro institucional generado por SIGRE en CUTonalá (que supera los $100,000 MXN anuales, "
+    "es decir, más de $8,333.33 MXN/mes), cubriendo con holgura tanto el OPEX recurrente como las amortizaciones."
 ))
 
 heading(doc, "4.3 Desglose Maestro de Asignación Presupuestal", level=2)
 
 para(doc, (
-    "La Tabla 2 detalla la correspondencia entre fuente, rubro específico, naturaleza del gasto y justificación financiera."
+    "La Tabla 2 detalla la correspondencia formal de las partidas P1 a P8, montos y esquemas de cobertura."
 ))
 
 dest_headers = [
-    "Fuente de\nFinanciamiento",
+    "Partida / Fuente",
     "Rubro Específico a Cubrir",
     "Tipo de Gasto",
-    "Monto\n(MXN)",
-    "Justificación Financiera",
+    "Monto (MXN)",
+    "Justificación Financiera y Cobertura",
 ]
 dest_rows = [
     [
-        "Kiva (2026)",
-        "Ingeniería de Software y QA (MVP funcional, pruebas E2E)",
+        "P1: Kiva (2026)",
+        "Finalización módulos producción, hardening y pruebas E2E",
         "Inversión Inicial",
         "$60,000",
-        "Partida de mayor escala; el 0% de interés evita costos de financiamiento sobre trabajo de desarrollo intelectual.",
+        "Concluye el MVP para producción; 0% interés evita costos sobre desarrollo intelectual.",
     ],
     [
-        "Kiva (2026)",
-        "Infraestructura Cloud Año 1 (Cloud Run, Cloud SQL, Redis, SSL)",
-        "Inversión Inicial\n(prepago anual)",
+        "P2: Kiva (2026)",
+        "Infraestructura Cloud Año 1 (prepago parcial GCP)",
+        "Inversión Inicial",
         "$16,000",
-        "Asegura la disponibilidad continua de servidores desde el día uno de operación sin presión de flujo mensual.",
+        "Prepago de servidores desde el día 1; los $800 faltantes anuales se cubren con bootstrapping.",
     ],
     [
-        "Upstart (2026)",
-        "Hardware de Ventanilla (3 escáneres 2D de uso rudo + 1 tableta)",
+        "P3: Upstart (2026)",
+        "Hardware de Ventanilla (3 escáneres 2D + 1 tableta)",
         "Inversión Inicial",
         "$20,000",
-        "Activos físicos críticos; la velocidad de desembolso de Upstart (24-48 hrs) permite su compra inmediata.",
+        "Activos físicos de almacén; liquidez rápida (24-48 hrs) asegura compra oportuna.",
     ],
     [
-        "Upstart (2026)",
-        "Marco Legal y Propiedad Intelectual (Aviso Privacidad e INDAUTOR)",
+        "P4: Upstart (2026)",
+        "Marco Legal y Propiedad Intelectual (INDAUTOR y Privacidad)",
         "Inversión Inicial",
         "$12,000",
-        "Gasto normativo para registro oficial de obra y protección de datos conforme a la legislación aplicable.",
+        "Registro oficial de obra de software y blindaje normativo de protección de datos.",
     ],
     [
-        "Upstart (2026)",
-        "Despliegue Operativo y Capacitación (señalética física y talleres)",
+        "P5: Upstart (2026)",
+        "Despliegue Operativo y Capacitación (señalética y talleres)",
         "Inversión Inicial",
         "$12,000",
-        "Acondicionamiento físico de mostradores de almacén y capacitación del personal de guardia.",
+        "Acondicionamiento físico de ventanillas y capacitación a personal de almacén.",
     ],
     [
-        "EquityNet (2026)",
+        "P6: EquityNet (2026)",
         "Fondo de Reserva de Contingencia Técnica",
-        "Inversión Inicial\n(reserva)",
+        "Inversión Inicial (reserva)",
         "$20,000",
-        "Amortiguador ante imprevistos técnicos o incrementos de consumo en la nube; no genera deuda recurrente.",
+        "Reserva exclusiva ante imprevistos técnicos o picos de nube; no es gasto operativo ordinario.",
     ],
     [
-        "Kiva (2026)\n[incluido en P2]",
-        "Infraestructura Cloud recurrente (cómputo y base de datos GCP)",
-        "Inversión Periódica",
-        "$1,400/mes\n($16,800/año)",
-        "Gasto operacional cubierto íntegramente durante el Año 1 mediante la partida anual prepagada.",
+        "P2 Ajuste: Bootstrapping",
+        "Ajuste Infraestructura Cloud Año 1 ($66.67/mes)",
+        "Inversión Periódica (Año 1)",
+        "$800",
+        "Completa los $16,000 de Kiva para cubrir los $16,800/año ($1,400/mes) de nube en el Año 1.",
     ],
     [
-        "Institución\n(CUTonalá, Año 2+)",
+        "P7: Interno (Año 1) / CUTonalá (Año 2+)",
         "Mantenimiento preventivo de hardware de almacén",
         "Inversión Periódica",
         "$4,000/año",
-        "Mantenimiento y reposición de cableado USB; absorbible por la partida de mantenimiento ordinario del campus.",
+        "Año 1 cubierto por apoyo del laboratorio; Año 2+ absorbido por CUTonalá.",
     ],
     [
-        "Institución\n(CUTonalá, Año 2+)",
-        "Soporte técnico, actualizaciones y parches de seguridad",
+        "P8: Interno (Año 1) / CUTonalá (Año 2+)",
+        "Soporte técnico, hardening y parches de seguridad",
         "Inversión Periódica",
         "$8,000/año",
-        "Mantenimiento correctivo de software; justificado con el ahorro institucional documentado de +$100,000 MXN/año.",
+        "Año 1 cubierto con bootstrapping; Año 2+ absorbido por CUTonalá (+ $100,000/año ahorro).",
     ],
 ]
-add_styled_table(doc, dest_headers, dest_rows, col_widths=[2.8, 4.4, 2.5, 2.0, 5.0])
+add_styled_table(doc, dest_headers, dest_rows, col_widths=[2.8, 4.3, 2.5, 1.9, 5.7])
 
 heading(doc, "4.4 Resumen Consolidado por Fuente de Financiamiento", level=2)
 
 para(doc, (
-    "En la Tabla 3 se sintetiza la distribución del capital entre las tres opciones evaluadas en Merchant Maverick (2026)."
+    "En la Tabla 3 se sintetiza el esquema de financiamiento externo (\$140,000 MXN) y la absorción interna del Año 1 (\$12,800 MXN)."
 ))
 
 summ_headers = [
@@ -509,12 +513,14 @@ summ_headers = [
     "Total Asignado Año 1",
 ]
 summ_rows = [
-    ["Kiva (2026) [Préstamo 0% APR]", "$76,000 MXN", "Incluida en prepago P2", "$76,000 MXN"],
+    ["Kiva (2026) [Préstamo 0% APR]", "$76,000 MXN", "Prepago P2 ($16,000)", "$76,000 MXN"],
     ["Upstart (2026) [Préstamo en Línea]", "$44,000 MXN", "—", "$44,000 MXN"],
     ["EquityNet (2026) [Equity Crowdfunding]", "$20,000 MXN", "—", "$20,000 MXN"],
-    ["TOTAL FINANCIADO", "$140,000 MXN", "—", "$140,000 MXN"],
+    ["Subtotal Financiamiento Externo (3 Fuentes)", "$140,000 MXN", "—", "$140,000 MXN"],
+    ["Aportación Interna / Bootstrapping CUTonalá", "—", "$12,800 MXN", "$12,800 MXN"],
+    ["NECESIDAD TOTAL AÑO 1 (CAPEX + OPEX)", "$140,000 MXN", "$12,800 MXN", "$152,800 MXN"],
 ]
-add_styled_table(doc, summ_headers, summ_rows, col_widths=[5.2, 3.8, 4.0, 3.2])
+add_styled_table(doc, summ_headers, summ_rows, col_widths=[5.5, 3.8, 4.0, 3.9])
 
 # ═══════════════════════════════════════════════
 # SECCIÓN 5: REFERENCIAS BIBLIOGRÁFICAS (APA 7)
@@ -523,7 +529,7 @@ add_styled_table(doc, summ_headers, summ_rows, col_widths=[5.2, 3.8, 4.0, 3.2])
 heading(doc, "5. Referencias Bibliográficas", level=1)
 
 references = [
-    "EquityNet. (2026). EquityNet crowdfunding platform: Connect with accredited investors. EquityNet. https://www.equitynet.com/ [VERIFICAR: enlace específico a sección startups]",
+    "EquityNet. (2026). EquityNet crowdfunding platform: Connect with accredited investors. EquityNet. https://merchantmaverick.go2cloud.org/aff_c?offer_id=320&aff_id=1&aff_sub=business-financing&aff_sub2=equitynet&aff_sub3=category-page&aff_sub4=cta&source=47150-review-category-start-up-business-loan-reviews",
     "Google. (2026). Gemini (Versión 1.5) [Modelo de lenguaje de gran escala]. https://gemini.google.com",
     "Kiva. (2026). How Kiva works: 0% interest crowdfunded loans for entrepreneurs. Kiva Microfunds. https://www.kiva.org/borrow",
     "Merchant Maverick. (2026). Start-up business loan reviews. Merchant Maverick. https://www.merchantmaverick.com/review-category/start-up-business-loan-reviews/",
@@ -535,12 +541,13 @@ for ref in references:
     p = doc.add_paragraph()
     p.paragraph_format.left_indent = Cm(1.27)
     p.paragraph_format.first_line_indent = Cm(-1.27)
-    p.paragraph_format.space_after = Pt(8)
-    p.paragraph_format.line_spacing = 2.0
+    p.paragraph_format.space_before = Pt(0)
+    p.paragraph_format.space_after = Pt(4)
+    p.paragraph_format.line_spacing = 1.15
     run = p.add_run(ref)
-    run.font.size = Pt(11)
+    run.font.size = Pt(9.5)
     run.font.name = "Calibri"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 doc.save(OUTPUT_FILE)
-print(f"✅ Documento Word regenerado y guardado en: {OUTPUT_FILE}")
+print(f"✅ Documento Word generado exitosamente en: {OUTPUT_FILE}")
