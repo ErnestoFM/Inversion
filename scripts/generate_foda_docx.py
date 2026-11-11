@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Genera la versión Word (.docx) de respaldo de la Matriz FODA Estratégica de SIGRE.
-Mantiene la misma estructura, estética UdeG/SIGRE y 4 aspectos por cuadrante vinculados a Calidad y Riesgos.
+Genera la versión Word (.docx) limpia de la Matriz FODA:
+Solo título sencillo "FODA" y el cuadro 2x2.
 """
 
 import os
 from docx import Document
 from docx.shared import Pt, Cm, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.enum.table import WD_TABLE_ALIGNMENT, WD_ALIGN_VERTICAL
+from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.oxml.ns import nsdecls
 from docx.oxml import parse_xml
 
@@ -40,56 +40,21 @@ def generate_foda_docx():
     new_width, new_height = section.page_height, section.page_width
     section.page_width = new_width
     section.page_height = new_height
-    section.top_margin = Cm(1.5)
-    section.bottom_margin = Cm(1.5)
-    section.left_margin = Cm(1.5)
-    section.right_margin = Cm(1.5)
+    section.top_margin = Cm(1.6)
+    section.bottom_margin = Cm(1.6)
+    section.left_margin = Cm(1.6)
+    section.right_margin = Cm(1.6)
 
-    # Banner superior
-    header_table = doc.add_table(rows=1, cols=2)
-    header_table.alignment = WD_TABLE_ALIGNMENT.CENTER
-    header_table.style = 'Table Grid'
-    
-    cell_l = header_table.rows[0].cells[0]
-    cell_r = header_table.rows[0].cells[1]
-    cell_l.width = Cm(15.0)
-    cell_r.width = Cm(10.5)
-
-    set_cell_shading(cell_l, "002B49")
-    set_cell_shading(cell_r, "002B49")
-    set_cell_margins(cell_l, 120, 120, 150, 150)
-    set_cell_margins(cell_r, 120, 120, 150, 150)
-
-    p_l = cell_l.paragraphs[0]
-    p_l.paragraph_format.space_before = Pt(0)
-    p_l.paragraph_format.space_after = Pt(2)
-    run_title = p_l.add_run("MATRIZ FODA ESTRATÉGICA — PROYECTO SIGRE\n")
-    run_title.font.name = "Calibri"
-    run_title.font.size = Pt(13)
-    run_title.font.bold = True
-    run_title.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
-
-    run_sub = p_l.add_run("Análisis Integral de Calidad del Software/Servicio y Gestión de Riesgos de Inversión")
-    run_sub.font.name = "Calibri"
-    run_sub.font.size = Pt(8.5)
-    run_sub.font.color.rgb = RGBColor(0xCB, 0xD5, 0xE1)
-
-    p_r = cell_r.paragraphs[0]
-    p_r.paragraph_format.space_before = Pt(0)
-    p_r.paragraph_format.space_after = Pt(2)
-    p_r.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    run_meta1 = p_r.add_run("Centro Universitario de Tonalá (CUTonalá) — UdeG\n")
-    run_meta1.font.name = "Calibri"
-    run_meta1.font.size = Pt(8)
-    run_meta1.font.bold = True
-    run_meta1.font.color.rgb = RGBColor(0xFD, 0xE0, 0x47)
-
-    run_meta2 = p_r.add_run("Materia: Formulación y Eval. de Proyectos | Mtra. Abril Adriana Angulo\nAlumno: Ernesto Hatuey Fierro Meléndez (Cód. 219746328)")
-    run_meta2.font.name = "Calibri"
-    run_meta2.font.size = Pt(7.5)
-    run_meta2.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
-
-    doc.add_paragraph("").paragraph_format.space_after = Pt(4)
+    # Título muy sencillo: "FODA"
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p_title.paragraph_format.space_before = Pt(0)
+    p_title.paragraph_format.space_after = Pt(8)
+    run_t = p_title.add_run("FODA")
+    run_t.font.name = "Calibri"
+    run_t.font.size = Pt(20)
+    run_t.font.bold = True
+    run_t.font.color.rgb = RGBColor(0x00, 0x2B, 0x49) # Azul Institucional UdeG
 
     # Matriz 2x2
     foda_table = doc.add_table(rows=2, cols=2)
@@ -210,7 +175,7 @@ def generate_foda_docx():
             run_tr.font.color.rgb = RGBColor(0xB9, 0x1C, 0x1C)
 
     doc.save(OUTPUT_DOCX)
-    print(f"✅ Documento Word FODA generado: {OUTPUT_DOCX}")
+    print(f"✅ Documento Word FODA limpio generado: {OUTPUT_DOCX}")
 
 if __name__ == "__main__":
     generate_foda_docx()
