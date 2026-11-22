@@ -148,6 +148,46 @@ def test_viability_threshold_interpolation():
     pct_red = (19.0 / 196.0) * 100.0
     assert round(pct_red, 1) == 9.7, f"Porcentaje de la red incorrecto: {pct_red:.2f}% != 9.7%"
 
+def test_proforma_income_statement_integrity():
+    """Valida la consistencia aritmética vertical y horizontal de la Tabla 12 (Proforma)."""
+    # Año 1
+    ingresos_y1 = 63000.0
+    opex_items_y1 = [18000.0, 40000.0, 12000.0, 15000.0, 10000.0]
+    total_opex_y1 = sum(opex_items_y1)
+    assert total_opex_y1 == 95000.0, f"OPEX Año 1 incorrecto: {total_opex_y1} != 95000.0"
+    ebit_y1 = ingresos_y1 - total_opex_y1
+    assert ebit_y1 == -32000.0, f"EBIT Año 1 incorrecto: {ebit_y1} != -32000.0"
+    tax_y1 = 0.0
+    fen_y1 = ebit_y1 - tax_y1
+    assert fen_y1 == -32000.0, f"FEN Año 1 incorrecto: {fen_y1} != -32000.0"
+
+    # Año 2
+    ingresos_y2 = 324000.0
+    opex_items_y2 = [35000.0, 120000.0, 22000.0, 24000.0, 24000.0]
+    total_opex_y2 = sum(opex_items_y2)
+    assert total_opex_y2 == 225000.0, f"OPEX Año 2 incorrecto: {total_opex_y2} != 225000.0"
+    ebit_y2 = ingresos_y2 - total_opex_y2
+    assert ebit_y2 == 99000.0, f"EBIT Año 2 incorrecto: {ebit_y2} != 99000.0"
+    # Amortización de pérdida fiscal del Año 1 (-$32,000)
+    taxable_base_y2 = ebit_y2 - abs(fen_y1)
+    assert taxable_base_y2 == 67000.0, f"Base gravable Año 2 incorrecta: {taxable_base_y2} != 67000.0"
+    tax_y2 = taxable_base_y2 * 0.30
+    assert tax_y2 == 20100.0, f"ISR Año 2 incorrecto: {tax_y2} != 20100.0"
+    fen_y2 = ebit_y2 - tax_y2
+    assert fen_y2 == 78900.0, f"FEN Año 2 incorrecto: {fen_y2} != 78900.0"
+
+    # Año 3
+    ingresos_y3 = 850000.0
+    opex_items_y3 = [65000.0, 240000.0, 45000.0, 36000.0, 40000.0]
+    total_opex_y3 = sum(opex_items_y3)
+    assert total_opex_y3 == 426000.0, f"OPEX Año 3 incorrecto: {total_opex_y3} != 426000.0"
+    ebit_y3 = ingresos_y3 - total_opex_y3
+    assert ebit_y3 == 424000.0, f"EBIT Año 3 incorrecto: {ebit_y3} != 424000.0"
+    tax_y3 = ebit_y3 * 0.30
+    assert tax_y3 == 127200.0, f"ISR Año 3 incorrecto: {tax_y3} != 127200.0"
+    fen_y3 = ebit_y3 - tax_y3
+    assert fen_y3 == 296800.0, f"FEN Año 3 incorrecto: {fen_y3} != 296800.0"
+
 if __name__ == "__main__":
     test_capex_budget_breakdown()
     test_year1_contracts_and_revenue()
@@ -156,4 +196,5 @@ if __name__ == "__main__":
     test_stepped_payroll_budget()
     test_investor_irr_at_5_years()
     test_viability_threshold_interpolation()
+    test_proforma_income_statement_integrity()
     print("Todas las pruebas financieras han pasado exitosamente.")
