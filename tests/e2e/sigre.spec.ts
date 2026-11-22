@@ -284,7 +284,7 @@ test.describe('Suite E2E Playwright: SIGRE CUTonalá (Etapa 2)', () => {
     await page.goto('/');
   });
 
-  async function loginAsUser(page: Page, email = 'ernesto.fierro@alumnos.udg.mx', password = 'Cutonala2026!') {
+  async function loginAsUser(page: Page, email = 'alumno.demo@alumnos.udg.mx', password = 'Cutonala2026!') {
     const userName = page.locator('.user-name');
     if (await userName.isVisible()) return;
 
@@ -334,17 +334,17 @@ test.describe('Suite E2E Playwright: SIGRE CUTonalá (Etapa 2)', () => {
     await loginBtn.click();
 
     // Completar credenciales institucionales
-    await page.locator('input[type="email"]').fill('ernesto.fierro@alumnos.udg.mx');
+    await page.locator('input[type="email"]').fill('alumno.demo@alumnos.udg.mx');
     await page.locator('input[type="password"]').fill('Cutonala2026!');
     await page.locator('button[type="submit"]:has-text("Ingresar al Sistema")').click();
 
     // Verificar datos de sesión en Header (Primer nombre y badge de reputación)
-    await expect(page.locator('.user-name')).toHaveText('Ernesto');
+    await expect(page.locator('.user-name')).toHaveText('Estudiante');
     await expect(page.locator('.user-trust-tag')).toContainText('100/100 pts');
 
     // Abrir menú de usuario para verificar carrera y código
     await page.locator('.user-profile-btn').click();
-    await expect(page.locator('.dropdown-user-header strong')).toHaveText('Ernesto Hatuey Fierro Meléndez');
+    await expect(page.locator('.dropdown-user-header strong')).toHaveText('Estudiante Prueba SIGRE');
     await expect(page.locator('.dropdown-user-header .badge')).toContainText('Rol: ESTUDIANTE');
 
     await page.screenshot({ path: 'docs/pruebas/screenshots/02_sesion_alumno.png' });
@@ -353,7 +353,7 @@ test.describe('Suite E2E Playwright: SIGRE CUTonalá (Etapa 2)', () => {
   test('3. Cartelera Cineteca & Reserva de Asiento con Código QR', async ({ page }) => {
     // Login inicial
     await loginAsUser(page);
-    await expect(page.locator('.user-name')).toHaveText('Ernesto');
+    await expect(page.locator('.user-name')).toHaveText('Estudiante');
 
     // Pestaña Cartelera Cineteca
     await page.locator('nav button:has-text("Cartelera Cineteca")').click();
@@ -535,15 +535,15 @@ test.describe('Suite E2E Playwright: SIGRE CUTonalá (Etapa 2)', () => {
 
     // Cambiar a pestaña de Pruebas & Simulación
     await page.locator('button:has-text("Pruebas & Simulación")').click();
-    await expect(page.locator('button:has-text("Boleto Válido (Ernesto)")')).toBeVisible();
+    await expect(page.locator('button:has-text("Boleto Válido (Simulado)")')).toBeVisible();
 
     // Ejecutar simulación de escaneo de boleto válido
-    await page.locator('button:has-text("Boleto Válido (Ernesto)")').click();
+    await page.locator('button:has-text("Boleto Válido (Simulado)")').click();
 
     // Verificar resultado exitoso de validación
     await expect(page.locator('text=Acceso Autorizado')).toBeVisible();
-    await expect(page.locator('text=Ernesto Hatuey Fierro Meléndez')).toBeVisible();
-    await expect(page.locator('text=215789456')).toBeVisible();
+    await expect(page.locator('text=Estudiante Prueba SIGRE')).toBeVisible();
+    await expect(page.locator('text=EST-2026B-01')).toBeVisible();
 
     // Guardar captura para la documentación y manuales
     await page.screenshot({ path: 'docs/pruebas/screenshots/09_escaner_qr_camara.png' });

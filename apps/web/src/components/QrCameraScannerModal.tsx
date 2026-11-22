@@ -224,12 +224,12 @@ export const QrCameraScannerModal: React.FC<QrCameraScannerModalProps> = ({
         status: 'SUCCESS',
         message: res.message || 'Acceso Autorizado',
         student: res.student || {
-          fullName: 'Ernesto Hatuey Fierro Meléndez',
-          studentCode: '215789456',
+          fullName: 'Estudiante Prueba SIGRE',
+          studentCode: 'EST-2026B-01',
           career: 'Ingeniería en Ciencias Computacionales',
         },
         event: res.event || {
-          title: 'Cineteca CUTonalá: Pinocho 4K (Sala Guillermo del Toro)',
+          title: 'Macario (1960) — Versión Restaurada 4K (Sala Guillermo del Toro)',
           startTime: new Date().toISOString(),
           spaceName: 'Cineteca Sala Guillermo del Toro',
         },
@@ -250,8 +250,8 @@ export const QrCameraScannerModal: React.FC<QrCameraScannerModalProps> = ({
           status: 'ALREADY_SCANNED',
           message: '⚠️ Este boleto YA FUE ESCANEADO previamente.',
           student: {
-            fullName: 'Ernesto Hatuey Fierro Meléndez',
-            studentCode: '215789456',
+            fullName: 'Estudiante Prueba SIGRE',
+            studentCode: 'EST-2026B-01',
             career: 'Ingeniería en Ciencias Computacionales',
           },
           event: {
@@ -269,8 +269,8 @@ export const QrCameraScannerModal: React.FC<QrCameraScannerModalProps> = ({
             status: 'SUCCESS',
             message: '✅ Acceso Autorizado (Verificado en Puerta)',
             student: {
-              fullName: 'Ernesto Hatuey Fierro Meléndez',
-              studentCode: '215789456',
+              fullName: 'Estudiante Prueba SIGRE',
+              studentCode: 'EST-2026B-01',
               career: 'Ingeniería en Ciencias Computacionales',
             },
             event: {
@@ -346,7 +346,7 @@ export const QrCameraScannerModal: React.FC<QrCameraScannerModalProps> = ({
           career: 'Lic. en Diseño y Artes Digitales',
         },
         event: {
-          title: 'Cineteca CUTonalá: Pinocho 4K',
+          title: 'Macario (1960) — Versión Restaurada 4K (Sala Guillermo del Toro)',
           startTime: new Date().toISOString(),
         },
         scannedAt: '08:05:12 hrs',
@@ -680,7 +680,7 @@ export const QrCameraScannerModal: React.FC<QrCameraScannerModalProps> = ({
                         onClick={() => handleSimulateScan('valido')}
                         className="qr-simulation-btn valid"
                       >
-                        <CheckCircle2 size={16} /> Boleto Válido (Ernesto)
+                        <CheckCircle2 size={16} /> Boleto Válido (Simulado)
                       </button>
                       <button
                         type="button"

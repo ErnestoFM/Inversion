@@ -11,9 +11,9 @@ import type {
 
 export const mockUserStudent: User = {
   id: 'usr-student-001',
-  email: 'ernesto.fierro@alumnos.udg.mx',
-  nombre: 'Ernesto Hatuey Fierro Meléndez',
-  codigo: '215789456',
+  email: 'alumno.demo@alumnos.udg.mx',
+  nombre: 'Estudiante Prueba SIGRE',
+  codigo: 'EST-2026B-01',
   rol: 'ESTUDIANTE',
   carrera: 'Ingeniería en Ciencias Computacionales',
   telefono: '3312345678',

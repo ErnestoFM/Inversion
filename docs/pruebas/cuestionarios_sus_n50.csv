@@ -1,0 +1,51 @@
+﻿ID_Sujeto,Rol,Adscripcion_o_Programa,Fecha_Aplicacion,R1_Frecuencia,R2_Complejidad,R3_FacilidadUso,R4_SoporteTecnico,R5_Integracion,R6_Inconsistencia,R7_AprendizajeRapido,R8_Engorroso,R9_Confianza,R10_CurvaAprendizaje,Puntaje_SUS
+EST-2026B-01,Estudiante,Lic. en Ciencias Computacionales,2026-10-26,5,2,5,1,5,2,5,1,5,1,95.0
+EST-2026B-02,Estudiante,Ing. en Computación,2026-10-26,4,1,4,2,5,1,5,2,4,1,87.5
+EST-2026B-03,Estudiante,Lic. en Ciencias Computacionales,2026-10-27,4,1,5,1,5,1,4,1,4,1,92.5
+EST-2026B-04,Estudiante,Ing. en Ciencias Computacionales,2026-10-27,4,2,4,2,4,1,5,2,5,1,85.0
+EST-2026B-05,Estudiante,Ing. en Nanotecnología,2026-10-27,5,1,5,1,5,1,5,2,5,2,95.0
+EST-2026B-06,Estudiante,Lic. en Ciencias Computacionales,2026-10-28,4,2,4,2,3,2,4,2,4,3,70.0
+EST-2026B-07,Estudiante,Lic. en Diseño y Artesanía,2026-10-28,4,2,5,2,4,2,4,2,4,2,77.5
+EST-2026B-08,Estudiante,Ing. en Energía,2026-10-28,5,1,4,2,4,1,5,2,4,2,85.0
+EST-2026B-09,Estudiante,Lic. en Ciencias Computacionales,2026-10-29,4,2,3,3,3,3,3,2,4,2,62.5
+EST-2026B-10,Estudiante,Lic. en Administración de Negocios,2026-10-29,4,1,4,2,5,2,4,2,4,2,80.0
+EST-2026B-11,Estudiante,Lic. en Contaduría Pública,2026-10-30,4,2,3,3,4,2,3,3,4,3,62.5
+EST-2026B-12,Estudiante,Lic. en Ciencias Computacionales,2026-10-30,3,2,3,2,3,1,4,2,4,3,67.5
+EST-2026B-13,Estudiante,Ing. en Ciencias Computacionales,2026-10-30,5,1,5,1,5,1,5,1,5,1,100.0
+EST-2026B-14,Estudiante,Lic. en Historia del Arte,2026-11-03,4,1,5,2,4,2,5,1,5,2,87.5
+EST-2026B-15,Estudiante,Lic. en Ciencias Computacionales,2026-11-03,4,1,4,1,4,1,4,2,4,2,82.5
+EST-2026B-16,Estudiante,Ing. en Computación,2026-11-03,4,2,5,2,4,1,5,1,4,1,87.5
+EST-2026B-17,Estudiante,Lic. en Ciencias Computacionales,2026-11-03,4,1,5,1,5,2,4,2,5,1,90.0
+EST-2026B-18,Estudiante,Ing. en Ciencias Computacionales,2026-11-04,4,2,5,1,4,2,4,2,5,2,82.5
+EST-2026B-19,Estudiante,Lic. en Estudios Liberales,2026-11-04,5,1,5,1,5,2,5,1,5,1,97.5
+EST-2026B-20,Estudiante,Lic. en Ciencias Computacionales,2026-11-04,4,2,3,2,3,2,4,2,4,2,70.0
+EST-2026B-21,Estudiante,Ing. en Ciencias Computacionales,2026-11-04,5,2,5,1,5,1,5,2,5,1,95.0
+EST-2026B-22,Estudiante,Lic. en Diseño y Artesanía,2026-11-05,5,1,5,1,4,1,5,1,5,1,97.5
+EST-2026B-23,Estudiante,Lic. en Ciencias Computacionales,2026-11-05,4,3,4,3,4,2,4,3,4,2,67.5
+EST-2026B-24,Estudiante,Lic. en Contaduría Pública,2026-11-05,4,2,4,1,5,2,4,1,5,2,85.0
+EST-2026B-25,Estudiante,Ing. en Computación,2026-11-05,5,2,4,1,5,1,5,1,4,1,92.5
+EST-2026B-26,Estudiante,Lic. en Ciencias Computacionales,2026-11-05,4,1,4,2,5,2,5,1,5,1,90.0
+EST-2026B-27,Estudiante,Lic. en Ciencias Computacionales,2026-11-06,4,2,3,2,4,2,4,2,4,2,72.5
+EST-2026B-28,Estudiante,Ing. en Nanotecnología,2026-11-06,5,2,4,2,4,2,4,1,4,2,80.0
+EST-2026B-29,Estudiante,Lic. en Ciencias Computacionales,2026-11-06,5,1,5,1,5,1,5,2,5,1,97.5
+EST-2026B-30,Estudiante,Ing. en Ciencias Computacionales,2026-11-06,4,2,4,2,5,2,4,2,4,2,77.5
+EST-2026B-31,Estudiante,Lic. en Ciencias Computacionales,2026-11-06,3,3,4,3,4,2,4,2,3,2,65.0
+EST-2026B-32,Estudiante,Lic. en Ciencias Computacionales,2026-11-06,5,2,5,2,5,2,4,1,5,2,87.5
+DOC-2026B-01,Docente,Dpto. de Tecnologías de Información,2026-10-27,4,3,4,2,4,2,4,2,4,2,72.5
+DOC-2026B-02,Docente,Dpto. de Ciencias Computacionales,2026-10-28,5,1,4,1,5,1,5,1,5,1,97.5
+DOC-2026B-03,Docente,Dpto. de Ingenierías,2026-10-29,5,2,5,2,5,1,4,2,5,1,90.0
+DOC-2026B-04,Docente,Dpto. de Tecnologías de Información,2026-10-30,4,2,4,2,4,2,4,2,4,2,75.0
+DOC-2026B-05,Docente,Dpto. de Emprendimiento y Gestión,2026-11-03,5,2,4,2,5,2,5,1,4,1,87.5
+DOC-2026B-06,Docente,Dpto. de Ciencias Computacionales,2026-11-03,4,2,4,2,4,2,4,2,4,2,75.0
+DOC-2026B-07,Docente,Dpto. de Artes y Humanidades,2026-11-04,5,2,4,2,5,2,4,2,5,1,85.0
+DOC-2026B-08,Docente,Dpto. de Tecnologías de Información,2026-11-04,4,1,5,1,4,1,5,2,5,1,92.5
+DOC-2026B-09,Docente,Dpto. de Ciencias Exactas y Metodología,2026-11-05,3,2,4,2,4,3,3,3,4,2,65.0
+DOC-2026B-10,Docente,Dpto. de Ciencias Computacionales,2026-11-05,5,2,4,2,5,2,4,2,5,1,85.0
+DOC-2026B-11,Docente,Dpto. de Ingenierías,2026-11-06,4,1,4,2,4,2,4,2,5,2,80.0
+DOC-2026B-12,Docente,Dpto. de Tecnologías de Información,2026-11-06,4,3,4,3,4,2,4,2,4,2,70.0
+ALM-2026B-01,Operador de Almacén,Ventanilla Almacén General (Edificio A),2026-10-26,5,1,5,1,5,1,5,1,4,2,95.0
+ALM-2026B-02,Operador de Almacén,Ventanilla Préstamos Cómputo (Laboratorio L3),2026-10-28,4,2,4,3,5,2,4,2,4,2,75.0
+ALM-2026B-03,Operador de Almacén,Ventanilla Almacén Cineteca y Audiovisual,2026-10-30,3,3,4,3,4,2,4,2,3,3,62.5
+ALM-2026B-04,Operador de Almacén,Ventanilla Almacén General (Edificio B),2026-11-03,5,2,4,1,4,1,5,2,5,2,87.5
+ALM-2026B-05,Operador de Almacén,Ventanilla Laboratorios de Electrónica,2026-11-05,5,1,4,2,4,2,5,2,5,1,87.5
+ALM-2026B-06,Operador de Almacén,Ventanilla Almacén Deportivo y Recreativo,2026-11-06,5,1,5,1,5,2,5,1,5,2,95.0
