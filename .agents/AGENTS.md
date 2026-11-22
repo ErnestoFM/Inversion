@@ -25,3 +25,10 @@ Este archivo define las directivas y reglas de comportamiento obligatorias para 
 - **Cero Hardcoding:** NUNCA escribas credenciales, llaves secretas o URLs fijas en el código. Utiliza variables de entorno (`.env`).
 - **Documentación Técnica Paralela:** Al crear módulos o arquitecturas complejas, documenta las decisiones técnicas en `docs/tecnica/` y en `obsidian/Modulos/`.
 - **Integración Continua:** Mantén la compatibilidad con los flujos de GitHub Actions definidos en `.github/workflows/`.
+
+---
+
+## 4. Rigor Financiero, Matemático y Consistencia Tabular (`.agents/rules/rigor_financiero_y_matematico.md`)
+- **Cero Aritmética en Prosa:** Prohibido calcular sumas, porcentajes, amortizaciones, VPN, TIR o flujos netos de memoria en el texto. Todo dato cuantitativo DEBE calcularse ejecutando scripts de Python.
+- **Cuadre y Validación Automática:** Antes de plasmar o modificar tablas contables o de evaluación financiera, se debe ejecutar un script de prueba que verifique sumas y fórmulas al centavo.
+- **Congruencia Multi-sección:** Cualquier ajuste en cifras debe propagarse idénticamente a lo largo de todo el documento (resumen, FODA, estados proforma, sensibilidad y retorno al inversionista).
