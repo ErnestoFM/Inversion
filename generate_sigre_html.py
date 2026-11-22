@@ -723,9 +723,9 @@ def generate_html_presentation():
           </div>
 
           <div class="card card-border-cyan">
-            <span style="font-size: 10px; font-weight: 800; color: var(--amber-bright); text-transform: uppercase;">PROFESOR TITULAR</span>
-            <strong style="font-size: 14px; margin-top: 4px; color: var(--text-white);">Dr. Gabriel Navarro S.</strong>
-            <span style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Evaluación Final ExpoDIT 100 pts</span>
+            <span style="font-size: 10px; font-weight: 800; color: var(--amber-bright); text-transform: uppercase;">DOCENTE TITULAR</span>
+            <strong style="font-size: 14px; margin-top: 4px; color: var(--text-white);">Dra. Abril Sherman</strong>
+            <span style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Evaluación ExpoDIT 2026</span>
           </div>
 
           <div class="card card-border-cyan">
@@ -743,7 +743,7 @@ def generate_html_presentation():
 
         <div class="slide-footer">
           <span class="slide-footer-left">Ernesto Hatuey Fierro M. (223977036) • Equipo 4</span>
-          <span class="slide-footer-center">Profesor: Dr. Gabriel Navarro Salcedo</span>
+          <span class="slide-footer-center">Docente: Dra. Abril Adriana Angulo Sherman</span>
           <span class="slide-footer-right">EXPODIT 2026 • Slide 1 / 13</span>
         </div>
       </div>
@@ -807,7 +807,7 @@ def generate_html_presentation():
 
         <div class="slide-footer">
           <span class="slide-footer-left">Ernesto Hatuey Fierro M. (223977036) • Equipo 4</span>
-          <span class="slide-footer-center">Profesor: Dr. Gabriel Navarro Salcedo</span>
+          <span class="slide-footer-center">Docente: Dra. Abril Adriana Angulo Sherman</span>
           <span class="slide-footer-right">EXPODIT 2026 • Slide 2 / 13</span>
         </div>
       </div>
@@ -860,7 +860,7 @@ def generate_html_presentation():
 
         <div class="slide-footer">
           <span class="slide-footer-left">Ernesto Hatuey Fierro M. (223977036) • Equipo 4</span>
-          <span class="slide-footer-center">Profesor: Dr. Gabriel Navarro Salcedo</span>
+          <span class="slide-footer-center">Docente: Dra. Abril Adriana Angulo Sherman</span>
           <span class="slide-footer-right">EXPODIT 2026 • Slide 3 / 13</span>
         </div>
       </div>
@@ -927,7 +927,7 @@ def generate_html_presentation():
 
         <div class="slide-footer">
           <span class="slide-footer-left">Ernesto Hatuey Fierro M. (223977036) • Equipo 4</span>
-          <span class="slide-footer-center">Profesor: Dr. Gabriel Navarro Salcedo</span>
+          <span class="slide-footer-center">Docente: Dra. Abril Adriana Angulo Sherman</span>
           <span class="slide-footer-right">EXPODIT 2026 • Slide 4 / 13</span>
         </div>
       </div>
@@ -993,7 +993,7 @@ def generate_html_presentation():
 
         <div class="slide-footer">
           <span class="slide-footer-left">Ernesto Hatuey Fierro M. (223977036) • Equipo 4</span>
-          <span class="slide-footer-center">Profesor: Dr. Gabriel Navarro Salcedo</span>
+          <span class="slide-footer-center">Docente: Dra. Abril Adriana Angulo Sherman</span>
           <span class="slide-footer-right">EXPODIT 2026 • Slide 5 / 13</span>
         </div>
       </div>
@@ -1047,7 +1047,7 @@ def generate_html_presentation():
 
         <div class="slide-footer">
           <span class="slide-footer-left">Ernesto Hatuey Fierro M. (223977036) • Equipo 4</span>
-          <span class="slide-footer-center">Profesor: Dr. Gabriel Navarro Salcedo</span>
+          <span class="slide-footer-center">Docente: Dra. Abril Adriana Angulo Sherman</span>
           <span class="slide-footer-right">EXPODIT 2026 • Slide 6 / 13</span>
         </div>
       </div>
@@ -1133,7 +1133,7 @@ def generate_html_presentation():
 
         <div class="slide-footer">
           <span class="slide-footer-left">Ernesto Hatuey Fierro M. (223977036) • Equipo 4</span>
-          <span class="slide-footer-center">Profesor: Dr. Gabriel Navarro Salcedo</span>
+          <span class="slide-footer-center">Docente: Dra. Abril Adriana Angulo Sherman</span>
           <span class="slide-footer-right">EXPODIT 2026 • Slide 7 / 13</span>
         </div>
       </div>
@@ -1209,7 +1209,7 @@ def generate_html_presentation():
 
         <div class="slide-footer">
           <span class="slide-footer-left">Ernesto Hatuey Fierro M. (223977036) • Equipo 4</span>
-          <span class="slide-footer-center">Profesor: Dr. Gabriel Navarro Salcedo</span>
+          <span class="slide-footer-center">Docente: Dra. Abril Adriana Angulo Sherman</span>
           <span class="slide-footer-right">EXPODIT 2026 • Slide 8 / 13</span>
         </div>
       </div>
@@ -1263,7 +1263,7 @@ def generate_html_presentation():
 
         <div class="slide-footer">
           <span class="slide-footer-left">Ernesto Hatuey Fierro M. (223977036) • Equipo 4</span>
-          <span class="slide-footer-center">Profesor: Dr. Gabriel Navarro Salcedo</span>
+          <span class="slide-footer-center">Docente: Dra. Abril Adriana Angulo Sherman</span>
           <span class="slide-footer-right">EXPODIT 2026 • Slide 9 / 13</span>
         </div>
       </div>
@@ -1307,7 +1307,7 @@ def generate_html_presentation():
 
         <div class="slide-footer">
           <span class="slide-footer-left">Ernesto Hatuey Fierro M. (223977036) • Equipo 4</span>
-          <span class="slide-footer-center">Profesor: Dr. Gabriel Navarro Salcedo</span>
+          <span class="slide-footer-center">Docente: Dra. Abril Adriana Angulo Sherman</span>
           <span class="slide-footer-right">EXPODIT 2026 • Slide 10 / 13</span>
         </div>
       </div>
@@ -1385,7 +1385,7 @@ def generate_html_presentation():
 
         <div class="slide-footer">
           <span class="slide-footer-left">Ernesto Hatuey Fierro M. (223977036) • Equipo 4</span>
-          <span class="slide-footer-center">Profesor: Dr. Gabriel Navarro Salcedo</span>
+          <span class="slide-footer-center">Docente: Dra. Abril Adriana Angulo Sherman</span>
           <span class="slide-footer-right">EXPODIT 2026 • Slide 11 / 13</span>
         </div>
       </div>
@@ -1443,7 +1443,7 @@ def generate_html_presentation():
 
         <div class="slide-footer">
           <span class="slide-footer-left">Ernesto Hatuey Fierro M. (223977036) • Equipo 4</span>
-          <span class="slide-footer-center">Profesor: Dr. Gabriel Navarro Salcedo</span>
+          <span class="slide-footer-center">Docente: Dra. Abril Adriana Angulo Sherman</span>
           <span class="slide-footer-right">EXPODIT 2026 • Slide 12 / 13</span>
         </div>
       </div>
@@ -1487,7 +1487,7 @@ def generate_html_presentation():
 
         <div class="slide-footer">
           <span class="slide-footer-left">Ernesto Hatuey Fierro M. (223977036) • Equipo 4</span>
-          <span class="slide-footer-center">Profesor: Dr. Gabriel Navarro Salcedo</span>
+          <span class="slide-footer-center">Docente: Dra. Abril Adriana Angulo Sherman</span>
           <span class="slide-footer-right">EXPODIT 2026 • Slide 13 / 13</span>
         </div>
       </div>
@@ -1518,7 +1518,7 @@ def generate_html_presentation():
       <div class="notes-section script">
         <div class="notes-section-title script">📢 TEXTO LITERAL A DECIR:</div>
         <div class="notes-script-text" id="notes-script-text">
-          "Buenos días, Dr. Gabriel Navarro y miembros del jurado evaluador..."
+          "Buenos días, Dra. Abril Sherman y miembros del jurado evaluador..."
         </div>
       </div>
 
@@ -1538,7 +1538,7 @@ def generate_html_presentation():
       {
         timing: "00:00 - 00:18 (18 seg)",
         goal: "Apertura formal con investidura institucional, captar atención del jurado y delimitar el problema.",
-        script: "Buenos días, Dr. Gabriel Navarro y miembros del jurado evaluador. Mi nombre es Ernesto Hatuey Fierro, estudiante de Ingeniería en Ciencias Computacionales en CUTonalá. Hoy presento la Plataforma SIGRE: Sistema Integrado de Gestión de Recursos y Espacios, una solución de software orientada a erradicar colisiones de agenda y proteger el patrimonio universitario.",
+        script: "Buenos días, Dra. Abril Sherman y miembros del jurado evaluador. Mi nombre es Ernesto Hatuey Fierro, estudiante de Ingeniería en Ciencias Computacionales en CUTonalá. Hoy presento la Plataforma SIGRE: Sistema Integrado de Gestión de Recursos y Espacios, una solución de software orientada a erradicar colisiones de agenda y proteger el patrimonio universitario.",
         cues: "Postura erguida, mirada directa al jurado. Enfatizar 'Plataforma SIGRE' y 'erradicar colisiones'. Clic a Slide 2 al segundo 18."
       },
       {

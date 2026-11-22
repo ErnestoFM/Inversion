@@ -1,10 +1,10 @@
 # 🎤 Guion Oficial de Exposición Oral — Plataforma SIGRE (ExpoDIT 2026)
 
-**Evento:** ExpoDIT 2026 — Proyecto Integrador de Desarrollo de Software  
+**Evento:** ExpoDIT 2026 — Presentación Oficial de Proyecto  
 **Proyecto:** Plataforma SIGRE (Sistema Integrado de Gestión de Recursos y Espacios)  
 **Institución:** Centro Universitario de Tonalá (CUTonalá) — Universidad de Guadalajara  
 **Expositor:** Ernesto Hatuey Fierro Meléndez (Código: 223977036 • Equipo 4)  
-**Profesor Titular:** Dr. Gabriel Navarro Salcedo  
+**Docente Titular:** Dra. Abril Adriana Angulo Sherman  
 **Evaluación:** Evaluación Final ExpoDIT (100 pts)  
 **Duración Objetivo:** 3 a 5 minutos (Tiempo Calibrado: **4 minutos y 04 segundos / 244 segundos**)  
 **Volumen de Palabras:** **597 palabras** (Ritmo medio: **146.8 palabras por minuto**)  
@@ -39,7 +39,7 @@
 * **Tiempo asignado:** `00:00 - 00:18` (18 segundos) | **Palabras:** 48  
 * **Objetivo:** Presentación formal con alta investidura institucional, captación inmediata de atención del jurado y delimitación del problema a resolver.
 * **Texto Literal a Exponer:**
-  > *"Buenos días, Dr. Gabriel Navarro y miembros del jurado evaluador. Mi nombre es Ernesto Hatuey Fierro, estudiante de Ingeniería en Ciencias Computacionales en CUTonalá. Hoy presento la Plataforma SIGRE: Sistema Integrado de Gestión de Recursos y Espacios, una solución de software orientada a erradicar colisiones de agenda y proteger el patrimonio universitario."*
+  > *"Buenos días, Dra. Abril Sherman y miembros del jurado evaluador. Mi nombre es Ernesto Hatuey Fierro, estudiante de Ingeniería en Ciencias Computacionales en CUTonalá. Hoy presento la Plataforma SIGRE: Sistema Integrado de Gestión de Recursos y Espacios, una solución de software orientada a erradicar colisiones de agenda y proteger el patrimonio universitario."*
 * **Notas de Oratoria y Lenguaje Corporal:**
   - *Postura:* De pie, erguido, hombros relajados, mirada directa a los ojos del jurado.
   - *Énfasis:* Marcar con voz clara y grave el nombre *"Plataforma SIGRE"* y las palabras *"erradicar colisiones"* y *"patrimonio universitario"*.
@@ -193,7 +193,7 @@
 
 ### P1: "¿Cómo garantizan que no haya empalmes si dos personas dan clic exactamente en el mismo milisegundo?"
 * **Respuesta del Expositor:**  
-  *"Excelente pregunta, Dr. Navarro. En la Capa 3 implementamos un comando atómico `SET resource:lock:spaceId:range userId NX EX 900` sobre Redis 7. La bandera `NX` (Not eXists) se ejecuta de forma mono-hilo en la memoria volátil de Redis. Solo la primera petición adquiere la llave; la segunda recibe un retorno `NIL` inmediato, respondiendo al cliente con código HTTP 409 Conflict en menos de 15 milisegundos. Además, en la base de datos PostgreSQL respaldamos la transacción con restricciones de exclusión GiST sobre tipos de rango temporal `tsrange`, garantizando doble blindaje tanto en memoria como en disco."*
+  *"Excelente pregunta, Dra. Sherman. En la Capa 3 implementamos un comando atómico `SET resource:lock:spaceId:range userId NX EX 900` sobre Redis 7. La bandera `NX` (Not eXists) se ejecuta de forma mono-hilo en la memoria volátil de Redis. Solo la primera petición adquiere la llave; la segunda recibe un retorno `NIL` inmediato, respondiendo al cliente con código HTTP 409 Conflict en menos de 15 milisegundos. Además, en la base de datos PostgreSQL respaldamos la transacción con restricciones de exclusión GiST sobre tipos de rango temporal `tsrange`, garantizando doble blindaje tanto en memoria como en disco."*
 
 ### P2: "¿Por qué no usar el SIIAU institucional en lugar de crear un sistema nuevo?"
 * **Respuesta del Expositor:**  

@@ -111,7 +111,7 @@ def build_presentation():
             tf_fc.margin_left = tf_fc.margin_top = tf_fc.margin_right = tf_fc.margin_bottom = 0
             p_fc = tf_fc.paragraphs[0]
             p_fc.alignment = PP_ALIGN.CENTER
-            p_fc.text = "Profesor: Dr. Gabriel Navarro Salcedo"
+            p_fc.text = "Docente: Dra. Abril Adriana Angulo Sherman"
             p_fc.font.name = FONT_BODY
             p_fc.font.size = Pt(10)
             p_fc.font.color.rgb = C_TEXT_MUTED
@@ -194,7 +194,7 @@ def build_presentation():
     # 4 Bottom Cards
     cards_data = [
         ("ESTUDIANTE / AUTOR", "Ernesto Hatuey Fierro M.", "Código: 223977036 • Equipo 4"),
-        ("PROFESOR TITULAR", "Dr. Gabriel Navarro S.", "Evaluación Final ExpoDIT 100 pts"),
+        ("DOCENTE TITULAR", "Dra. Abril Sherman", "Evaluación ExpoDIT 2026"),
         ("CENTRO UNIVERSITARIO", "CUTonalá (DIIT)", "Ing. en Ciencias Computacionales"),
         ("COMPROMISO ONU 2030", "ODS 4, 9, 11, 12 y 16", "Campus Inteligente y Cero Papel")
     ]
@@ -241,7 +241,7 @@ def build_presentation():
         p3.space_before = Pt(2)
 
     add_notes(s1, "00:00 - 00:18 (18 seg)", "Apertura formal institucional y presentación de identidad",
-              "Buenos días, Dr. Gabriel Navarro y miembros del jurado evaluador. Mi nombre es Ernesto Hatuey Fierro, estudiante de Ingeniería en Ciencias Computacionales en CUTonalá. Hoy presento la Plataforma SIGRE: Sistema Integrado de Gestión de Recursos y Espacios, una solución de software orientada a erradicar colisiones de agenda y proteger el patrimonio universitario.",
+              "Buenos días, Dra. Abril Sherman y miembros del jurado evaluador. Mi nombre es Ernesto Hatuey Fierro, estudiante de Ingeniería en Ciencias Computacionales en CUTonalá. Hoy presento la Plataforma SIGRE: Sistema Integrado de Gestión de Recursos y Espacios, una solución de software orientada a erradicar colisiones de agenda y proteger el patrimonio universitario.",
               "Postura erguida, contacto visual sostenido, proyectar voz firme y pausada. Clic a Slide 2 al segundo 18.")
 
     # ==========================================
