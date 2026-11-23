@@ -154,14 +154,7 @@ La comercialización B2G se gestiona directamente con Secretarios Administrativo
 ### 5.1 Arquitectura tecnológica y parámetros de calidad
 SIGRE se estructura en 5 capas desacopladas sobre Google Cloud Platform (GCP): Frontend PWA en Vue.js 3 con TypeScript (Capa 1), Gateway perimetral con TLS 1.3 (Capa 2), Backend de microservicios en Python 3.11 con FastAPI (Capa 3), Capa de datos y caché transaccional con PostgreSQL 15 en Cloud SQL y Redis en Memorystore para bloqueos anti-empalme (Capa 4), y Motor de Sellado Criptográfico HMAC-SHA256 (Capa 5; Figura 5 y Tabla 7):
 
-```mermaid
-flowchart TD
-    Client[Capa 1: PWA Vue.js 3 / TypeScript] --> Gateway[Capa 2: Gateway TLS 1.3 en GCP]
-    Gateway --> Backend[Capa 3: FastAPI Python 3.11]
-    Backend --> Cache[(Capa 4: Redis Memorystore - TTL 900s)]
-    Backend --> DB[(Capa 4: Cloud SQL PostgreSQL 15)]
-    Backend --> Crypto[Capa 5: Sellado HMAC-SHA256 en Servidor]
-```
+![Figura 5](docs/graficos/figura5_arquitectura_5capas.png)
 *Figura 5. Diagrama de arquitectura tecnológica en la nube y componentes del sistema.*
 
 | Capa / Módulo | Tecnología Implementada | Estándar de Rendimiento y Calidad |
