@@ -14,14 +14,14 @@
 |---|---|
 | **Software** | **SIGRE** (Micro-Custodia y Trazabilidad para Almacenes y Laboratorios Escolares) |
 | **Fundador** | **Ernesto Hatuey Fierro Meléndez** (Fundador Único, Director General y Diseñador de Software) |
-| **Docente** | UdeG — CUTonalá \| FEPI \| Docente: **Mtra. Abril Adriana Angulo Sherman** |
-| **CAPEX** | **$180,000.00 MXN** (Inversión pre-semilla financiada mediante capital de riesgo) |
-| **Métricas** | **VPN: +$34,442.34 MXN** (@ 15.0% TMAR) \| **TIR: 21.85% anual** \| **Relación B/C: 1.17x** |
-| **Payback** | **Payback Simple: Mes 29.9** (2.49 años) \| **Payback Descontado: Mes 33.8** (2.82 años) |
-| **Mecanismo** | **Cash Sweep del 75%** (liquidación en **Mes 31.1**; posterior participación del 18% sobre utilidades) |
-| **Retorno** | **Trienal: $201,276 MXN (TIR 4.16%)** \| **5 años Base: 20.49%** \| **5 años UPES: 26.51% anual** |
-| **Psicometría** | **Escala SUS: 82.85/100 pts** ($n = 50$, DE 10.91, Grado A, percentil 91.4, Alfa 0.892, $p < 0.001$) |
-| **Mercado** | Red UdeG (196 planteles). Año 1: 3 planteles; Año 2: 8 planteles; Año 3: 22 planteles (11.2%) |
+| **Entorno y Docente** | CUTonalá, Universidad de Guadalajara • Asignatura: FEPI • Docente: **Mtra. Abril Adriana Angulo Sherman** |
+| **Inversión (CAPEX)** | **$180,000.00 MXN** (Inversión pre-semilla financiada mediante capital de riesgo) |
+| **Métricas Proyecto** | **VPN: +$34,442.34 MXN** (@ 15.0% TMAR) • **TIR: 21.85% anual** • **Relación B/C: 1.17x** |
+| **Periodo Recuperación** | **Payback Simple: Mes 29.9** (2.49 años) • **Payback Descontado: Mes 33.8** (2.82 años) |
+| **Mecanismo Retorno** | **Cash Sweep del 75%** (liquidación en **Mes 31.1**; posterior participación del 18% sobre utilidades) |
+| **Retorno Inversionista** | **Trienal: $201,276 MXN (TIR 4.16%)** • **5 años Base: 20.49% anual (1.87x)** • **5 años UPES: 26.51% anual (2.29x)** |
+| **Psicometría** | **Escala SUS: 82.85/100 pts** (n = 50, DE 10.91, Grado A "Excelente", percentil 91.4, Alfa 0.892, p < 0.001) |
+| **Mercado Objetivo** | Red UdeG (196 planteles). Año 1: 3 planteles; Año 2: 8 planteles; Año 3: 22 planteles (11.22%) |
 
 ---
 

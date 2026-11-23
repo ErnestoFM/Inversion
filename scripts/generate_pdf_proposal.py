@@ -171,11 +171,16 @@ def markdown_to_html(md_path, html_path, font_size_pt=9.2, line_height=1.30, mar
             </div>
             """
 
-        t_html = ['<div class="table-container"><table class="apa-table">']
+        is_ficha = any("Parámetro" in r for r in table_rows)
+        cnt_class = "table-container ficha-tecnica-container" if is_ficha else "table-container"
+        tbl_class = "apa-table ficha-tecnica-table" if is_ficha else "apa-table"
+        t_html = [f'<div class="{cnt_class}"><table class="{tbl_class}">']
         is_header = True
         
         for r_idx, row in enumerate(table_rows):
-            cells = [c.strip() for c in row.split('|')[1:-1]]
+            # Proteger pipes escapados para no romper columnas
+            clean_row = re.sub(r'\\\|', '__ESCAPED_PIPE__', row)
+            cells = [c.replace('__ESCAPED_PIPE__', ' | ').strip() for c in clean_row.split('|')[1:-1]]
             if all(re.match(r'^:?-+:?$', c) for c in cells if c):
                 is_header = False
                 continue
@@ -572,6 +577,51 @@ def markdown_to_html(md_path, html_path, font_size_pt=9.2, line_height=1.30, mar
         font-weight: 700;
         color: #1a365d;
         background-color: #edf2f7;
+    }}
+
+    .ficha-tecnica-table {{
+        border: 1px solid #cbd5e1;
+        border-top: 2px solid #1a365d;
+        border-bottom: 2px solid #1a365d;
+        margin-bottom: 6px;
+    }}
+
+    .ficha-tecnica-table th:first-child {{
+        width: 24%;
+        background-color: #1a365d;
+        color: #ffffff;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        border-bottom: none;
+    }}
+
+    .ficha-tecnica-table th:last-child {{
+        width: 76%;
+        background-color: #2b6cb0;
+        color: #ffffff;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        border-bottom: none;
+    }}
+
+    .ficha-tecnica-table td:first-child {{
+        font-weight: 700;
+        color: #1a365d;
+        background-color: #f8fafc;
+        border-right: 1px solid #e2e8f0;
+        white-space: nowrap;
+        padding: 3px 6px;
+        vertical-align: middle;
+    }}
+
+    .ficha-tecnica-table td:last-child {{
+        padding: 3px 8px;
+        color: #1e293b;
+        vertical-align: middle;
+    }}
+
+    .ficha-tecnica-table tr:nth-child(even) td:last-child {{
+        background-color: #f8fafc;
     }}
 
     p.table-caption, p.figure-caption {{
