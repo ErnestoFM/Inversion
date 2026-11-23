@@ -33,17 +33,17 @@ En la Red Universitaria de la UdeG, el préstamo de laptops, proyectores, cables
 ### 1.2 Análisis crítico: la falacia del ERP frente a la micro-custodia de mostrador
 Los sistemas ERP institucionales (como SIIAU o Banner) administran el inventario macroinstitucional diferido para compras y auditorías contables, pero no resuelven la **micro-custodia transaccional** en ventanilla en tiempo real (< 25 s). Suponer que un ERP patrimonial cubre el mostrador es una falacia operativa que perpetúa el descontrol en papel sin validez jurídica probatoria ni cadena de custodia individualizada.
 
-### 1.3 Fundamentación empírica: caso base CUTonalá y estudio SUS ($n = 50$)
-Durante el ciclo escolar 2026-B se evaluó el prototipo funcional de SIGRE en ventanillas de almacén del **CUTonalá** aplicando la escala estandarizada *System Usability Scale* (SUS; Bangor et al., 2008; Brooke, 1996; Sauro & Lewis, 2012) a una muestra de $n = 50$ usuarios reales: **82.85 puntos promedio** ($DE = 10.91$), ubicándose en Grado A ("Excelente", percentil 91.4) y con una consistencia interna alta (**Alfa de Cronbach de 0.892**).
+### 1.3 Fundamentación empírica: caso base CUTonalá y estudio SUS (*n* = 50)
+Durante el ciclo escolar 2026-B se evaluó el prototipo funcional de SIGRE en ventanillas de almacén del **CUTonalá** aplicando la escala estandarizada *System Usability Scale* (SUS; Bangor et al., 2008; Brooke, 1996; Sauro & Lewis, 2012) a una muestra de *n* = 50 usuarios reales: **82.85 puntos promedio** (*DE* = 10.91), ubicándose en Grado A ("Excelente", percentil 91.4) y con una consistencia interna alta (**Alfa de Cronbach de 0.892**).
 
-La prueba $t$ de Student unilateral frente al estándar industrial de 68 puntos (Sauro & Lewis, 2012) confirmó una superioridad altamente significativa: **$t(49) = 9.62, p < 0.001$**; y frente al umbral exigente de excelencia de 80 puntos (Bangor et al., 2008): **$t(49) = 1.848, p = 0.035 < 0.05$** ($\text{IC}_{95\%} = [79.75, 85.95]$ pts). La Tabla 1 detalla la distribución de la muestra evaluada:
+La prueba *t* de Student unilateral frente al estándar industrial de 68 puntos (Sauro & Lewis, 2012) confirmó una superioridad altamente significativa: ***t*(49) = 9.62, *p* < 0.001**; y frente al umbral exigente de excelencia de 80 puntos (Bangor et al., 2008): ***t*(49) = 1.848, *p* = 0.035 < 0.05** (IC 95% = [79.75, 85.95] pts). La Tabla 1 detalla la distribución de la muestra evaluada:
 
-| Estamento Evaluado | Muestra ($n$) | Media SUS | Desviación Estándar ($DE$) | Nivel Adjetivo |
+| Estamento Evaluado | Muestra (*n*) | Media SUS | Desviación Estándar (*DE*) | Nivel Adjetivo |
 |---|---|---|---|---|
 | Estudiantes de ingeniería y licenciaturas | 32 | 83.28 pts | 11.21 pts | Grado A (Excelente) |
 | Profesores de asignatura y tiempo completo | 12 | 81.25 pts | 9.91 pts | Grado A (Excelente) |
 | Personal de almacén y ventanilla | 6 | 83.75 pts | 12.72 pts | Grado A (Excelente) |
-| **Muestra Consolidada** | **50** | **82.85 pts** | **10.91 pts** | **Grado A (Percentil 91.4, $p < 0.001$)** |
+| **Muestra Consolidada** | **50** | **82.85 pts** | **10.91 pts** | **Grado A (Percentil 91.4, *p* < 0.001)** |
 
 *Tabla 1. Resultados consolidados de la evaluación psicométrica estandarizada (Escala SUS, n = 50).*
 
@@ -101,9 +101,9 @@ Bajo estándares internacionales de formulación (Ortegón, Pacheco & Prieto, CE
 
 | Nivel Jerárquico | Resumen Narrativo | Indicadores Verificables | Medios de Verificación | Supuestos y Riesgos |
 |---|---|---|---|---|
-| **Fin** | Proteger el patrimonio físico de las IES y optimizar tiempos de mostrador. | Reducción $\ge 80\%$ en mermas patrimoniales; reducción de 70% en tiempo de fila. | Auditorías de inventario y actas de entrega-recepción. | Voluntad política de directores para adoptar control digital. |
-| **Propósito** | SIGRE operando como estándar de ventanilla en 22 planteles de la Red UdeG al Año 3. | 22 contratos de suscripción vigentes; $\ge 90\%$ de préstamos registrados digitalmente. | Padrón de contratos, reportes de facturación y encuestas SUS. | Cumplimiento del Reglamento de Adquisiciones de la UdeG. |
-| **Componentes** | 1. Software PWA en nube.<br>2. Kits demo con escáner.<br>3. Módulo de desgaste y telemetría. | 1. Uptime cloud $\ge 99.5\%$.<br>2. Tiempo de despacho $\le 25$ s.<br>3. 4 kits operativos desplegados. | Registros de telemetría en GCP, bitácoras de servicio y encuestas de satisfacción. | Conectividad a internet local o activación adecuada del modo offline. |
+| **Fin** | Proteger el patrimonio físico de las IES y optimizar tiempos de mostrador. | Reducción ≥ 80% en mermas patrimoniales; reducción de 70% en tiempo de fila. | Auditorías de inventario y actas de entrega-recepción. | Voluntad política de directores para adoptar control digital. |
+| **Propósito** | SIGRE operando como estándar de ventanilla en 22 planteles de la Red UdeG al Año 3. | 22 contratos de suscripción vigentes; ≥ 90% de préstamos registrados digitalmente. | Padrón de contratos, reportes de facturación y encuestas SUS. | Cumplimiento del Reglamento de Adquisiciones de la UdeG. |
+| **Componentes** | 1. Software PWA en nube.<br>2. Kits demo con escáner.<br>3. Módulo de desgaste y telemetría. | 1. Uptime cloud ≥ 99.5%.<br>2. Tiempo de despacho ≤ 25 s.<br>3. 4 kits operativos desplegados. | Registros de telemetría en GCP, bitácoras de servicio y encuestas de satisfacción. | Conectividad a internet local o activación adecuada del modo offline. |
 | **Actividades** | 1. Pulido técnico y registro IP.<br>2. Piloto en CUTonalá.<br>3. Rondas comerciales en SEMS.<br>4. Implementación y soporte. | 1. CAPEX $180,000 MXN ejercido en Año 1.<br>2. Registro ante INDAUTOR y presentación de solicitud IMPI en Mes 2.<br>3. 3 planteles afiliados en Año 1. | Estados de cuenta bancarios, títulos de registro marcario y órdenes de compra firmadas. | Desembolso oportuno del capital semilla por el inversionista. |
 
 *Tabla 4. Matriz de Marco Lógico (MML) bajo lineamientos internacionales CEPAL/BID.*
@@ -196,7 +196,7 @@ El crecimiento de la estructura operativa se rige por un esquema de **nómina es
 | **Año 1 (M1-M12)** | Fundador Único + Becarios | Inversión capital semilla | $0 nómina fija patronal ($40k becas soporte en sitio) |
 | **Año 2 (Mes 15)** | Técnico Soporte N1 | 4 planteles activos con cobro | 7 meses @ $4,000 = $28,000 MXN |
 | **Año 2 (Mes 22)** | Especialista Soporte TC | 8 planteles activos contratados | 3 meses @ $10,000 = $30,000 MXN |
-| **Año 2 (M13-M24)** | Honorarios Fundador | Facturación anual $\ge \$200,000$ | Retribución de gestión: $62,000 MXN |
+| **Año 2 (M13-M24)** | Honorarios Fundador | Facturación anual ≥ $200,000 MXN | Retribución de gestión: $62,000 MXN |
 | **Año 3 (M25-M36)** | Equipo Técnico y CS | 12 planteles activos contratados | Especialista ($120k) + CS ($63k) + Fundador ($57k) = $240,000 MXN |
 
 *Tabla 8. Estructura de crecimiento del equipo técnico y condiciones de activación contractual.*
@@ -220,7 +220,7 @@ La programación temporal, dependencias y holguras de la Ruta Crítica [RC] para
 
 | Clave | Actividad Operativa (Ciclo 2027-A) | Ventana Calendario | Duración | Dependencia | Holgura | Ruta Crítica |
 |---|---|---|---|---|---|---|
-| **A0** | Formulación FEPI y validación SUS ($n = 50$) | 10 ago – 20 nov 2026 | 15 sem | Ninguna | 0 sem | Antecedente |
+| **A0** | Formulación FEPI y validación SUS (*n* = 50) | 10 ago – 20 nov 2026 | 15 sem | Ninguna | 0 sem | Antecedente |
 | **A1** | Desembolso CAPEX ($180k) y puesta a punto Cloud GCP | 11 ene – 06 feb 2027 | 4 sem | A0 | 0 sem | **Sí [RC]** |
 | **A2** | Depósito obra INDAUTOR y solicitud de marca IMPI | 08 feb – 27 feb 2027 | 3 sem | A1 | 0 sem | **Sí [RC]** |
 | **A3** | Compra de hardware demo y puesta a punto en CUTonalá | 01 mar – 27 mar 2027 | 4 sem | A2 | 0 sem | **Sí [RC]** |
@@ -327,7 +327,7 @@ La Matriz Estratégica FODA (Figura 11) articula los factores internos de calida
 
 | FORTALEZAS (F) — Factores Internos de Calidad y Control | OPORTUNIDADES (O) — Factores Externos de Crecimiento |
 |---|---|
-| • **F1. Software propio desarrollado a la medida:** Despacho ágil en ventanilla (< 25 s) con firma manuscrita digitalizada y sellado criptográfico HMAC-SHA256 en servidor.<br>• **F2. Usabilidad validada empíricamente:** 82.85 puntos en escala SUS ($n = 50$, Grado A "Excelente", percentil 91.4, $p < 0.001$).<br>• **F3. Eficiencia en infraestructura cloud:** Costos de servidores en GCP de $18,000 MXN en Año 1 con arquitectura de microservicios autoescalables.<br>• **F4. Cumplimiento normativo:** Apego a la LGPDPPSO y a la directriz de sustentabilidad cero papel del PDI 2019-2025 de la UdeG. | • **O1. Política institucional de austeridad:** Urgencia en las IES públicas por abatir mermas patrimoniales y optimizar recursos físicos.<br>• **O2. Modelo B2G por Compra Directa (< 1,000 UMA = $117,310 MXN):** Contratación ágil por adjudicación directa ($24k a $48k) bajo los Arts. 16 y 23 del RAACS UdeG.<br>• **O3. Mercado base cautivo en la Red UdeG:** 196 planteles potenciales, donde la meta de 22 sedes al Año 3 representa únicamente el 11.22%.<br>• **O4. Sustentabilidad comprobada:** Ahorro directo en papelería física y consumibles de **$20,000.00 MXN anuales por plantel** (eliminando libretas foliadas, vales impresos y tóner). |
+| • **F1. Software propio desarrollado a la medida:** Despacho ágil en ventanilla (< 25 s) con firma manuscrita digitalizada y sellado criptográfico HMAC-SHA256 en servidor.<br>• **F2. Usabilidad validada empíricamente:** 82.85 puntos en escala SUS (*n* = 50, Grado A "Excelente", percentil 91.4, *p* < 0.001).<br>• **F3. Eficiencia en infraestructura cloud:** Costos de servidores en GCP de $18,000 MXN en Año 1 con arquitectura de microservicios autoescalables.<br>• **F4. Cumplimiento normativo:** Apego a la LGPDPPSO y a la directriz de sustentabilidad cero papel del PDI 2019-2025 de la UdeG. | • **O1. Política institucional de austeridad:** Urgencia en las IES públicas por abatir mermas patrimoniales y optimizar recursos físicos.<br>• **O2. Modelo B2G por Compra Directa (< 1,000 UMA = $117,310 MXN):** Contratación ágil por adjudicación directa ($24k a $48k) bajo los Arts. 16 y 23 del RAACS UdeG.<br>• **O3. Mercado base cautivo en la Red UdeG:** 196 planteles potenciales, donde la meta de 22 sedes al Año 3 representa únicamente el 11.22%.<br>• **O4. Sustentabilidad comprobada:** Ahorro directo en papelería física y consumibles de **$20,000.00 MXN anuales por plantel** (eliminando libretas foliadas, vales impresos y tóner). |
 | **DEBILIDADES (D) — Factores Internos a Mitigar** | **AMENAZAS (A) — Factores Externos y Riesgos de Entorno** |
 | • **D1. Riesgo de persona clave en etapa semilla:** Concentración inicial en el fundador único, mitigada con estandarización en monorepo, documentación exhaustiva y contratación técnica en Mes 15.<br>• **D2. Inexistencia de historial crediticio comercial:** Mitigada mediante el fondeo de capital semilla de $180,000 MXN y la solvencia operativa demostrada por el piloto en CUTonalá.<br>• **D3. Curva de adopción en personal de ventanilla:** Mitigada con sesiones prácticas de inducción de 90 minutos y acompañamiento humano en sitio. | • **A1. Tiempos burocráticos y dispersión semestral de pagos UdeG:** Riesgo de desfase de liquidez a 30-60 días, cubierto con la reserva de caja de $40,000 MXN del CAPEX.<br>• **A2. Resistencia al cambio tecnológico en personal de mostrador:** Mitigada demostrando que SIGRE reduce la carga administrativa en mostrador de 4 minutos a menos de 25 segundos sin incrementar la fricción del usuario.<br>• **A3. Cortes imprevistos en la conectividad local de los planteles:** Mitigados con el modo de micro-custodia offline en PWA con base de datos IndexedDB y sincronización diferida. |
 
@@ -354,7 +354,7 @@ El retorno trienal acumulado suma **$201,276.00 MXN** (TIR de 4.16% con capital 
 
 | Periodo de Liquidación | Flujo Inversionista (Base) | Flujo Inversionista (UPES) | Saldo Insoluto Capital | Concepto Económico Percibido |
 |---|---|---|---|---|
-| **Mes 0 (Inversión)** | **($180,000.00 MXN)** | **($180,000.00 MXN)** | $180,000.00 MXN | Desembolso de capital semilla ($I_0$) |
+| **Mes 0 (Inversión)** | **($180,000.00 MXN)** | **($180,000.00 MXN)** | $180,000.00 MXN | Desembolso de capital semilla (*I*₀) |
 | **Año 1 (Meses 1–12)** | **$0.00 MXN** | **$0.00 MXN** | $180,000.00 MXN | Periodo de gracia y piloto CUTonalá |
 | **Año 2 (Meses 13–24)** | **+$51,300.00 MXN** | **+$51,300.00 MXN** | $128,700.00 MXN | Cash Sweep 75% sobre FEN ($68,400) |
 | **Año 3 (Meses 25–36)** | **+$149,976.00 MXN** | **+$149,976.00 MXN** | **$0.00 (Liquidado Mes 31.1)** | Liquidación principal ($128.7k) + Participación 18% ($21.3k) |
@@ -387,8 +387,8 @@ El retorno trienal acumulado suma **$201,276.00 MXN** (TIR de 4.16% con capital 
 
 ## Anexos Técnicos y Evidencia Experimental
 
-### Anexo A. Evidencia Psicométrica y Validación de Usabilidad SUS ($n = 50$)
-El estudio de campo en CUTonalá (ciclo escolar 2026-B, cuestionario estandarizado de 10 reactivos en escala Likert de 5 puntos; Brooke, 1996) arrojó una media aritmética de **82.85 puntos** ($DE = 10.91$, $n = 50$, percentil 91.4, Grado A "Excelente") y un coeficiente **Alfa de Cronbach de 0.892**, probando la alta consistencia interna y la superioridad operativa de SIGRE frente al control analógico manual. Las hojas individuales de captura y consentimientos se encuentran archivados en la Coordinación de Carrera de Ingeniería en Ciencias Computacionales del CUTonalá.
+### Anexo A. Evidencia Psicométrica y Validación de Usabilidad SUS (*n* = 50)
+El estudio de campo en CUTonalá (ciclo escolar 2026-B, cuestionario estandarizado de 10 reactivos en escala Likert de 5 puntos; Brooke, 1996) arrojó una media aritmética de **82.85 puntos** (*DE* = 10.91, *n* = 50, percentil 91.4, Grado A "Excelente") y un coeficiente **Alfa de Cronbach de 0.892**, probando la alta consistencia interna y la superioridad operativa de SIGRE frente al control analógico manual. Las hojas individuales de captura y consentimientos se encuentran archivados en la Coordinación de Carrera de Ingeniería en Ciencias Computacionales del CUTonalá.
 
 ### Anexo B. Video Demostrativo E2E y Matriz de Solventación Técnica Metodológica
 El repositorio de código fuente del MVP v1.0 y el video demostrativo de extremo a extremo (*End-to-End*) se encuentran disponibles en: `https://github.com/erfierro/sigre-platform-core`.
