@@ -697,7 +697,7 @@ def stamp_headers_and_footers(raw_pdf_path, final_pdf_path):
         can.setFont('Helvetica', 8.5)
         
         page_width, page_height = 8.5 * 72, 11 * 72
-        margin_x = 1.9 * 28.3465  # ~53.8 pt
+        margin_x = 1.25 * 28.3465  # ~35.4 pt
         
         # Encabezado alineado a la derecha
         can.drawRightString(page_width - margin_x, page_height - 35, HEADER_TEXT)
@@ -733,7 +733,7 @@ def main():
     final_pdf_file = os.path.join(workspace, 'docs', 'Propuesta_Proyecto_Inversion_SIGRE.pdf')
 
     # Usar parámetros óptimos calibrados para EXACTAMENTE 11 PÁGINAS
-    markdown_to_html(md_file, html_file, font_size_pt=9.2, line_height=1.30, margin_cm=1.9, img_max_h=185)
+    markdown_to_html(md_file, html_file, font_size_pt=8.3, line_height=1.22, margin_cm=1.25, img_max_h=155)
     compile_html_to_pdf_chrome(html_file, raw_pdf_file)
     stamp_headers_and_footers(raw_pdf_file, final_pdf_file)
 

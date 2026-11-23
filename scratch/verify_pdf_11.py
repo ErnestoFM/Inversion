@@ -1,4 +1,5 @@
 import pypdf
+import re
 
 reader = pypdf.PdfReader('docs/Propuesta_Proyecto_Inversion_SIGRE.pdf')
 total = len(reader.pages)
@@ -29,21 +30,24 @@ print("Page 11 (Last Page): Ends cleanly with Anexo B / Tabla 17")
 # Check financial invariants across PDF text
 all_text = " ".join(page.extract_text() for page in reader.pages)
 invariants = [
-    ('$46,984.47', 'VPN'),
-    ('24.27%', 'TIR'),
-    ('1.23', 'B/C'),
-    ('29.4', 'Payback Simple'),
-    ('33.1', 'Payback Descontado'),
-    ('31.2', 'Liquidacion Inversionista'),
-    ('15.62%', 'TIR Inversionista Base'),
-    ('21.20%', 'TIR Inversionista UPES'),
+    ('$34,442.34', 'VPN'),
+    ('21.85%', 'TIR'),
+    ('1.17', 'B/C'),
+    ('29.9', 'Payback Simple'),
+    ('33.8', 'Payback Descontado'),
+    ('31.8', 'Liquidacion Inversionista'),
+    ('14.90%', 'TIR Inversionista Base'),
+    ('20.73%', 'TIR Inversionista UPES'),
     ('82.85', 'SUS Score'),
     ('$180,000', 'CAPEX'),
-    ('$225,342.50', 'Umbral Viabilidad FEN'),
-    ('19 planteles', 'Umbral discreto seguro')
+    ('$237,417.50', 'Umbral Viabilidad FEN'),
+    ('9.7%', 'Porcentaje Red UdeG')
 ]
 for val, name in invariants:
     assert val in all_text, f"Missing financial invariant: {name} ({val})"
     print(f"Financial Invariant [{name}]: FOUND")
 
-print("\nALL VERIFICATIONS PASSED PERFECTLY!")
+assert re.search(r'19\s+planteles', all_text) is not None, "Missing: 19 planteles"
+print("Financial Invariant [19 planteles]: FOUND")
+
+print("\nALL 11-PAGE PDF VERIFICATIONS PASSED PERFECTLY!")
