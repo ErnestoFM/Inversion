@@ -94,7 +94,7 @@ def test_markdown_and_brain_replica():
     assert "docs/pruebas/screenshots/10_distribucion_puntajes_sus.png" in md
     assert "docs/pruebas/screenshots/05_canvas_firma_digital.png" in md
     assert "docs/pruebas/screenshots/08_dashboard_ejecutivo.png" in md
-    assert "docs/graficos/foda_oficial_sigre.jpg" in md
+    assert "FORTALEZAS (F)" in md and "OPORTUNIDADES (O)" in md and "DEBILIDADES (D)" in md and "AMENAZAS (A)" in md
 
     # 16. Anexos
     assert "Anexo A" in md and "Anexo B" in md

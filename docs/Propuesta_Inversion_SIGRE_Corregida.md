@@ -373,26 +373,15 @@ La Tabla 15 evalúa la resiliencia del proyecto ante fluctuaciones en la penetra
 
 ## 8. Análisis FODA Institucional y Técnico
 
-![Figura 11](docs/graficos/foda_oficial_sigre.jpg)  
-*Figura 11. Matriz oficial de análisis estratégico FODA de la plataforma SIGRE.*
+La Matriz Estratégica FODA (Figura 11) articula los factores internos de calidad tecnológica y gobierno de software frente a las oportunidades de mercado B2G y los riesgos del entorno universitario:
 
-### Fortalezas (F) y Oportunidades (O)
-- **F1. Software propio desarrollado a la medida:** Despacho ágil en ventanilla (< 25 s) con firma manuscrita digitalizada y sellado criptográfico HMAC-SHA256 en servidor.
-- **F2. Usabilidad validada empíricamente:** 82.85 puntos en escala SUS ($n = 50$, Grado A "Excelente", percentil 91.4, $p < 0.001$).
-- **F3. Eficiencia en infraestructura cloud:** Costos de servidores en GCP de $18,000 MXN en Año 1 con arquitectura de microservicios autoescalables.
-- **F4. Cumplimiento normativo:** Apego a la LGPDPPSO y a la directriz de sustentabilidad cero papel del PDI 2019-2025 de la UdeG.
-- **O1. Política institucional de austeridad:** Urgencia en las IES públicas por abatir mermas patrimoniales y optimizar recursos físicos.
-- **O2. Modelo B2G por Compra Directa (< 1,000 UMA = $117,310 MXN):** Contratación ágil por adjudicación directa sin someterse a licitaciones públicas.
-- **O3. Mercado base cautivo en la Red UdeG:** 196 planteles potenciales, donde la meta de 22 sedes al Año 3 representa únicamente el 11.22%.
-- **O4. Sustentabilidad comprobada:** Ahorro directo en papelería física y consumibles de **$20,000.00 MXN anuales por plantel** (eliminando libretas foliadas, vales impresos y tóner).
+| FORTALEZAS (F) — Factores Internos de Calidad y Control | OPORTUNIDADES (O) — Factores Externos de Crecimiento |
+|---|---|
+| • **F1. Software propio desarrollado a la medida:** Despacho ágil en ventanilla (< 25 s) con firma manuscrita digitalizada y sellado criptográfico HMAC-SHA256 en servidor.<br>• **F2. Usabilidad validada empíricamente:** 82.85 puntos en escala SUS ($n = 50$, Grado A "Excelente", percentil 91.4, $p < 0.001$).<br>• **F3. Eficiencia en infraestructura cloud:** Costos de servidores en GCP de $18,000 MXN en Año 1 con arquitectura de microservicios autoescalables.<br>• **F4. Cumplimiento normativo:** Apego a la LGPDPPSO y a la directriz de sustentabilidad cero papel del PDI 2019-2025 de la UdeG. | • **O1. Política institucional de austeridad:** Urgencia en las IES públicas por abatir mermas patrimoniales y optimizar recursos físicos.<br>• **O2. Modelo B2G por Compra Directa (< 1,000 UMA = $117,310 MXN):** Contratación ágil por adjudicación directa ($24k a $48k) bajo los Arts. 16 y 23 del RAACS UdeG.<br>• **O3. Mercado base cautivo en la Red UdeG:** 196 planteles potenciales, donde la meta de 22 sedes al Año 3 representa únicamente el 11.22%.<br>• **O4. Sustentabilidad comprobada:** Ahorro directo en papelería física y consumibles de **$20,000.00 MXN anuales por plantel** (eliminando libretas foliadas, vales impresos y tóner). |
+| **DEBILIDADES (D) — Factores Internos a Mitigar** | **AMENAZAS (A) — Factores Externos y Riesgos de Entorno** |
+| • **D1. Riesgo de persona clave en etapa semilla:** Concentración inicial en el fundador único, mitigada con estandarización en monorepo, documentación exhaustiva y contratación técnica en Mes 15.<br>• **D2. Inexistencia de historial crediticio comercial:** Mitigada mediante el fondeo de capital semilla de $180,000 MXN y la solvencia operativa demostrada por el piloto en CUTonalá.<br>• **D3. Curva de adopción en personal de ventanilla:** Mitigada con sesiones prácticas de inducción de 90 minutos y acompañamiento humano en sitio. | • **A1. Tiempos burocráticos y dispersión semestral de pagos UdeG:** Riesgo de desfase de liquidez a 30-60 días, cubierto con la reserva de caja de $40,000 MXN del CAPEX.<br>• **A2. Resistencia al cambio tecnológico en personal de mostrador:** Mitigada demostrando que SIGRE reduce la carga administrativa en mostrador de 4 minutos a menos de 25 segundos sin incrementar la fricción del usuario.<br>• **A3. Cortes imprevistos en la conectividad local de los planteles:** Mitigados con el modo de micro-custodia offline en PWA con base de datos IndexedDB y sincronización diferida. |
 
-### Debilidades (D) y Amenazas (A)
-- **D1. Riesgo de persona clave en etapa semilla:** Concentración inicial en el fundador único, mitigada con estandarización en monorepo, documentación exhaustiva y contratación programada de personal técnico desde el Mes 15.
-- **D2. Inexistencia de historial crediticio comercial:** Mitigada mediante el fondeo de capital semilla de $180,000 MXN y la solvencia operativa demostrada por el piloto en CUTonalá.
-- **D3. Curva de adopción en personal de ventanilla:** Mitigada con sesiones prácticas de inducción de 90 minutos y acompañamiento humano en sitio.
-- **A1. Tiempos burocráticos y dispersión semestral de pagos UdeG:** Riesgo de desfase de liquidez a 30-60 días, cubierto con la reserva de caja de $40,000 MXN del CAPEX.
-- **A2. Resistencia al cambio tecnológico en personal de mostrador:** Mitigada demostrando que SIGRE reduce la carga administrativa en mostrador de 4 minutos a menos de 25 segundos sin incrementar la fricción del usuario.
-- **A3. Cortes imprevistos en la conectividad local de los planteles:** Mitigados con el modo de micro-custodia offline en PWA con base de datos IndexedDB y sincronización diferida.
+*Figura 11. Matriz analítica de factores institucionales y estratégicos FODA de la plataforma SIGRE.*
 
 ---
 

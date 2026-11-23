@@ -127,6 +127,50 @@ def markdown_to_html(md_path, html_path, font_size_pt=9.2, line_height=1.30, mar
             table_rows = []
             return ""
         
+        # Detección especial de Matriz FODA para renderizado de 4 cuadrantes ejecutivos vectoriales
+        if any("FORTALEZAS" in r for r in table_rows):
+            foda_cells = []
+            for r in table_rows:
+                parts = [c.strip() for c in r.split('|')[1:-1]]
+                if parts and not all(re.match(r'^:?-+:?$', c) for c in parts if c):
+                    foda_cells.append(parts)
+            
+            def make_quadrant(cls_suffix, badge, header_text, content_text):
+                items = [it.strip() for it in content_text.split('<br>') if it.strip()]
+                items_html = []
+                for it in items:
+                    it_clean = re.sub(r'^[•\-\*]\s*', '', it)
+                    items_html.append(f'<div class="foda-item"><span class="foda-bullet">•</span> <span>{inline_format(it_clean)}</span></div>')
+                body_html = ''.join(items_html)
+                clean_header = re.sub(r'\*\*([^*]+)\*\*', r'\1', header_text)
+                return f"""
+                <div class="foda-quadrant foda-{cls_suffix}">
+                    <div class="foda-header">
+                        <span class="foda-badge foda-badge-{cls_suffix}">{badge}</span>
+                        <span class="foda-title">{inline_format(clean_header)}</span>
+                    </div>
+                    <div class="foda-content">
+                        {body_html}
+                    </div>
+                </div>
+                """
+
+            q_f = make_quadrant('f', 'F', foda_cells[0][0], foda_cells[1][0])
+            q_o = make_quadrant('o', 'O', foda_cells[0][1], foda_cells[1][1])
+            q_d = make_quadrant('d', 'D', foda_cells[2][0], foda_cells[3][0])
+            q_a = make_quadrant('a', 'A', foda_cells[2][1], foda_cells[3][1])
+
+            in_table = False
+            table_rows = []
+            return f"""
+            <div class="foda-matrix-container">
+                {q_f}
+                {q_o}
+                {q_d}
+                {q_a}
+            </div>
+            """
+
         t_html = ['<div class="table-container"><table class="apa-table">']
         is_header = True
         
@@ -589,6 +633,94 @@ def markdown_to_html(md_path, html_path, font_size_pt=9.2, line_height=1.30, mar
         height: auto;
         border: 1px solid #cbd5e0;
         border-radius: 3px;
+    }}
+
+    .foda-matrix-container {{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        margin: 6px 0 4px 0;
+        page-break-inside: avoid;
+    }}
+
+    .foda-quadrant {{
+        border-radius: 4px;
+        border: 1px solid #cbd5e1;
+        background-color: #ffffff;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }}
+
+    .foda-header {{
+        font-size: 7.2pt;
+        font-weight: 700;
+        padding: 3px 6px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid rgba(0,0,0,0.06);
+        letter-spacing: 0.1px;
+    }}
+
+    .foda-badge {{
+        display: inline-block;
+        width: 13px;
+        height: 13px;
+        line-height: 13px;
+        border-radius: 2.5px;
+        text-align: center;
+        font-weight: 800;
+        font-size: 6.8pt;
+        margin-right: 4px;
+        color: #ffffff;
+        flex-shrink: 0;
+    }}
+
+    .foda-title {{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }}
+
+    .foda-f {{ border-color: #86efac; background-color: #f0fdf4; }}
+    .foda-f .foda-header {{ background-color: #dcfce7; color: #14532d; }}
+    .foda-badge-f {{ background-color: #166534; }}
+
+    .foda-o {{ border-color: #7dd3fc; background-color: #f0f9ff; }}
+    .foda-o .foda-header {{ background-color: #e0f2fe; color: #075985; }}
+    .foda-badge-o {{ background-color: #0369a1; }}
+
+    .foda-d {{ border-color: #fdba74; background-color: #fff7ed; }}
+    .foda-d .foda-header {{ background-color: #ffedd5; color: #9a3412; }}
+    .foda-badge-d {{ background-color: #c2410c; }}
+
+    .foda-a {{ border-color: #fca5a5; background-color: #fef2f2; }}
+    .foda-a .foda-header {{ background-color: #fee2e2; color: #991b1b; }}
+    .foda-badge-a {{ background-color: #b91c1c; }}
+
+    .foda-content {{
+        padding: 4px 6px 4px 6px;
+        font-size: 6.8pt;
+        line-height: 1.22;
+        color: #1e293b;
+    }}
+
+    .foda-item {{
+        margin-bottom: 2.5px;
+        display: flex;
+        align-items: flex-start;
+        text-align: justify;
+    }}
+
+    .foda-item:last-child {{
+        margin-bottom: 0;
+    }}
+
+    .foda-bullet {{
+        margin-right: 3px;
+        color: #64748b;
+        font-weight: bold;
+        flex-shrink: 0;
     }}
 
     .diagram-box {{
