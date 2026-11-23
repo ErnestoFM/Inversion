@@ -234,20 +234,7 @@ La programación temporal, dependencias y holguras de la Ruta Crítica [RC] para
 
 *Tabla 10. Cronograma analítico de actividades de inversión, dependencias y Ruta Crítica [RC] (Ciclo 2027-A).*
 
-```mermaid
-gantt
-    title Cronograma de Ejecución y Ruta Crítica - Ciclos 2026-B y 2027-A
-    dateFormat YYYY-MM-DD
-    section Antecedentes Formulación (2026-B)
-    A0. Diagnóstico y Validación SUS (n = 50) :done, a0, 2026-08-10, 2026-11-20
-    section Ruta Crítica Inversión (2027-A)
-    A1. Desembolso CAPEX y Nube GCP ($180k)   :crit, a1, 2027-01-11, 2027-02-06
-    A2. Registro INDAUTOR y Solicitud IMPI     :crit, a2, 2027-02-08, 2027-02-27
-    A3. Hardware y Despliegue CUTonalá        :crit, a3, 2027-03-01, 2027-03-27
-    A4. Operación y Auditoría 1,200 Actas     :crit, a4, 2027-03-29, 2027-04-30
-    A5. Rondas Comerciales en SEMS             :crit, a5, 2027-05-03, 2027-05-28
-    A6. Cierre 2 Contratos Comerciales SEMS    :crit, a6, 2027-05-31, 2027-06-20
-```
+![Figura 9](docs/graficos/figura9_cronograma_gantt_rc.png)
 *Figura 9. Cronograma de ejecución de la inversión pre-semilla en diagrama de Gantt (Ciclos 2026-B y 2027-A).*
 
 ---
