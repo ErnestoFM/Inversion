@@ -127,11 +127,7 @@ La meta comercial acumulada de 22 planteles al cierre del Año 3 representa úni
 
 A partir del Año 4, SIGRE escalará a Universidades Públicas Estatales (**UPES**) del Centro-Occidente (más de 340 unidades académicas registradas en el catálogo de ANUIES, 2024), proyectando una base instalada acumulada de 31 a 50 planteles (22 planteles consolidados de la Red UdeG más 9 a 28 unidades en UPES regionales; Figura 4):
 
-```mermaid
-flowchart LR
-    Fase1[Fase 1: CUTonalá + 2 Prepas<br>Año 1: 3 planteles] --> Fase2[Fase 2: Red UdeG<br>Años 2-3: 8 a 22 planteles]
-    Fase2 --> Fase3[Fase 3: Expansión UPES<br>Años 4-5: 31 a 50 planteles]
-```
+![Figura 4](docs/graficos/figura4_escalamiento_institucional.png)
 *Figura 4. Escalamiento institucional progresivo: de la Red UdeG a las IES públicas nacionales.*
 
 ---
