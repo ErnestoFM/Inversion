@@ -281,15 +281,7 @@ Los costos operativos suman **$95,000 MXN en Año 1**, **$225,000 MXN en Año 2*
 
 *Tabla 12. Proyección trienal de facturación e ingresos brutos del proyecto (Pesos MXN).*
 
-```mermaid
-xychart-beta
-    title "Evolución Financiera Trienal SIGRE (Miles MXN)"
-    x-axis ["Año 1 (Piloto)", "Año 2 (Crecimiento)", "Año 3 (Madurez)"]
-    y-axis "Monto Anual (Miles MXN)" -50 --> 900
-    bar [63, 309, 840]
-    bar [95, 225, 426]
-    line [-32, 68.4, 289.8]
-```
+![Figura 10](docs/graficos/figura10_evolucion_financiera_trienal.png)
 *Figura 10. Comportamiento proyectado de ingresos brutos, costos operativos y Flujo de Efectivo Neto (FEN).*
 
 ### 7.3 Estado de Resultados Proforma, Amortización Fiscal y Estructura Operativa
