@@ -363,7 +363,7 @@ def markdown_to_html(md_path, html_path, font_size_pt=9.2, line_height=1.30, mar
     css = f"""
     @page {{
         size: letter;
-        margin: {margin_cm}cm;
+        margin: 1.40cm 1.2cm 1.25cm 1.2cm;
     }}
 
     *, *:before, *:after {{
@@ -874,19 +874,19 @@ def stamp_headers_and_footers(raw_pdf_path, final_pdf_path):
         can.setFont('Helvetica', 8.5)
         
         page_width, page_height = 8.5 * 72, 11 * 72
-        margin_x = 1.25 * 28.3465  # ~35.4 pt
+        margin_x = 1.20 * 28.3465  # ~35.4 pt
         
         # Encabezado alineado a la derecha
-        can.drawRightString(page_width - margin_x, page_height - 35, HEADER_TEXT)
+        can.drawRightString(page_width - margin_x, page_height - 23, HEADER_TEXT)
         
         # Línea divisoria sutil bajo el encabezado
         can.setStrokeColorRGB(0.88, 0.90, 0.92)
         can.setLineWidth(0.5)
-        can.line(margin_x, page_height - 40, page_width - margin_x, page_height - 40)
+        can.line(margin_x, page_height - 27, page_width - margin_x, page_height - 27)
         
         # Pie de página (Página X de Y al centro)
         page_str = f"Página {idx + 1} de {total_pages}"
-        can.drawCentredString(page_width / 2.0, 30, page_str)
+        can.drawCentredString(page_width / 2.0, 21, page_str)
         
         can.save()
         packet.seek(0)
@@ -910,7 +910,7 @@ def main():
     final_pdf_file = os.path.join(workspace, 'docs', 'Propuesta_Proyecto_Inversion_SIGRE.pdf')
 
     # Usar parámetros óptimos calibrados para EXACTAMENTE 11 PÁGINAS (1 Portada + 10 Contenido)
-    markdown_to_html(md_file, html_file, font_size_pt=8.2, line_height=1.20, margin_cm=1.2, img_max_h=145)
+    markdown_to_html(md_file, html_file, font_size_pt=8.15, line_height=1.19, margin_cm=1.2, img_max_h=140)
     compile_html_to_pdf_chrome(html_file, raw_pdf_file)
     stamp_headers_and_footers(raw_pdf_file, final_pdf_file)
 
