@@ -204,11 +204,7 @@ El crecimiento de la estructura operativa se rige por un esquema de **nómina es
 ### 6.3 Fases operativas y cronograma en Ruta Crítica [RC] extendida a 2027-A
 La ejecución del proyecto articula dos horizontes complementarios: 1) Los **antecedentes de formulación y validación empírica** cursados durante el ciclo 2026-B (10 ago – 20 nov 2026); y 2) La **ruta crítica de ejercicio de la inversión pre-semilla** durante el ciclo 2027-A (11 ene – 20 jun 2027), desplegada en cuatro etapas operativas (Figura 8 y Tabla 9):
 
-```mermaid
-flowchart LR
-    E1[Etapa 1: Ene-Feb 2027<br>CAPEX, IP y GCP] --> E2[Etapa 2: Mar-Abr 2027<br>Despliegue CUTonalá]
-    E2 --> E3[Etapa 3: May-Jun 2027<br>Demos y Venta SEMS] --> E4[Etapa 4: Jul-Dic 2027<br>Operación 3 Planteles]
-```
+![Figura 8](docs/graficos/figura8_etapas_operativas_ano1.png)
 *Figura 8. Esquema secuencial de etapas operativas y metas críticas del primer año.*
 
 | Fase Operativa | Ventana Temporal | Objetivo Principal de Etapa | Entregables Clave Verificables |
