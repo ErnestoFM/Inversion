@@ -94,6 +94,7 @@ def test_markdown_and_brain_replica():
     assert "docs/graficos/figura1_comparativa_flujos.png" in md
     assert "docs/graficos/figura4_escalamiento_institucional.png" in md
     assert "docs/graficos/figura5_arquitectura_5capas.png" in md
+    assert "docs/graficos/figura7_organigrama_equipo.png" in md
     assert "docs/pruebas/screenshots/10_distribucion_puntajes_sus.png" in md
     assert "docs/pruebas/screenshots/05_canvas_firma_digital.png" in md
     assert "docs/pruebas/screenshots/08_dashboard_ejecutivo.png" in md

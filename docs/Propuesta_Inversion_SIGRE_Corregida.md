@@ -185,13 +185,7 @@ Ante contingencias por desconexión de red local, la PWA activa el **modo de mic
 ### 6.1 Estructura organizacional y perfiles del equipo inicial
 La gestión integral del proyecto está a cargo de **Ernesto Hatuey Fierro Meléndez** como **Fundador Único, Director General y Diseñador de Software**, absorbiendo la arquitectura tecnológica, el despliegue en la nube y la interlocución comercial B2G durante la fase de lanzamiento (Figura 7):
 
-```mermaid
-graph TD
-    Fundador[Ernesto Hatuey Fierro Meléndez<br>Fundador Único y Director General]
-    Fundador --> Support[Técnico Soporte N1<br>Contratación Mes 15]
-    Fundador --> Tech[Especialista Soporte TC<br>Contratación Mes 22]
-    Fundador --> CS[Coordinador Customer Success<br>Contratación Mes 28]
-```
+![Figura 7](docs/graficos/figura7_organigrama_equipo.png)
 *Figura 7. Organigrama funcional del equipo y fases de escalamiento de personal.*
 
 ### 6.2 Plan de escalamiento y nómina escalonada
