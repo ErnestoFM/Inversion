@@ -90,7 +90,8 @@ def test_markdown_and_brain_replica():
     for i in range(1, 12):
         assert f"Figura {i}" in md, f"Falta Figura {i}"
 
-    # 15. Rutas de capturas en Markdown
+    # 15. Rutas de capturas e ilustraciones en Markdown
+    assert "docs/graficos/figura1_comparativa_flujos.png" in md
     assert "docs/pruebas/screenshots/10_distribucion_puntajes_sus.png" in md
     assert "docs/pruebas/screenshots/05_canvas_firma_digital.png" in md
     assert "docs/pruebas/screenshots/08_dashboard_ejecutivo.png" in md

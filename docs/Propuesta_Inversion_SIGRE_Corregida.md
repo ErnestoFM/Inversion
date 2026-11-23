@@ -47,11 +47,7 @@ La prueba $t$ de Student unilateral frente al estándar industrial de 68 puntos 
 
 *Tabla 1. Resultados consolidados de la evaluación psicométrica estandarizada (Escala SUS, n = 50).*
 
-```mermaid
-flowchart LR
-    A[Ventanilla: 3.5 a 5 min] --> B[Registro Papel Manual] --> C[Merma 8% a 12% Semestral]
-    D[SIGRE: < 25 s] --> E[Escaneo QR + Firma HMAC-SHA256] --> F[Trazabilidad e Inmutabilidad]
-```
+![Figura 1](docs/graficos/figura1_comparativa_flujos.png)
 *Figura 1. Flujo operativo analógico frente al flujo digital con trazabilidad de SIGRE.*
 
 ![Figura 2](docs/pruebas/screenshots/10_distribucion_puntajes_sus.png)  
