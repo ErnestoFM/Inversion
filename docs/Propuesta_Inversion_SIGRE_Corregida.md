@@ -16,7 +16,7 @@
 | **Fundador** | **Ernesto Hatuey Fierro Meléndez** (Fundador Único, Director General y Diseñador de Software) |
 | **Entorno y Docente** | CUTonalá, Universidad de Guadalajara • Asignatura: FEPI • Docente: **Mtra. Abril Adriana Angulo Sherman** |
 | **Inversión (CAPEX)** | **$180,000.00 MXN** (Inversión pre-semilla financiada mediante capital de riesgo) |
-| **Métricas Proyecto** | **VPN: +$34,442.34 MXN** (@ 15.0% TMAR) • **TIR: 21.85% anual** • **Relación B/C: 1.17x** |
+| **Métricas Proyecto** | **VPN: +$34,442.34 MXN** (al 15.0% TMAR) • **TIR: 21.85% anual** • **Relación B/C: 1.17x** |
 | **Periodo Recuperación** | **Payback Simple: Mes 29.9** (2.49 años) • **Payback Descontado: Mes 33.8** (2.82 años) |
 | **Mecanismo Retorno** | **Cash Sweep del 75%** (liquidación en **Mes 31.1**; posterior participación del 18% sobre utilidades) |
 | **Retorno Inversionista** | **Trienal: $201,276 MXN (TIR 4.16%)** • **5 años Base: 20.49% anual (1.87x)** • **5 años UPES: 26.51% anual (2.29x)** |
@@ -58,8 +58,8 @@ El costo anual de la inacción administrativa oscila entre **$90,000 MXN y $140,
 
 | Concepto de Impacto / Ineficiencia | Base de Estimación Anual por Plantel | Costo Directo Anual (MXN) |
 |---|---|---|
-| **Extravío de accesorios y consumibles** | 20 a 30 reposiciones anuales de cargadores USB-C/adaptadores HDMI @ promedio de $1,000 MXN c/u | $25,000.00 MXN ($20k–$30k) |
-| **Daño físico en equipos sin deslinde** | 3 a 4 reparaciones anuales de lámparas/tarjetas lógicas en proyectores o laptops @ $18,333 a $21,250 MXN c/u | $70,000.00 MXN ($55k–$85k) |
+| **Extravío de accesorios y consumibles** | 20 a 30 reposiciones anuales de cargadores USB-C/adaptadores HDMI a un promedio de $1,000 MXN c/u | $25,000.00 MXN ($20k–$30k) |
+| **Daño físico en equipos sin deslinde** | 3 a 4 reparaciones anuales de lámparas/tarjetas lógicas en proyectores o laptops de $18,333 a $21,250 MXN c/u | $70,000.00 MXN ($55k–$85k) |
 | **Gasto operativo en papelería física** | Libretas foliadas, tóner, carpetas y vales de archivo muerto | $20,000.00 MXN ($15k–$25k) |
 | **Total Costo Directo de Inacción** | **Pérdida patrimonial tangible y consumibles por plantel** | **$115,000.00 MXN / año ($90k–$140k)** |
 
@@ -194,8 +194,8 @@ El crecimiento de la estructura operativa se rige por un esquema de **nómina es
 | Periodo Operativo | Puesto / Rol | Gatillo Comercial de Activación | Remuneración Presupuestada |
 |---|---|---|---|
 | **Año 1 (M1-M12)** | Fundador Único + Becarios | Inversión capital semilla | $0 nómina fija patronal ($40k becas soporte en sitio) |
-| **Año 2 (Mes 15)** | Técnico Soporte N1 | 4 planteles activos con cobro | 7 meses @ $4,000 = $28,000 MXN |
-| **Año 2 (Mes 22)** | Especialista Soporte TC | 8 planteles activos contratados | 3 meses @ $10,000 = $30,000 MXN |
+| **Año 2 (Mes 15)** | Técnico Soporte N1 | 4 planteles activos con cobro | 7 meses de $4,000 = $28,000 MXN |
+| **Año 2 (Mes 22)** | Especialista Soporte TC | 8 planteles activos contratados | 3 meses de $10,000 = $30,000 MXN |
 | **Año 2 (M13-M24)** | Honorarios Fundador | Facturación anual ≥ $200,000 MXN | Retribución de gestión: $62,000 MXN |
 | **Año 3 (M25-M36)** | Equipo Técnico y CS | 12 planteles activos contratados | Especialista ($120k) + CS ($63k) + Fundador ($57k) = $240,000 MXN |
 
@@ -257,8 +257,8 @@ Los costos operativos suman **$95,000 MXN en Año 1**, **$225,000 MXN en Año 2*
 | Concepto de Facturación | Año 1 (Piloto 3 sedes) | Año 2 (Crecimiento 8 sedes) | Año 3 (Madurez 22 sedes) |
 |---|---|---|---|
 | **Planteles en Operación** | **3 planteles (CUTonalá + 2 prepas)** | **8 sedes (3 CUs + 5 prepas)** | **22 sedes (8 CUs + 14 prepas)** |
-| Suscripción CUs (@ $48k) | $0 (Piloto sin cuota) | $144,000 MXN (3 CUs) | $384,000 MXN (8 CUs) |
-| Suscripción Prepas (@ $24k) | $48,000 MXN (2 prepas) | $120,000 MXN (5 prepas) | $336,000 MXN (14 prepas) |
+| Suscripción CUs ($48,000 MXN anual) | $0 (Piloto sin cuota) | $144,000 MXN (3 CUs) | $384,000 MXN (8 CUs) |
+| Suscripción Prepas ($24,000 MXN anual) | $48,000 MXN (2 prepas) | $120,000 MXN (5 prepas) | $336,000 MXN (14 prepas) |
 | Setup por Nuevas Altas | $15,000 MXN (1 setup CU) | $45,000 MXN (2 CUs + 3 prepas) | $120,000 MXN (5 CUs + 9 prepas) |
 | **Ingresos Brutos Anuales** | **$63,000.00 MXN** | **$309,000.00 MXN** | **$840,000.00 MXN** |
 
@@ -298,7 +298,7 @@ Fijando una **Tasa Mínima Aceptable de Rendimiento (TMAR) del 15.0% anual** (ta
 | **Año 1** | **($32,000.00 MXN)** | 0.8696 | ($27,826.09 MXN) |
 | **Año 2** | **+$68,400 MXN** | 0.7561 | +$51,720.23 MXN |
 | **Año 3** | **+$289,800 MXN** | 0.6575 | +$190,548.20 MXN |
-| **Valor Presente Neto (VPN @ 15.0%)** | — | — | **+$34,442.34 MXN** |
+| **Valor Presente Neto (VPN al 15.0%)** | — | — | **+$34,442.34 MXN** |
 | **Tasa Interna de Retorno (TIR)** | — | — | **21.85% anual** |
 | **Relación Beneficio / Costo (B/C)** | — | — | **1.17 veces** |
 | **Periodo de Recuperación Simple (Payback)** | — | — | **Mes 29.9** (2.49 años) |
@@ -309,7 +309,7 @@ Fijando una **Tasa Mínima Aceptable de Rendimiento (TMAR) del 15.0% anual** (ta
 ### 7.5 Análisis de Sensibilidad Multiescenario y Umbral de Viabilidad
 La Tabla 15 evalúa la resiliencia del proyecto ante fluctuaciones en la penetración de mercado al Año 3:
 
-| Escenario Evaluado | Planteles Año 3 | Ingresos Año 3 | FEN Año 3 | VPN (@ 15.0%) | TIR | Payback Simple |
+| Escenario Evaluado | Planteles Año 3 | Ingresos Año 3 | FEN Año 3 | VPN (al 15.0%) | TIR | Payback Simple |
 |---|---|---|---|---|---|---|
 | **Pesimista (Adopción Parcial)** | **15 planteles** | $570,000 MXN | $168,000 MXN | **−$45,643.13 MXN** | **4.35% anual** | **Mes 34.3** |
 | **Base (Meta Planificada)** | **22 planteles** | $840,000 MXN | $289,800 MXN | **+$34,442.34 MXN** | **21.85% anual** | **Mes 29.9** |
