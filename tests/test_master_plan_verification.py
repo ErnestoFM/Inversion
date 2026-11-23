@@ -17,11 +17,11 @@ def test_markdown_and_brain_replica():
     with open(md_path, 'r', encoding='utf-8') as f:
         md = f.read()
 
-    # 1. Reparto de utilidades y Cash Sweep 70%
-    assert "$20,520" in md and "$47,880" in md and "$68,400" in md
-    assert "$132,120" in md and "31.8" in md
-    assert "$147,279" in md and "$142,521" in md and "$289,800" in md
-    assert "$246,330" in md and "$43,470" in md
+    # 1. Reparto de utilidades y Cash Sweep 75%
+    assert "$17,100" in md and "$51,300" in md and "$68,400" in md
+    assert "$128,700" in md and "31.1" in md
+    assert "$149,976" in md and "$139,824" in md and "$289,800" in md
+    assert "$309,304" in md and "$67,896" in md
 
     # 2. Nómina escalonada
     assert "Mes 22" in md
@@ -38,10 +38,10 @@ def test_markdown_and_brain_replica():
 
     # 4. TIR Inversionista
     assert "1.21M" in md and "1.93M" in md
-    assert "32.0%" in md
-    assert "387.2k" in md and "617.6k" in md
-    assert "$58,080" in md and "$92,640" in md
-    assert "20.73%" in md
+    assert "20.49%" in md
+    assert "26.51%" in md
+    assert "$105,696" in md
+    assert "$337,068" in md
 
     # 5. Umbral de viabilidad
     assert "18.99" in md

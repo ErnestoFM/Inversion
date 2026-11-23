@@ -732,8 +732,8 @@ def main():
     raw_pdf_file = os.path.join(scratch_dir, 'Propuesta_SIGRE_raw.pdf')
     final_pdf_file = os.path.join(workspace, 'docs', 'Propuesta_Proyecto_Inversion_SIGRE.pdf')
 
-    # Usar parámetros óptimos calibrados para EXACTAMENTE 11 PÁGINAS
-    markdown_to_html(md_file, html_file, font_size_pt=8.3, line_height=1.22, margin_cm=1.25, img_max_h=155)
+    # Usar parámetros óptimos calibrados para EXACTAMENTE 11 PÁGINAS (1 Portada + 10 Contenido)
+    markdown_to_html(md_file, html_file, font_size_pt=8.2, line_height=1.20, margin_cm=1.2, img_max_h=145)
     compile_html_to_pdf_chrome(html_file, raw_pdf_file)
     stamp_headers_and_footers(raw_pdf_file, final_pdf_file)
 

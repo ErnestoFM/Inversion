@@ -69,42 +69,42 @@ def test_financial_indicators_and_discounted_flows():
     assert round(payback_descontado, 1) == 33.8, f"Payback Descontado incorrecto: {payback_descontado:.2f} != 33.8"
 
 def test_investor_cash_sweep_and_profit_reconciliation():
-    """Valida la reconciliación del Cash Sweep del 70% y liquidación en Mes 31.8."""
+    """Valida la reconciliación del Cash Sweep del 75% y liquidación en Mes 31.1."""
     fen_y2 = 68400.0
-    inv_y2 = fen_y2 * 0.70
-    found_y2 = fen_y2 * 0.30
-    assert inv_y2 == 47880.0
-    assert found_y2 == 20520.0
+    inv_y2 = fen_y2 * 0.75
+    found_y2 = fen_y2 * 0.25
+    assert inv_y2 == 51300.0
+    assert found_y2 == 17100.0
     assert (inv_y2 + found_y2) == 68400.0
 
     saldo_capital = 180000.0 - inv_y2
-    assert saldo_capital == 132120.0
+    assert saldo_capital == 128700.0
 
     fen_y3 = 289800.0
-    cuota_mensual_inv_y3 = (fen_y3 / 12.0) * 0.70
+    cuota_mensual_inv_y3 = (fen_y3 / 12.0) * 0.75
     meses_liq = saldo_capital / cuota_mensual_inv_y3
     mes_liq_total = 24.0 + meses_liq
-    assert round(mes_liq_total, 1) == 31.8, f"Mes liquidación inversionista: {mes_liq_total:.2f} != 31.8"
+    assert round(mes_liq_total, 1) == 31.1, f"Mes liquidación inversionista: {mes_liq_total:.2f} != 31.1"
 
     fen_tramo1 = meses_liq * (fen_y3 / 12.0)
-    inv_tramo1 = fen_tramo1 * 0.70
-    found_tramo1 = fen_tramo1 * 0.30
+    inv_tramo1 = fen_tramo1 * 0.75
+    found_tramo1 = fen_tramo1 * 0.25
 
     meses_tramo2 = 12.0 - meses_liq
     fen_tramo2 = meses_tramo2 * (fen_y3 / 12.0)
-    inv_tramo2 = fen_tramo2 * 0.15
-    found_tramo2 = fen_tramo2 * 0.85
+    inv_tramo2 = fen_tramo2 * 0.18
+    found_tramo2 = fen_tramo2 * 0.82
 
     inv_total_y3 = inv_tramo1 + inv_tramo2
     found_total_y3 = found_tramo1 + found_tramo2
 
-    assert round(inv_total_y3) == 147279
-    assert round(found_total_y3) == 142521
+    assert round(inv_total_y3) == 149976
+    assert round(found_total_y3) == 139824
     assert round(inv_total_y3) + round(found_total_y3) == 289800
 
-    # Año 4 y 5 base
-    assert 289800.0 * 0.85 == 246330.0
-    assert 289800.0 * 0.15 == 43470.0
+    # Año 4 y 5 base (FEN proyectado $377,200)
+    assert round(377200.0 * 0.82) == 309304
+    assert round(377200.0 * 0.18) == 67896
 
 def test_stepped_payroll_budget():
     """Valida la nómina escalonada sin romper $120k en Año 2 y $240k en Año 3."""
@@ -123,9 +123,9 @@ def test_stepped_payroll_budget():
     assert total_y3 == 240000.0, f"Nómina Año 3 incorrecta: {total_y3} != 240000.0"
 
 def test_investor_irr_at_5_years():
-    """Valida la TIR del 14.90% base y 20.73% UPES para el inversionista a 5 años."""
-    inv_flows_base = [-180000.0, 0.0, 47880.0, 147279.0, 43470.0, 43470.0]
-    inv_flows_upes = [-180000.0, 0.0, 47880.0, 147279.0, 58080.0, 92640.0]
+    """Valida la TIR del 20.49% base y 26.51% UPES para el inversionista a 5 años."""
+    inv_flows_base = [-180000.0, 0.0, 51300.0, 149976.0, 67896.0, 67896.0]
+    inv_flows_upes = [-180000.0, 0.0, 51300.0, 149976.0, 105696.0, 105696.0]
 
     def inv_npv(flows, r):
         return sum(f / ((1 + r) ** i) for i, f in enumerate(flows))
@@ -140,8 +140,8 @@ def test_investor_irr_at_5_years():
                 high = mid
         return mid * 100
 
-    assert round(calc_tir(inv_flows_base), 2) == 14.90, f"TIR Inversionista Base incorrecta"
-    assert round(calc_tir(inv_flows_upes), 2) == 20.73, f"TIR Inversionista UPES incorrecta"
+    assert round(calc_tir(inv_flows_base), 2) == 20.49, f"TIR Inversionista Base incorrecta: {calc_tir(inv_flows_base):.2f}%"
+    assert round(calc_tir(inv_flows_upes), 2) == 26.51, f"TIR Inversionista UPES incorrecta: {calc_tir(inv_flows_upes):.2f}%"
 
 def test_viability_threshold_interpolation():
     """Valida el umbral de FEN de $237,417.50 y 18.99 planteles (~19 planteles / 9.7% Red)."""

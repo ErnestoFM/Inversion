@@ -18,8 +18,8 @@
 | **CAPEX** | **$180,000.00 MXN** (Inversión pre-semilla financiada mediante capital de riesgo) |
 | **Métricas** | **VPN: +$34,442.34 MXN** (@ 15.0% TMAR) \| **TIR: 21.85% anual** \| **Relación B/C: 1.17x** |
 | **Payback** | **Payback Simple: Mes 29.9** (2.49 años) \| **Payback Descontado: Mes 33.8** (2.82 años) |
-| **Mecanismo** | **Cash Sweep del 70%** (liquidación en **Mes 31.8**; posterior participación del 15% sobre utilidades) |
-| **Retorno** | **Trienal: $195,159 MXN (TIR 3.03%)** \| **5 años Base: 14.90%** \| **5 años UPES: 20.73% anual** |
+| **Mecanismo** | **Cash Sweep del 75%** (liquidación en **Mes 31.1**; posterior participación del 18% sobre utilidades) |
+| **Retorno** | **Trienal: $201,276 MXN (TIR 4.16%)** \| **5 años Base: 20.49%** \| **5 años UPES: 26.51% anual** |
 | **Psicometría** | **Escala SUS: 82.85/100 pts** ($n = 50$, DE 10.91, Grado A, percentil 91.4, Alfa 0.892, $p < 0.001$) |
 | **Mercado** | Red UdeG (196 planteles). Año 1: 3 planteles; Año 2: 8 planteles; Año 3: 22 planteles (11.2%) |
 
@@ -28,7 +28,7 @@
 ## 1. Problemática, Diagnóstico Empírico y Justificación
 
 ### 1.1 El problema operativo: descontrol analógico en ventanillas de almacén
-En la Red Universitaria de la UdeG, el préstamo de laptops, proyectores, cables y reactivos se administra mediante libros de actas foliados en papel. Este método manual ocasiona demoras de **3.5 a 5.0 minutos por usuario** durante los cambios de clase (ventanas de 10 minutos), filas continuas en mostrador y una merma proyectada del **8% al 12% del stock circulante semestral** (estimada con base en 4 semanas de muestreo y bitácoras históricas de CUTonalá) y deslinde de responsabilidades.
+En la Red Universitaria de la UdeG, el préstamo de laptops, proyectores, cables y reactivos se administra mediante libros de actas foliados en papel. Este método manual ocasiona demoras de **3.5 a 5.0 minutos por usuario** durante los cambios de clase (ventanas de 10 minutos), filas continuas en mostrador y una merma proyectada de **$115,000 MXN anuales por plantel** (equivalente al 8% al 12% del stock circulante semestral, estimada con base en 4 semanas de muestreo y bitácoras históricas de CUTonalá) derivada del extravío de accesorios y averías sin deslinde de responsabilidades.
 
 ### 1.2 Análisis crítico: la falacia del ERP frente a la micro-custodia de mostrador
 Los sistemas ERP institucionales (como SIIAU o Banner) administran el inventario macroinstitucional diferido para compras y auditorías contables, pero no resuelven la **micro-custodia transaccional** en ventanilla en tiempo real (< 25 s). Suponer que un ERP patrimonial cubre el mostrador es una falacia operativa que perpetúa el descontrol en papel sin validez jurídica probatoria ni cadena de custodia individualizada.
@@ -58,18 +58,18 @@ flowchart LR
 *Figura 2. Distribución de frecuencias y curva de densidad de puntajes SUS (n = 50) frente a la media de la industria (Sauro & Lewis, 2012).*
 
 ### 1.4 Estimación económica del costo de inacción por plantel
-El costo anual de la inacción administrativa oscila entre **$90,000 MXN y $140,000 MXN por plantel**, con un punto medio ponderado de **$115,000 MXN anuales** (conforme a la metodología de valoración de costos evitados de Sapag Chain, Sapag Chain & Sapag Puelma, 2014, complementada con estimaciones paramétricas de los inventarios locales de CUTonalá). La Tabla 2 desglosa las mermas directas y costos tangibles que el uso de SIGRE mitiga:
+El costo anual de la inacción administrativa oscila entre **$90,000 MXN y $140,000 MXN por plantel**, con un punto medio ponderado de **$115,000 MXN anuales** (conforme a la metodología de valoración de costos evitados de Sapag Chain, Sapag Chain & Sapag Puelma, 2014, complementada con cotizaciones de reposición e inventarios locales de CUTonalá). La Tabla 2 desglosa las mermas directas y costos tangibles que el uso de SIGRE mitiga:
 
 | Concepto de Impacto / Ineficiencia | Base de Estimación Anual por Plantel | Costo Directo Anual (MXN) |
 |---|---|---|
-| **Extravío de accesorios y consumibles** | 15 a 30 periféricos menores no devueltos (cables HDMI $350, adaptadores $600, extensiones $450) | $25,000.00 MXN ($20k–$30k) |
-| **Daño físico en equipos sin deslinde** | 2 a 4 averías anuales en proyectores o cómputo (reparaciones de display/lámpara de $8k a $15k) | $70,000.00 MXN ($55k–$85k) |
+| **Extravío de accesorios y consumibles** | 20 a 30 reposiciones anuales de cargadores USB-C/adaptadores HDMI @ promedio de $1,000 MXN c/u | $25,000.00 MXN ($20k–$30k) |
+| **Daño físico en equipos sin deslinde** | 3 a 4 reparaciones anuales de lámparas/tarjetas lógicas en proyectores o laptops @ $18,333 a $21,250 MXN c/u | $70,000.00 MXN ($55k–$85k) |
 | **Gasto operativo en papelería física** | Libretas foliadas, tóner, carpetas y vales de archivo muerto | $20,000.00 MXN ($15k–$25k) |
 | **Total Costo Directo de Inacción** | **Pérdida patrimonial tangible y consumibles por plantel** | **$115,000.00 MXN / año ($90k–$140k)** |
 
 *Tabla 2. Estimación analítica del impacto de la inacción administrativa y pérdidas patrimoniales por plantel universitario.*
 
-*Nota:* Adicionalmente, las 280 horas anuales de espera acumulada en filas representan un costo de oportunidad de horas-docente de aproximadamente $39,200 MXN anuales (cálculo: ~8,400 préstamos anuales con ahorro proyectado de 2 min/transacción = 16,800 min = 280 horas a $140/h docente promedio) que la automatización de ventanilla reincorpora al trabajo académico.
+*Nota:* Adicionalmente, las 280 horas anuales de espera acumulada en filas representan un costo de oportunidad de horas-docente de aproximadamente $39,200 MXN anuales (cálculo: ~8,400 préstamos anuales con un ahorro proyectado de 2 min por transacción = 16,800 min = 280 horas a un costo promedio de $140 MXN/h docente) que la automatización de ventanilla reincorpora al tiempo efectivo de docencia e investigación.
 
 ### 1.5 Análisis de alternativas existentes frente a SIGRE
 La Tabla 3 compara las alternativas disponibles en el entorno universitario frente a SIGRE:
@@ -78,7 +78,7 @@ La Tabla 3 compara las alternativas disponibles en el entorno universitario fren
 |---|---|---|---|---|
 | **Tiempo de Despacho** | 3.5 – 5.0 min | No aplicable (sin POS) | 1.5 – 2.5 min | **< 25 segundos** |
 | **Micro-custodia Mostrador** | Nula | Inexistente (sólo ERP) | Parcial (TI solamente) | **Total (código + firma)** |
-| **Firma Digitalizada** | Manual en papel | No disponible | Requiere plugin externo | **Nativa (Canvas + HMAC)** |
+| **Firma Digitalizada** | Manual en papel | No disponible | Limitada (correo; sin firma en mostrador ni offline) | **Nativa (Canvas + HMAC)** |
 | **Costo Total (TCO)** | Alto por mermas | > $300k prorrateado | $0 licencia / $35k-$60k TCO | **$24,000 - $48,000 MXN/año** |
 | **Modo Offline Contingente** | Inoperante | Inoperante | Requiere conexión | **PWA local con IndexedDB** |
 
@@ -98,7 +98,7 @@ SIGRE es una solución B2B SaaS diseñada para la **micro-custodia transaccional
 - **Objetivo General:** Desarrollar y comercializar la plataforma SIGRE en la Red Universitaria UdeG para estandarizar la micro-custodia de activos en ventanillas escolares.
 - **Objetivo Técnico:** Despachar préstamos en mostrador en menos de 25 segundos con 99.5% de disponibilidad en nube y modo de contingencia offline.
 - **Objetivo Comercial:** Captar 3 planteles en el Año 1 (1 piloto sin costo CUTonalá con setup + 2 prepas comerciales a $24,000 MXN), 8 planteles en el Año 2 y 22 planteles al cierre del Año 3 (11.2% de la Red UdeG).
-- **Objetivo Financiero:** Recuperar la inversión de $180,000 MXN en el **Mes 31.8** mediante un mecanismo **Cash Sweep del 70%** sobre el FEN, alcanzando rentabilidad operativa anual a partir del Año 2.
+- **Objetivo Financiero:** Recuperar la inversión de $180,000 MXN en el **Mes 31.1** mediante un mecanismo **Cash Sweep del 75%** sobre el FEN, alcanzando rentabilidad operativa anual a partir del Año 2.
 
 ### 2.3 Marco Lógico Metodológico (MML) del Proyecto SIGRE
 Bajo estándares internacionales de formulación (Ortegón, Pacheco & Prieto, CEPAL, 2015), la Tabla 4 presenta la estructura analítica de la MML:
@@ -129,7 +129,7 @@ La meta comercial acumulada de 22 planteles al cierre del Año 3 representa úni
 
 *Tabla 5. Desglose del nicho institucional de la Red Universitaria UdeG y metas comerciales al Año 3.*
 
-A partir del Año 4, SIGRE escalará a Universidades Públicas Estatales (**UPES**) del Centro-Occidente (más de 340 unidades académicas registradas ante ANUIES, 2024):
+A partir del Año 4, SIGRE escalará a Universidades Públicas Estatales (**UPES**) del Centro-Occidente (más de 340 unidades académicas registradas en el catálogo de ANUIES, 2024), proyectando una base instalada acumulada de 31 a 50 planteles (22 planteles consolidados de la Red UdeG más 9 a 28 unidades en UPES regionales; Figura 4):
 
 ```mermaid
 flowchart LR
@@ -143,7 +143,7 @@ flowchart LR
 ## 4. Comercialización, Decisores y Servicios
 
 ### 4.1 Estructura de decisores y viabilidad burocrática B2G
-La comercialización B2G se gestiona directamente con Secretarios Administrativos (en Centros Universitarios) y Directores de Escuela (en Preparatorias SEMS). Conforme a los lineamientos institucionales de compras menores y contrataciones directas por monto de la Universidad de Guadalajara y la legislación aplicable, las adquisiciones anuales inferiores a los umbrales de licitación pública (**operaciones menores a 1,000 UMA = $117,310.00 MXN anuales**, fijada en $117.31 MXN diarios; INEGI, 2026) facultan la contratación por **adjudicación directa** descentralizada en cada dependencia. Las suscripciones anuales de SIGRE ($24,000 a $48,000 MXN) quedan plenamente amparadas bajo este marco normativo sin requerir licitaciones centrales (Tabla 6):
+La comercialización B2G se gestiona directamente con Secretarios Administrativos (en Centros Universitarios) y Directores de Escuela (en Preparatorias SEMS). Conforme a los **Artículos 16 (Fracción IV) y 23 del Reglamento de Adquisiciones, Arrendamientos y Contratación de Servicios de la Universidad de Guadalajara (RAACS, versión vigente Junio 2025)**, los Directores de Preparatoria SEMS están legalmente facultados para autorizar contrataciones y compras por **adjudicación directa** hasta por **37 veces la Unidad de Medida y Actualización (UMA) mensual** ($131,950.14 MXN; INEGI, 2026), y los Titulares de Centros Universitarios hasta por **75 UMA mensuales** ($267,466.50 MXN). Las suscripciones anuales de SIGRE ($24,000 a $48,000 MXN) representan únicamente el 18.2% y 17.9% de dichos techos de adjudicación directa descentralizada, garantizando una contratación ágil y formal sin requerir licitación pública centralizada ni intervención de comités de compras (Tabla 6):
 
 | Nivel de Servicio | Cuota Anual Suscripción | Cobertura Operativa Incluida | Cuota Setup / Configuración |
 |---|---|---|---|
@@ -210,11 +210,11 @@ graph TD
 *Figura 7. Organigrama funcional del equipo y fases de escalamiento de personal.*
 
 ### 6.2 Plan de escalamiento y nómina escalonada
-El crecimiento de la estructura operativa se rige por un esquema de **nómina escalonada** condicionado a gatillos de facturación comercial: Año 1 ($0 nómina fija externa); Año 2 (**$120,000 MXN**: Técnico N1 contratado en Mes 15 por $28,000 MXN, Especialista TC activado en **Mes 22** por $30,000 MXN y honorarios de gestión para el fundador por $62,000 MXN); Año 3 (**$240,000 MXN**: Especialista TC por $120,000 MXN, Customer Success contratado en Mes 28 por $63,000 MXN y estipendio para el fundador por $57,000 MXN). La Tabla 8 resume las condiciones contractuales:
+El crecimiento de la estructura operativa se rige por un esquema de **nómina escalonada** condicionado a gatillos de facturación comercial: Año 1 ($0 nómina fija patronal, con $40,000 MXN asignados a becas de servicio social y apoyo técnico en sitio para los 3 planteles piloto); Año 2 (**$120,000 MXN**: Técnico N1 contratado en Mes 15 por $28,000 MXN, Especialista TC activado en **Mes 22** por $30,000 MXN y honorarios de gestión para el fundador por $62,000 MXN); Año 3 (**$240,000 MXN**: Especialista TC por $120,000 MXN, Customer Success contratado en Mes 28 por $63,000 MXN y estipendio para el fundador por $57,000 MXN). La Tabla 8 resume las condiciones contractuales:
 
 | Periodo Operativo | Puesto / Rol | Gatillo Comercial de Activación | Remuneración Presupuestada |
 |---|---|---|---|
-| **Año 1 (M1-M12)** | Fundador Único | Inversión capital semilla | $0 nómina fija externa |
+| **Año 1 (M1-M12)** | Fundador Único + Becarios | Inversión capital semilla | $0 nómina fija patronal ($40k becas soporte en sitio) |
 | **Año 2 (Mes 15)** | Técnico Soporte N1 | 4 planteles activos con cobro | 7 meses @ $4,000 = $28,000 MXN |
 | **Año 2 (Mes 22)** | Especialista Soporte TC | 8 planteles activos contratados | 3 meses @ $10,000 = $30,000 MXN |
 | **Año 2 (M13-M24)** | Honorarios Fundador | Facturación anual $\ge \$200,000$ | Retribución de gestión: $62,000 MXN |
@@ -241,14 +241,14 @@ flowchart LR
 
 *Tabla 9. Matriz de fases de ejecución operativa y criterios de aceptación (Año 1).*
 
-La programación temporal, dependencias y holguras de la Ruta Crítica [RC] para la inversión del Año 1 (Ciclo 2027-A) se detalla en la Tabla 10 y el Diagrama de Gantt de la Figura 9:
+La programación temporal, dependencias y holguras de la Ruta Crítica [RC] para la inversión del Año 1 (Ciclo 2027-A) se detalla en la Tabla 10 y el Diagrama de Gantt de la Figura 9. Por restricción de recursos humanos al operar inicialmente como fundador único, la actividad **A3** depende secuencialmente de **A2**, ya que el fundador debe blindar legalmente el software y la marca antes de entregar terminales y dossiers en planteles, situando a **A2 formalmente en la Ruta Crítica [RC]** (holgura = 0 semanas):
 
 | Clave | Actividad Operativa (Ciclo 2027-A) | Ventana Calendario | Duración | Dependencia | Holgura | Ruta Crítica |
 |---|---|---|---|---|---|---|
 | **A0** | Formulación FEPI y validación SUS ($n = 50$) | 10 ago – 20 nov 2026 | 15 sem | Ninguna | 0 sem | Antecedente |
 | **A1** | Desembolso CAPEX ($180k) y puesta a punto Cloud GCP | 11 ene – 06 feb 2027 | 4 sem | A0 | 0 sem | **Sí [RC]** |
-| **A2** | Depósito obra INDAUTOR y solicitud de marca IMPI | 08 feb – 27 feb 2027 | 3 sem | A1 | 1 sem | No |
-| **A3** | Compra de hardware demo y puesta a punto en CUTonalá | 01 mar – 27 mar 2027 | 4 sem | A1 | 0 sem | **Sí [RC]** |
+| **A2** | Depósito obra INDAUTOR y solicitud de marca IMPI | 08 feb – 27 feb 2027 | 3 sem | A1 | 0 sem | **Sí [RC]** |
+| **A3** | Compra de hardware demo y puesta a punto en CUTonalá | 01 mar – 27 mar 2027 | 4 sem | A2 | 0 sem | **Sí [RC]** |
 | **A4** | Operación mostrador CUTonalá y telemetría de activos | 29 mar – 30 abr 2027 | 5 sem | A3 | 0 sem | **Sí [RC]** |
 | **A5** | Rondas comerciales B2G en planteles del SEMS | 03 may – 28 may 2027 | 4 sem | A4 | 0 sem | **Sí [RC]** |
 | **A6** | Negociación y formalización de 2 contratos prepas SEMS | 31 may – 20 jun 2027 | 3 sem | A5 | 0 sem | **Sí [RC]** |
@@ -260,10 +260,10 @@ gantt
     title Cronograma de Ejecución y Ruta Crítica - Ciclos 2026-B y 2027-A
     dateFormat YYYY-MM-DD
     section Antecedentes Formulación (2026-B)
-    A0. Diagnóstico y Validación SUS ($n=50$) :done, a0, 2026-08-10, 2026-11-20
+    A0. Diagnóstico y Validación SUS (n = 50) :done, a0, 2026-08-10, 2026-11-20
     section Ruta Crítica Inversión (2027-A)
     A1. Desembolso CAPEX y Nube GCP ($180k)   :crit, a1, 2027-01-11, 2027-02-06
-    A2. Registro INDAUTOR y Solicitud IMPI     :a2, 2027-02-08, 2027-02-27
+    A2. Registro INDAUTOR y Solicitud IMPI     :crit, a2, 2027-02-08, 2027-02-27
     A3. Hardware y Despliegue CUTonalá        :crit, a3, 2027-03-01, 2027-03-27
     A4. Operación y Auditoría 1,200 Actas     :crit, a4, 2027-03-29, 2027-04-30
     A5. Rondas Comerciales en SEMS             :crit, a5, 2027-05-03, 2027-05-28
@@ -280,7 +280,7 @@ El requerimiento de financiamiento pre-semilla suma **$180,000.00 MXN**, desglos
 
 | Partida de Inversión | Concepto y Destino del Gasto | Monto Asignado |
 |---|---|---|
-| **P1. Desarrollo de Software** | Afinación de arquitectura, refactorización y motor HMAC | $75,000.00 MXN |
+| **P1. Desarrollo de Software** | Honorarios preoperativos de arquitectura, desarrollo e integración PWA (agosto-noviembre 2026) | $75,000.00 MXN |
 | **P2. Entorno Preoperativo Cloud** | Infraestructura de staging, herramientas de desarrollo y dominios | $20,000.00 MXN |
 | **P3. Trámites Legales y Propiedad Intelectual** | Registro de obra INDAUTOR y marca IMPI (**$3,126.41 MXN**; IMPI, 2026) | $25,000.00 MXN |
 | **P4. Hardware de Mostrador y Dossiers** | 3 escáneres ópticos y tableta (**$13,500 MXN**) + carpetas de ROI (**$6,500 MXN**) | **$20,000.00 MXN** |
@@ -290,7 +290,7 @@ El requerimiento de financiamiento pre-semilla suma **$180,000.00 MXN**, desglos
 *Tabla 11. Estructura analítica de asignación de capital semilla (CAPEX: $180,000 MXN).*
 
 ### 7.2 Estructura de costos operativos (OPEX) y proyecciones de ingresos
-Los costos operativos suman **$95,000 MXN en Año 1**, **$225,000 MXN en Año 2** y **$426,000 MXN en Año 3**. Los ingresos de Año 1 suman **$63,000 MXN** con **3 planteles** (piloto **CUTonalá** sin cuota de suscripción con setup de $15,000 MXN + **2 contratos comerciales** prepas SEMS a $24,000 MXN = $48,000 MXN, exentas de setup por adopción temprana), escalando a **$309,000 MXN en Año 2** (8 sedes: 3 CUs + 5 prepas, con 5 nuevas altas = $45,000 MXN de setup) y **$840,000 MXN en Año 3** (22 sedes: 8 CUs + 14 prepas, con 14 nuevas altas = $120,000 MXN de setup; Tabla 12 y Figura 10):
+Los costos operativos suman **$95,000 MXN en Año 1**, **$225,000 MXN en Año 2** y **$426,000 MXN en Año 3**. Los ingresos de Año 1 suman **$63,000 MXN** con **3 planteles** (piloto operativo **CUTonalá** con cuota de setup de $15,000 MXN + **2 contratos comerciales** prepas SEMS a $24,000 MXN = $48,000 MXN, exentas de setup por adopción temprana). A partir del Año 2, CUTonalá formaliza su contratación ordinaria al plan Centro Universitario ($48,000 MXN) tras comprobar el abatimiento de mermas, escalando la facturación a **$309,000 MXN en Año 2** (8 sedes: 3 CUs + 5 prepas, con 5 nuevas altas = $45,000 MXN de setup) y **$840,000 MXN en Año 3** (22 sedes: 8 CUs + 14 prepas, con 14 nuevas altas = $120,000 MXN de setup; Tabla 12 y Figura 10):
 
 | Concepto de Facturación | Año 1 (Piloto 3 sedes) | Año 2 (Crecimiento 8 sedes) | Año 3 (Madurez 22 sedes) |
 |---|---|---|---|
@@ -313,14 +313,14 @@ xychart-beta
 ```
 *Figura 10. Comportamiento proyectado de ingresos brutos, costos operativos y Flujo de Efectivo Neto (FEN).*
 
-### 7.3 Estado de Resultados Proforma, Amortización Fiscal y Punto de Equilibrio
+### 7.3 Estado de Resultados Proforma, Amortización Fiscal y Estructura Operativa
 La Tabla 13 presenta el Estado de Resultados Proforma trienal, aplicando la amortización de pérdidas fiscales de ejercicios anteriores conforme al **Artículo 57 de la Ley del Impuesto sobre la Renta (LISR)**:
 
 | Rubro Financiero Proforma | Año 1 (Piloto) | Año 2 (Crecimiento) | Año 3 (Consolidación) |
 |---|---|---|---|
 | **Ingresos Brutos Totales** | **$63,000.00** | **$309,000.00** | **$840,000.00** |
 | (−) Servidores Cloud GCP en Producción | ($18,000.00) | ($35,000.00) | ($65,000.00) |
-| (−) Nómina Técnica y Soporte en Campo | ($40,000.00) | ($120,000.00) | ($240,000.00) |
+| (−) Apoyo Técnico en Campo y Nómina Operativa | ($40,000.00) | ($120,000.00) | ($240,000.00) |
 | (−) Viáticos y Acompañamiento en Sitio | ($12,000.00) | ($22,000.00) | ($45,000.00) |
 | (−) Servicios Contables, Legales y Fiscales | ($15,000.00) | ($24,000.00) | ($36,000.00) |
 | (−) Mantenimiento de Software y Seguridad | ($10,000.00) | ($24,000.00) | ($40,000.00) |
@@ -335,7 +335,7 @@ La Tabla 13 presenta el Estado de Resultados Proforma trienal, aplicando la amor
 
 > [!NOTE]
 > **Consistencia Aritmética, Criterio de Estrés Financiero y Tratamiento Fiscal:**  
-> En el Año 1, el OPEX de **($95,000 MXN)** genera una pérdida operativa de **−$32,000 MXN** (con ISR de $0). En el Año 2, conforme al Art. 57 de la LISR, dicha pérdida se amortiza reduciendo la base gravable de $84,000 MXN a **$52,000 MXN**, pagando un ISR del 30% por **($15,600 MXN)** y arrojando un FEN neto de **+$68,400 MXN**. En el Año 3, el EBIT de $414,000 MXN tributa **($124,200 MXN)** de ISR, generando un FEN neto de **+$289,800 MXN**. El margen neto pasa de −50.8% en Año 1, al 22.1% en Año 2 y al **34.5% en Año 3** (con un margen operativo EBITDA del **49.3%**). El proyecto alcanza rentabilidad operativa anual a partir del Año 2.
+> En el Año 1, el OPEX de **($95,000 MXN)** (que incluye $40,000 MXN asignados a becas de apoyo a estudiantes de servicio social en sitio para los 3 planteles piloto) genera una pérdida operativa de **−$32,000 MXN** (con ISR de $0). En el Año 2, conforme al Art. 57 de la LISR, dicha pérdida se amortiza reduciendo la base gravable de $84,000 MXN a **$52,000 MXN**, pagando un ISR del 30% por **($15,600 MXN)** y arrojando un FEN neto de **+$68,400 MXN**. En el Año 3, el EBIT de $414,000 MXN tributa **($124,200 MXN)** de ISR, generando un FEN neto de **+$289,800 MXN**. El margen neto pasa de −50.8% en Año 1, al 22.1% en Año 2 y al **34.5% en Año 3** (con un margen operativo EBITDA del **49.3%**). El proyecto alcanza rentabilidad operativa anual a partir del Año 2.
 
 ### 7.4 Análisis Financiero de Rentabilidad: Proyección FEN, VPN, TIR y Payback
 Fijando una **Tasa Mínima Aceptable de Rendimiento (TMAR) del 15.0% anual** (tasa libre de riesgo Cetes a 364 días en 7.12% más prima por riesgo de 7.88%), la Tabla 14 resume los indicadores de rentabilidad del proyecto:
@@ -367,7 +367,7 @@ La Tabla 15 evalúa la resiliencia del proyecto ante fluctuaciones en la penetra
 
 > [!IMPORTANT]
 > **Umbral de Viabilidad Financiera (Punto de Equilibrio de la Inversión):**  
-> En el escenario pesimista (15 planteles), la TIR de 4.35% no cubre la TMAR del 15% y el VPN resulta negativo. El umbral exacto donde el **VPN iguala a cero a la tasa del 15%** exige un FEN en el Año 3 de **$237,417.50 MXN**, lo que tolera una **caída máxima admisible del 18.1%** respecto a la meta base de FEN ($289,800 MXN). Mediante interpolación paramétrica frente al escenario pesimista, esto equivale a **18.99 planteles**; por ende, afiliar **19 planteles discretos** (sólo el **9.7%** de la Red UdeG de 196 dependencias) asegura la rentabilidad financiera del proyecto.
+> En el escenario pesimista (15 planteles), la TIR de 4.35% no cubre la TMAR del 15% y el VPN resulta negativo. El umbral exacto donde el **VPN iguala a cero a la tasa del 15%** exige un FEN en el Año 3 de **$237,417.50 MXN**, lo que tolera una **caída máxima admisible del 18.1%** respecto a la meta base de FEN ($289,800 MXN). Mediante interpolación paramétrica frente al escenario pesimista, esto equivale a **18.99 planteles**; por ende, afiliar **19 planteles discretos** (sólo el **9.7%** de la Red UdeG de 196 dependencias) sustenta la viabilidad financiera del proyecto conforme a los supuestos del modelo base.
 
 ---
 
@@ -405,24 +405,24 @@ SIGRE representa una oportunidad de inversión B2B SaaS en una industria con alt
 El capital semilla se destinará de forma inmediata a: 1) Formalizar los registros de marca ante el IMPI y de derechos de autor ante el INDAUTOR; 2) Consolidar la operación en los almacenes de CUTonalá; 3) Adquirir 3 escáneres ópticos y tableta demo para iniciar rondas de presentación en el SEMS y cerrar los primeros contratos comerciales en el ciclo 2027-A.
 
 ### 9.3 Estructura formal de inversión, instrumento legal y retorno financiero
-La inyección de capital se formalizará mediante un **Contrato de Mutuo con Participación sobre Utilidades Netas**, estipulando un mecanismo de amortización acelerada **Cash Sweep del 70%** sobre el FEN hasta liquidar íntegramente los $180,000 MXN en el **Mes 31.8**, tras lo cual se activará una **participación preferente del 15% sobre utilidades netas**.
+La inyección de capital se formalizará mediante un **Contrato de Mutuo con Participación sobre Utilidades Netas**, estipulando un mecanismo de amortización acelerada **Cash Sweep del 75%** sobre el FEN hasta liquidar íntegramente los $180,000 MXN en el **Mes 31.1**, tras lo cual se activará una **participación preferente del 18% sobre utilidades netas**.
 
 - **Año 1 (FEN −$32,000 MXN):** Periodo de gracia preoperativo; el flujo se reinvierte íntegramente en desarrollo.
-- **Año 2 (FEN +$68,400 MXN):** El Cash Sweep del 70% entrega **$47,880.00 MXN** al inversionista y **$20,520.00 MXN** al fundador (30%), reduciendo el saldo insoluto de capital a **$132,120.00 MXN**.
-- **Año 3 (FEN +$289,800 MXN):** En el **Mes 31.8** (7.8 meses de operación), el inversionista liquida los $132,120 MXN de capital restante (Tramo 1: inversionista $132,120 MXN, fundador $56,623 MXN). En los 4.2 meses posteriores se activa la participación preferente del 15% (Tramo 2: inversionista $15,159 MXN, fundador $85,898 MXN), totalizando en el año **$147,279.00 MXN** para el inversionista y **$142,521.00 MXN** para el fundador ($147,279 + $142,521 = $289,800 MXN).
+- **Año 2 (FEN +$68,400 MXN):** El Cash Sweep del 75% entrega **$51,300.00 MXN** al inversionista y **$17,100.00 MXN** al fundador (25%), reduciendo el saldo insoluto de capital a **$128,700.00 MXN**.
+- **Año 3 (FEN +$289,800 MXN):** En el **Mes 31.1** (7.1 meses de operación), el inversionista liquida los $128,700.00 MXN de capital restante (Tramo 1: inversionista $128,700.00 MXN, fundador $42,900.00 MXN). En los 4.9 meses posteriores se activa la participación preferente del 18% (Tramo 2: inversionista $21,276.00 MXN, fundador $96,924.00 MXN), totalizando en el año **$149,976.00 MXN** para el inversionista y **$139,824.00 MXN** para el fundador ($149,976 + $139,824 = $289,800 MXN).
 
-El retorno trienal acumulado suma **$195,159.00 MXN** (TIR de 3.03%). A un horizonte de **5 años en Escenario Base**, la participación del 15% rinde **$43,470.00 MXN anuales** al inversionista y **$246,330.00 MXN** al fundador, alcanzando una **TIR del 14.90% anual** (retorno total de $282,099 MXN, múltiplo de 1.57x). En **Escenario de Expansión Regional a UPES**, facturando **$1,210,000 MXN ($1.21M)** en Año 4 (31 planteles) y **$1,930,000 MXN ($1.93M)** en Año 5 (50 planteles) con margen neto del 32.0% (FEN de **$387,200 MXN ($387.2k)** y **$617,600 MXN ($617.6k)**), el 15% rinde **$58,080.00 MXN** en Año 4 y **$92,640.00 MXN** en Año 5, elevando la **TIR del inversionista al 20.73% anual** (retorno acumulado de $345,879 MXN, múltiplo de 1.92x; Tabla 16):
+El retorno trienal acumulado suma **$201,276.00 MXN** (TIR de 4.16% con capital recuperado al 100%). A un horizonte de **5 años en Escenario Base**, considerando un FEN estabilizado de $377,200 MXN anuales en Años 4 y 5, la participación del 18% rinde **$67,896.00 MXN anuales** al inversionista y **$309,304.00 MXN** al fundador, alcanzando una **TIR del 20.49% anual** (retorno acumulado de **$337,068.00 MXN**, múltiplo de **1.87x** el capital aportado, superando holgadamente la TMAR del 15.0% y Cetes del 7.12%). En **Escenario de Expansión Regional a UPES**, facturando **$1,210,000 MXN ($1.21M)** en Año 4 (31 planteles) y **$1,930,000 MXN ($1.93M)** en Año 5 (50 planteles) con un FEN proyectado de **$587,200 MXN** anuales, la participación del 18% rinde **$105,696.00 MXN anuales**, elevando la **TIR del inversionista al 26.51% anual** (retorno acumulado de **$412,668.00 MXN**, múltiplo de **2.29x**; Tabla 16):
 
 | Periodo de Liquidación | Flujo Inversionista (Base) | Flujo Inversionista (UPES) | Saldo Insoluto Capital | Concepto Económico Percibido |
 |---|---|---|---|---|
 | **Mes 0 (Inversión)** | **($180,000.00 MXN)** | **($180,000.00 MXN)** | $180,000.00 MXN | Desembolso de capital semilla ($I_0$) |
 | **Año 1 (Meses 1–12)** | **$0.00 MXN** | **$0.00 MXN** | $180,000.00 MXN | Periodo de gracia y piloto CUTonalá |
-| **Año 2 (Meses 13–24)** | **+$47,880.00 MXN** | **+$47,880.00 MXN** | $132,120.00 MXN | Cash Sweep 70% sobre FEN ($68,400) |
-| **Año 3 (Meses 25–36)** | **+$147,279.00 MXN** | **+$147,279.00 MXN** | **$0.00 (Liquidado Mes 31.8)** | Liquidación principal ($132.1k) + Participación 15% ($15.2k) |
-| **Año 4 (Meses 37–48)** | **+$43,470.00 MXN** | **+$58,080.00 MXN** | $0.00 MXN | Participación preferente 15% de utilidades netas |
-| **Año 5 (Meses 49–60)** | **+$43,470.00 MXN** | **+$92,640.00 MXN** | $0.00 MXN | Participación preferente 15% de utilidades netas |
-| **Total Percibido** | **$282,099.00 MXN** | **$345,879.00 MXN** | — | **Múltiplo: 1.57x Base / 1.92x UPES** |
-| **TIR Inversionista** | **14.90% anual** | **20.73% anual** | — | **Alineada a TMAR (15.0%) / Expansión 20.7%** |
+| **Año 2 (Meses 13–24)** | **+$51,300.00 MXN** | **+$51,300.00 MXN** | $128,700.00 MXN | Cash Sweep 75% sobre FEN ($68,400) |
+| **Año 3 (Meses 25–36)** | **+$149,976.00 MXN** | **+$149,976.00 MXN** | **$0.00 (Liquidado Mes 31.1)** | Liquidación principal ($128.7k) + Participación 18% ($21.3k) |
+| **Año 4 (Meses 37–48)** | **+$67,896.00 MXN** | **+$105,696.00 MXN** | $0.00 MXN | Participación preferente 18% de utilidades netas |
+| **Año 5 (Meses 49–60)** | **+$67,896.00 MXN** | **+$105,696.00 MXN** | $0.00 MXN | Participación preferente 18% de utilidades netas |
+| **Total Percibido** | **$337,068.00 MXN** | **$412,668.00 MXN** | — | **Múltiplo: 1.87x Base / 2.29x UPES** |
+| **TIR Inversionista** | **20.49% anual** | **26.51% anual** | — | **Supera TMAR (15.0%) / Expansión 26.5%** |
 
 *Tabla 16. Flujos de caja proyectados y Tasa Interna de Retorno (TIR) para el inversionista privado.*
 
@@ -430,20 +430,21 @@ El retorno trienal acumulado suma **$195,159.00 MXN** (TIR de 3.03%). A un horiz
 
 ## 10. Referencias Bibliográficas (Norma APA 7ma Edición)
 
-* ANUIES. (2024). *Anuario estadístico de la educación superior: Región Centro-Occidente*. Asociación Nacional de Universidades e Instituciones de Educación Superior.
+* ANUIES. (2024). *Anuario estadístico de la educación superior: Región Centro-Occidente*. Asociación Nacional de Universidades e Instituciones de Educación Superior. https://www.anuies.mx/
 * Bangor, A., Kortum, P. T., & Miller, J. T. (2008). An empirical evaluation of the System Usability Scale. *International Journal of Human-Computer Interaction*, 24(6), 574–594. https://doi.org/10.1080/10447310802205776
 * Brooke, J. (1996). SUS: A 'quick and dirty' usability scale. In P. W. Jordan, B. Thomas, B. A. Weerdmeester, & I. L. McClelland (Eds.), *Usability evaluation in industry* (pp. 189–194). Taylor & Francis.
 * CGPE. (2026). *Numeralia institucional de la Red Universitaria (corte mayo de 2026)*. Coordinación General de Planeación y Evaluación, Universidad de Guadalajara.
-* IMPI. (2026). *Tarifa por los servicios que presta el Instituto Mexicano de la Propiedad Industrial ($3,126.41 MXN IVA incluido por solicitud de marca)*. Secretaría de Economía.
-* INEGI. (2026). *Valor de la Unidad de Medida y Actualización (UMA) vigente a partir del 1 de febrero de 2026 ($117.31 MXN diarios)*. Instituto Nacional de Estadística y Geografía.
+* IMPI. (2026). *Tarifa por los servicios que presta el Instituto Mexicano de la Propiedad Industrial ($3,126.41 MXN IVA incluido por solicitud de marca)*. Secretaría de Economía. https://www.gob.mx/tramites/ficha/solicitud-de-registro-de-marca-ante-el-impi/IMPI88
+* INEGI. (2026). *Valor de la Unidad de Medida y Actualización (UMA) vigente a partir del 1 de febrero de 2026 ($117.31 MXN diarios; $3,566.22 MXN mensuales)*. Instituto Nacional de Estadística y Geografía.
 * LGPDPPSO. (2017). *Ley General de Protección de Datos Personales en Posesión de Sujetos Obligados*. Diario Oficial de la Federación, última reforma publicada en 2024.
 * LISR. (2026). *Ley del Impuesto sobre la Renta (Artículo 57: Amortización de pérdidas fiscales en los diez ejercicios posteriores)*. Diario Oficial de la Federación.
 * Ortegón, E., Pacheco, J. F., & Prieto, A. (2015). *Metodología del marco lógico para la planificación, el seguimiento y la evaluación de proyectos y programas*. Comisión Económica para América Latina y el Caribe (CEPAL) e Instituto Latinoamericano y del Caribe de Planificación Económica y Social (ILPES).
 * Sapag Chain, N., Sapag Chain, R., & Sapag Puelma, J. M. (2014). *Preparación y evaluación de proyectos* (6ta ed.). McGraw-Hill Interamericana.
 * Sauro, J., & Lewis, J. R. (2012). *Quantifying the user experience: Practical statistics for user research*. Morgan Kaufmann. (Media industrial estandarizada de 68 puntos).
 * SEMS. (2024). *Directorio estadístico y operativo de escuelas preparatorias de la Red Universitaria*. Sistema de Educación Media Superior, Universidad de Guadalajara.
-* UdeG. (2019). *Plan de Desarrollo Institucional 2019-2025: Visión 2030*. Universidad de Guadalajara.
-* UdeG. (2024). *Lineamientos generales y normatividad del Comité de Compras y Adquisiciones Menores*. Gaceta Universitaria.
+* Snipe-IT. (2024). *Snipe-IT open source IT asset management documentation*. Grokability. https://snipe-it.readme.io/docs
+* UdeG. (2019). *Plan de Desarrollo Institucional 2019-2025: Visión 2030*. Universidad de Guadalajara. https://www.udg.mx/pdi
+* UdeG. (2025). *Reglamento de Adquisiciones, Arrendamientos y Contratación de Servicios de la Universidad de Guadalajara (RAACS, versión vigente Junio 2025: Artículos 16 Fracción IV y 23)*. Secretaría General, Universidad de Guadalajara. https://secgral.udg.mx/sites/default/files/Normatividad_general/RAACS%20(Junio%202025).pdf
 
 ## Anexos Técnicos y Evidencia Experimental
 
@@ -457,12 +458,12 @@ En la Tabla 17 se sintetiza la solventación técnica integral y autoevaluación
 
 | Criterio Metodológico Evaluado | Requerimiento de Rigor Técnico | Solventación Implementada en la Propuesta |
 |---|---|---|
-| **1. Justificación y Costo** | Demostrar el costo de la inacción administrativa sin forzar cifras artificiales. | Modelo desglosado con pérdidas patrimoniales y papelería que promedian **$115,000 MXN anuales por plantel** (Sección 1.4, Tabla 2). |
-| **2. Burocracia B2G** | Fundamentar la viabilidad de contratación por adjudicación directa en la UdeG. | Fundamentación en compras menores institucionales (< 1,000 UMA = $117,310 MXN; tarifas SIGRE de $24k a $48k; Sección 4.1, Tabla 6). |
+| **1. Justificación y Costo** | Demostrar cuantitativamente el costo de la inacción administrativa. | Modelo desglosado con pérdidas patrimoniales y papelería que promedian **$115,000 MXN anuales por plantel** (Sección 1.4, Tabla 2). |
+| **2. Burocracia B2G** | Fundamentar la viabilidad de contratación por adjudicación directa en la UdeG. | Fundamentación en compras menores y adjudicación directa conforme a los Arts. 16 (Frac. IV) y 23 del RAACS UdeG (< 37 a 75 UMA mensuales; tarifas SIGRE de $24k a $48k; Sección 4.1, Tabla 6). |
 | **3. Marco Lógico** | Estructurar la MML canónica con indicadores verificables y medios de control. | Matriz MML completa de 4 niveles bajo estándar internacional CEPAL/BID (Sección 2.3, Tabla 4). |
 | **4. Arquitectura y Datos** | Definir stack desacoplado, sellado de firma y privacidad conforme a la ley. | Vue.js 3 + TypeScript, FastAPI en GCP, Cloud SQL PostgreSQL, Redis Memorystore y sellado HMAC sin biométricos crudos (LGPDPPSO; Sec. 5). |
 | **5. Organización y Nómina** | Clarificar estructura de fundador único y nómina escalonada sin romper topes. | Fundador único con personal subordinado escalonado en Mes 15 y Mes 22 ($120k Año 2 y $240k Año 3; Sección 6.1 y 6.2, Tabla 8). |
 | **6. Proforma y Amortización** | Aplicar el tratamiento fiscal de pérdidas conforme a la ley vigente. | Amortización de pérdida del Año 1 (−$32,000 MXN) en el Año 2 conforme al Art. 57 de la LISR, reduciendo la base a $52,000 MXN (Sección 7.3, Tabla 13). |
-| **7. Modelo Inversionista** | Reconciliar el retorno financiero, plazo de recuperación y mecanismo legal. | Contrato de Mutuo con Cash Sweep del 70%, liquidación total en **Mes 31.8** y participación preferente del 15% (TIR 14.90% base / 20.73% UPES; Sec. 9.3). |
+| **7. Modelo Inversionista** | Reconciliar el retorno financiero, plazo de recuperación y mecanismo legal. | Contrato de Mutuo con Cash Sweep del 75%, liquidación total en **Mes 31.1** y participación preferente del 18% (TIR 20.49% base / 26.51% UPES; Sec. 9.3, Tabla 16). |
 
 *Tabla 17. Matriz de solventación técnica y autoevaluación metodológica del proyecto FEPI.*
