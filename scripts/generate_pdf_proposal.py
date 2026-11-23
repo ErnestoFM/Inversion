@@ -217,12 +217,7 @@ def markdown_to_html(md_path, html_path, font_size_pt=9.2, line_height=1.30, mar
         q_text = '<br>'.join(inline_format(l) for l in quote_lines)
         in_quote = False
         quote_lines = []
-        callout_class = "callout-info"
-        if "WARNING" in q_text or "Alerta" in q_text or "Umbral" in q_text:
-            callout_class = "callout-warning"
-        elif "IMPORTANT" in q_text:
-            callout_class = "callout-important"
-        return f'<div class="callout-box {callout_class}">{q_text}</div>\n'
+        return f'<div class="note-prose">{q_text}</div>\n'
 
     i = 0
     skip_first_h1 = True
@@ -270,7 +265,7 @@ def markdown_to_html(md_path, html_path, font_size_pt=9.2, line_height=1.30, mar
             html_parts.append(close_ul())
             in_quote = True
             q_line = line[1:].strip()
-            q_line = re.sub(r'^\[!(WARNING|NOTE|IMPORTANT|TIP|CAUTION)\]', r'<strong>[\1]</strong>', q_line)
+            q_line = re.sub(r'^\[!(WARNING|NOTE|IMPORTANT|TIP|CAUTION)\]', r'', q_line).strip()
             quote_lines.append(q_line)
             i += 1
             continue

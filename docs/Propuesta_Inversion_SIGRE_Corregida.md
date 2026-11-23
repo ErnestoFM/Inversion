@@ -312,9 +312,7 @@ La Tabla 13 presenta el Estado de Resultados Proforma trienal, aplicando la amor
 
 *Tabla 13. Estado de Resultados Proforma proyectado a tres años (Cifras en Pesos MXN).*
 
-> [!NOTE]
-> **Consistencia Aritmética, Criterio de Estrés Financiero y Tratamiento Fiscal:**  
-> En el Año 1, el OPEX de **($95,000 MXN)** (que incluye $40,000 MXN asignados a becas de apoyo a estudiantes de servicio social en sitio para los 3 planteles piloto) genera una pérdida operativa de **−$32,000 MXN** (con ISR de $0). En el Año 2, conforme al Art. 57 de la LISR, dicha pérdida se amortiza reduciendo la base gravable de $84,000 MXN a **$52,000 MXN**, pagando un ISR del 30% por **($15,600 MXN)** y arrojando un FEN neto de **+$68,400 MXN**. En el Año 3, el EBIT de $414,000 MXN tributa **($124,200 MXN)** de ISR, generando un FEN neto de **+$289,800 MXN**. El margen neto pasa de −50.8% en Año 1, al 22.1% en Año 2 y al **34.5% en Año 3** (con un margen operativo EBITDA del **49.3%**). El proyecto alcanza rentabilidad operativa anual a partir del Año 2.
+*Nota analítica sobre consistencia aritmética, estrés financiero y tratamiento fiscal:* En el Año 1, el OPEX de **($95,000 MXN)** (que incluye $40,000 MXN asignados a becas de apoyo a estudiantes de servicio social en sitio para los 3 planteles piloto) genera una pérdida operativa de **−$32,000 MXN** (con ISR de $0). En el Año 2, conforme al Art. 57 de la LISR, dicha pérdida se amortiza reduciendo la base gravable de $84,000 MXN a **$52,000 MXN**, pagando un ISR del 30% por **($15,600 MXN)** y arrojando un FEN neto de **+$68,400 MXN**. En el Año 3, el EBIT de $414,000 MXN tributa **($124,200 MXN)** de ISR, generando un FEN neto de **+$289,800 MXN**. El margen neto pasa de −50.8% en Año 1, al 22.1% en Año 2 y al **34.5% en Año 3** (con un margen operativo EBITDA del **49.3%**). El proyecto alcanza rentabilidad operativa anual a partir del Año 2.
 
 ### 7.4 Análisis Financiero de Rentabilidad: Proyección FEN, VPN, TIR y Payback
 Fijando una **Tasa Mínima Aceptable de Rendimiento (TMAR) del 15.0% anual** (tasa libre de riesgo Cetes a 364 días en 7.12% más prima por riesgo de 7.88%), la Tabla 14 resume los indicadores de rentabilidad del proyecto:
@@ -344,9 +342,7 @@ La Tabla 15 evalúa la resiliencia del proyecto ante fluctuaciones en la penetra
 
 *Tabla 15. Análisis de sensibilidad financiera a tres escenarios y umbral de viabilidad.*
 
-> [!IMPORTANT]
-> **Umbral de Viabilidad Financiera (Punto de Equilibrio de la Inversión):**  
-> En el escenario pesimista (15 planteles), la TIR de 4.35% no cubre la TMAR del 15% y el VPN resulta negativo. El umbral exacto donde el **VPN iguala a cero a la tasa del 15%** exige un FEN en el Año 3 de **$237,417.50 MXN**, lo que tolera una **caída máxima admisible del 18.1%** respecto a la meta base de FEN ($289,800 MXN). Mediante interpolación paramétrica frente al escenario pesimista, esto equivale a **18.99 planteles**; por ende, afiliar **19 planteles discretos** (sólo el **9.7%** de la Red UdeG de 196 dependencias) sustenta la viabilidad financiera del proyecto conforme a los supuestos del modelo base.
+*Determinación del umbral de viabilidad financiera y punto de equilibrio de la inversión:* En el escenario pesimista (15 planteles), la TIR de 4.35% no cubre la TMAR del 15% y el VPN resulta negativo. El umbral exacto donde el **VPN iguala a cero a la tasa del 15%** exige un FEN en el Año 3 de **$237,417.50 MXN**, lo que tolera una **caída máxima admisible del 18.1%** respecto a la meta base de FEN ($289,800 MXN). Mediante interpolación paramétrica frente al escenario pesimista, esto equivale a **18.99 planteles**; por ende, afiliar **19 planteles discretos** (sólo el **9.7%** de la Red UdeG de 196 dependencias) sustenta la viabilidad financiera del proyecto conforme a los supuestos del modelo base.
 
 ---
 
