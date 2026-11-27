@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
+import fs from 'fs';
 import path from 'path';
 import { prisma } from '@inversion/database';
 import { authenticateJwt, requireRoles } from '../middlewares/auth.middleware.js';
@@ -504,23 +505,68 @@ loansRouter.patch('/:id/reject', authenticateJwt, requireRoles([UserRole.ALMACEN
 // 7. Descarga del Acta PDF Oficial (Soporta /:id/pdf y /:id/responsiva-pdf)
 const downloadPdfHandler = async (req: Request, res: Response) => {
   try {
-    const loan = await prisma.loanRequest.findUnique({ where: { id: req.params.id } });
-    if (!loan || !loan.responsivaPdfPath) {
-      return res.status(404).json({ success: false, error: 'Acta responsiva en PDF no disponible o aún no generada.' });
+    const loan = await prisma.loanRequest.findUnique({
+      where: { id: req.params.id },
+      include: {
+        user: true,
+        space: true,
+        items: { include: { item: true } }
+      }
+    });
+    if (!loan) {
+      return res.status(404).json({ success: false, error: 'Solicitud de préstamo no encontrada.' });
     }
 
     // Si está almacenada en Google Cloud Storage, generar Signed URL o redirigir
-    if (loan.responsivaPdfPath.startsWith('gs://')) {
-      const signedUrl = await storageService.getSignedUrl(loan.responsivaPdfPath, 30);
-      return res.redirect(signedUrl);
+    if (loan.responsivaPdfPath?.startsWith('gs://')) {
+      try {
+        const signedUrl = await storageService.getSignedUrl(loan.responsivaPdfPath, 30);
+        return res.redirect(signedUrl);
+      } catch (gcsErr) {
+        console.warn('⚠️ [downloadPdfHandler] No se pudo obtener Signed URL de GCS, generando PDF al vuelo:', gcsErr);
+      }
     }
 
-    // Soporte para archivos locales o rutas relativas
-    const localPath = loan.responsivaPdfPath.startsWith('local://')
-      ? path.resolve(process.cwd(), 'uploads', loan.responsivaPdfPath.replace('local://', ''))
-      : loan.responsivaPdfPath;
+    // Soporte para archivos locales o rutas relativas si existen en disco
+    if (loan.responsivaPdfPath && !loan.responsivaPdfPath.startsWith('gs://')) {
+      const localPath = loan.responsivaPdfPath.startsWith('local://')
+        ? path.resolve(process.cwd(), 'uploads', loan.responsivaPdfPath.replace('local://', ''))
+        : loan.responsivaPdfPath;
+      if (fs.existsSync(localPath)) {
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `inline; filename="responsiva_${loan.folioNumber}.pdf"`);
+        return res.sendFile(path.resolve(localPath));
+      }
+    }
 
-    return res.download(localPath);
+    // Generación al vuelo si aún no se ha generado o el contenedor efímero reinició
+    const outputDir = path.resolve(process.cwd(), 'uploads/actas');
+    const generatedPdfPath = await PdfService.generateResponsivaPdf(
+      {
+        folioNumber: loan.folioNumber,
+        createdAt: loan.createdAt.toISOString(),
+        userName: loan.user.fullName,
+        studentCode: loan.user.studentCode,
+        career: loan.user.career || 'Comunidad CUTonalá',
+        purpose: loan.purpose,
+        spaceName: loan.space?.name,
+        items: loan.items.map((i) => ({
+          name: i.item.name,
+          assetTag: i.item.assetTag,
+          serialNumber: i.item.serialNumber
+        })),
+        coResponsibles: [],
+        approverName: loan.approverSignatureUrl ? 'Almacén / Administración SIGRE' : 'Pendiente de firma de almacén',
+        approverSignatureBase64: loan.approverSignatureUrl || undefined,
+        requesterSignatureBase64: loan.requesterSignatureUrl || undefined,
+        ipAddress: loan.ipAddress || req.ip || '127.0.0.1'
+      },
+      outputDir
+    );
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="responsiva_${loan.folioNumber}.pdf"`);
+    return res.sendFile(path.resolve(generatedPdfPath));
   } catch (error: any) {
     return res.status(500).json({ success: false, error: error.message });
   }
